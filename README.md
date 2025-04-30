@@ -60,6 +60,8 @@ npm run lint
 | api/      | API 輔助函式                                  |
 | validate/ | 驗證工具（如 email、手機格式等）              |
 | file/     | 檔案處理（下載、轉 blob）                     |
+| ui/       | menu 設定、icon 渲染、欄位工具等              |
+| config/   | UnoCSS safelist、權限 config 等               |
 | index.ts  | 將常用工具集中 re-export（或按需分批 export） |
 
 ## 共用Store資料夾分層
