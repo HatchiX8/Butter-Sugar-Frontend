@@ -12,6 +12,7 @@ export default defineConfig({
     presetIcons({
       collections: {
         clarity: () => import('@iconify-json/clarity/icons.json'),
+        ion: () => import('@iconify-json/ion/icons.json'),
       },
     }),
   ],
