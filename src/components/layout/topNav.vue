@@ -6,7 +6,7 @@
           <img src="@/assets/logo.png" alt="Butter&Sugar" class="h-8" />
         </router-link>
       </div>
-      <nav class="flex items-center gap-4 text-size-14px">
+      <nav class="desktop-nav flex items-center gap-4 text-size-14px">
         <router-link to="/search" class="">探索課程</router-link>
         <div class="search-box">
             <n-input type="text" placeholder="輸入關鍵字搜尋" class="bg-[#0D0B07] border-none w-300px h-48px text-[#9E9E9E]" style="--n-border: none;"/>

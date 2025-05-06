@@ -1,5 +1,5 @@
 <template>
-  <a @click="onGoogleLogin">
+  <a @click="onGoogleLogin" class="cursor-pointer">
     登入
   </a>
 </template>
@@ -12,4 +12,7 @@ function onGoogleLogin() {
   window.location.href = `${API_BASE}/api/v1/users/auth/google`
 }
 </script>
+<style>
+
+</style>
 
