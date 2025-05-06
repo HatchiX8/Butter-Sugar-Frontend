@@ -35,6 +35,11 @@ const router = createRouter({
       name: 'TeacherBackend',
       component: () => import('@/views/dashboard/index.vue'), // 講師後台
     },
+    {
+      path: '/login-success',
+      name: 'loginSuccess',
+      component: () => import('@/views/dashboard/index.vue'), // 講師後台
+    },
   ],
 });
 
