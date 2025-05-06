@@ -5,7 +5,7 @@
 </template>
 
 <script setup lang="ts">
-const API_BASE = import.meta.env.VITE_API_BASE_URL 
+const API_BASE = import.meta.env.VITE_API_URL 
 
 function onGoogleLogin() {
   // 1. 直接跳轉到後端 OAuth 啟動端點
