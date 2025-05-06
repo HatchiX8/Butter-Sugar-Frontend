@@ -1,7 +1,7 @@
 <template>
-  <button @click="onGoogleLogin">
-    用 Google 登入
-  </button>
+  <a @click="onGoogleLogin">
+    登入
+  </a>
 </template>
 
 <script setup lang="ts">
