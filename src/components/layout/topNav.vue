@@ -1,24 +1,29 @@
 <template>
-  <header class=" px-6 py-3 fw-400 text-white font-['Noto Serif TC'] ">
+  <header class="fw-400 font-['Noto Serif TC'] px-6 py-3 text-white">
     <div class="header-box flex items-center justify-between">
       <div class="logo">
         <router-link to="/">
           <img src="@/assets/logo.png" alt="Butter&Sugar" class="h-8" />
         </router-link>
       </div>
-      <nav class="desktop-nav flex items-center gap-4 text-size-14px">
+      <nav class="desktop-nav text-size-14px flex items-center gap-4">
         <router-link to="/search" class="">探索課程</router-link>
         <div class="search-box">
-            <n-input type="text" placeholder="輸入關鍵字搜尋" class="bg-[#0D0B07] border-none w-300px h-48px text-[#9E9E9E]" style="--n-border: none;"/>
-            <div class="search-icon-box">
-              <span class="ion--search"></span>
-            </div>
+          <n-input
+            type="text"
+            placeholder="輸入關鍵字搜尋"
+            class="w-300px h-48px border-none bg-[#0D0B07] text-[#9E9E9E]"
+            style="--n-border: none"
+          />
+          <div class="search-icon-box">
+            <span class="ion--search"></span>
+          </div>
         </div>
-        
+
         <router-link to="/cart" class="cart">
           <span class="ion--cart"></span>
         </router-link>
-        
+
         <div class="login-area">
           <!-- 未登入時顯示登入按鈕 -->
           <loginComps v-if="!isLoggedIn" />
@@ -33,41 +38,41 @@
 </template>
 
 <script setup lang="ts">
-import { ref, computed } from 'vue'
-import loginComps from '@/components/feedback/misc/loginComps.vue'
-const userAvatar = ref(localStorage.getItem('userAvatar') || '')
-const isLoggedIn = computed(() => userAvatar.value !== '')
+import { ref, computed } from 'vue';
+import loginComps from '@/components/feedback/misc/loginComps.vue';
+const userAvatar = ref(localStorage.getItem('userAvatar') || '');
+const isLoggedIn = computed(() => userAvatar.value !== '');
 </script>
 
 <style scoped>
 /* UnoCSS */
-a{
+a {
   @apply text-white;
   text-decoration: none;
-  &:hover{
+  &:hover {
     text-decoration: none;
   }
 }
-header{
-  border-bottom: 1px solid #FFFDFA40;
+header {
+  border-bottom: 1px solid #fffdfa40;
 }
-.header-box{
+.header-box {
   max-width: 1280px;
   margin: 0 auto;
 }
-.n-input .n-input-wrapper{
+.n-input .n-input-wrapper {
   width: 300px;
 }
-.search-box{
-  @apply flex justify-between items-center relative;
+.search-box {
+  @apply relative flex items-center justify-between;
 }
-.search-icon-box{
+.search-icon-box {
   @apply absolute right-2 top-1/2 -translate-y-1/2;
   cursor: pointer;
 }
-.b-full{
-  background: #0D0B07;
-  border: none
+.b-full {
+  background: #0d0b07;
+  border: none;
 }
 .ion--search {
   display: inline-block;
@@ -83,10 +88,10 @@ header{
   height: 18px;
   background-repeat: no-repeat;
   background-size: 100% 100%;
-  background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 512 512'%3E%3Ccircle cx='176' cy='416' r='32' fill='%23fffdfa'/%3E%3Ccircle cx='400' cy='416' r='32' fill='%23fffdfa'/%3E%3Cpath fill='%23fffdfa' d='M456.8 120.78a23.92 23.92 0 0 0-18.56-8.78H133.89l-6.13-34.78A16 16 0 0 0 112 64H48a16 16 0 0 0 0 32h50.58l45.66 258.78A16 16 0 0 0 160 368h256a16 16 0 0 0 0-32H173.42l-5.64-32h241.66A24.07 24.07 0 0 0 433 284.71l28.8-144a24 24 0 0 0-5-19.93'/%3E%3C/svg%3E");
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 512 512'%3E%3Ccircle cx='176' cy='416' r='32' fill='%23fffdfa'/%3E%3Ccircle cx='400' cy='416' r='32' fill='%23fffdfa'/%3E%3Cpath fill='%23fffdfa' d='M456.8 120.78a23.92 23.92 0 0 0-18.56-8.78H133.89l-6.13-34.78A16 16 0 0 0 112 64H48a16 16 0 0 0 0 32h50.58l45.66 258.78A16 16 0 0 0 160 368h256a16 16 0 0 0 0-32H173.42l-5.64-32h241.66A24.07 24.07 0 0 0 433 284.71l28.8-144a24 24 0 0 0-5-19.93'/%3E%3C/svg%3E");
 }
-.avatar{
-  @apply block w-40px h-40px;
+.avatar {
+  @apply w-40px h-40px block;
   background: url('@/assets/images/avatar.png');
   background-size: cover;
   border-radius: 50%;

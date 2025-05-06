@@ -38,7 +38,7 @@ const router = createRouter({
     {
       path: '/login-success',
       name: 'loginSuccess',
-      component: () => import('@/views/dashboard/index.vue'), // 講師後台
+      component: () => import('@/views/loginSuccess/index.vue'), // 講師後台
     },
   ],
 });
