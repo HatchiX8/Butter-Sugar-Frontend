@@ -108,10 +108,13 @@ const fetchData = async () => {
 // 提交更新學生資料
 const handleSubmit = async () => {
   try {
-    const res = await axios.put(`${import.meta.env.VITE_API_URL}/api/v1/users/info`, {
+    const res = await axios.put(`${import.meta.env.VITE_API_URL}/api/v1/users/info`, 
+    formData,
+    {
       headers: { Authorization: `Bearer ${userStore.token}` },
     });
     console.log('更新成功', res.data)
+    
     isEdit.value = false
     // 將備份更新為最新
     Object.assign(originalData, formData)
