@@ -49,7 +49,11 @@
 import { ref, onMounted } from 'vue';
 import axios from 'axios'
 import { useUserStore } from '@/stores/models/user/userStore'
-import { NButton, NForm, NFormItem, NInput, NSpace, NDatePicker, type DatePickerValue  } from 'naive-ui'
+import { NButton, NForm, NFormItem, NInput, NSpace, NDatePicker, datePickerProps  } from 'naive-ui'
+import type { ExtractPropTypes } from 'vue'
+type DatePickerProps = ExtractPropTypes<typeof datePickerProps>
+// 接著「挖出」裡面 value 的那個屬性，這就是 v-model:value 要的型別
+type DatePickerValue = DatePickerProps['value']
 interface StudentData {
   name: string
   birthday: DatePickerValue | null

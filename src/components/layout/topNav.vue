@@ -29,37 +29,37 @@
             ref="menuRoot"
             class="relative"
           >
-          <img
-            :src="userAvatar"
-            @click="toggleMenu"
-            alt="avatar"
-            class="w-10 h-10 rounded-full object-cover cursor-pointer avatar"
-          />
+            <img
+              :src="userAvatar"
+              @click="toggleMenu"
+              alt="avatar"
+              class="w-10 h-10 rounded-full object-cover cursor-pointer avatar"
+            />
 
-          <!-- 下拉選單 -->
-          <ul
-            v-show="showMenu"
-            @click="showMenu = false"
-            class="absolute right-0 mt-2 w-48 bg-white text-black rounded shadow-lg overflow-hidden z-20"
-          >
-            <li
-              class="px-4 py-2 hover:bg-gray-100 cursor-pointer"
-              @click="go('/student/my-courses')"
-            >我的課程</li>
-            <li
-              class="px-4 py-2 hover:bg-gray-100 cursor-pointer"
-              @click="go('/home/student')"
-            >學生資料管理</li>
-            <li
-              class="px-4 py-2 hover:bg-gray-100 cursor-pointer"
-              @click="go('/student/orders')"
-            >訂單紀錄</li>
-            <li
-              class="px-4 py-2 hover:bg-gray-100 cursor-pointer"
-              @click="logout"
-            >登出</li>
-          </ul>
-        </div>
+            <!-- 下拉選單 -->
+            <ul
+              v-show="showMenu"
+              @click="showMenu = false"
+              class="absolute right-0 mt-2 w-48 bg-white text-black rounded shadow-lg overflow-hidden z-20"
+            >
+              <li
+                class="px-4 py-2 hover:bg-gray-100 cursor-pointer"
+                @click="go('/student/my-courses')"
+              >我的課程</li>
+              <li
+                class="px-4 py-2 hover:bg-gray-100 cursor-pointer"
+                @click="go('/home/student')"
+              >學生資料管理</li>
+              <li
+                class="px-4 py-2 hover:bg-gray-100 cursor-pointer"
+                @click="go('/student/orders')"
+              >訂單紀錄</li>
+              <li
+                class="px-4 py-2 hover:bg-gray-100 cursor-pointer"
+                @click="logout"
+              >登出</li>
+            </ul>
+          </div>
         </div>
       </nav>
     </div>
