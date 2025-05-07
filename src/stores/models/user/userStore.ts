@@ -4,6 +4,7 @@ export const useUserStore = defineStore('user', {
   state: () => ({
     token: '' as string,
     userId: '' as string,
+    avatarUrl: ''
   }),
   actions: {
     setToken(t: string) {
@@ -12,9 +13,14 @@ export const useUserStore = defineStore('user', {
     setUserId(id: string) {
       this.userId = id
     },
+    setAvatar(url: string) {         
+      this.avatarUrl = url
+    },
     logout() {
       this.token = ''
-      // this.avatarUrl = ''
+      this.userId = ''
+      this.avatarUrl = ''
+      localStorage.clear()
     }
   }
 })

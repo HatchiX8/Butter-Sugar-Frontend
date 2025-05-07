@@ -6,28 +6,35 @@
 import { onMounted } from 'vue';
 import { useRouter, useRoute } from 'vue-router';
 import { useUserStore } from '@/stores/models/user/userStore';
+import axios from 'axios';
 
 const userStore = useUserStore();
 const router = useRouter();
 const route = useRoute();
 
-onMounted(() => {
+onMounted(async() => {
   // 從網址取得 JWT token
   const token = route.query.token as string;
   const id = route.query.id as string;
 
-  if (token && id) {
-    // 寫入 localStorage
-    userStore.setToken(token)
-    userStore.setUserId(id)
-    localStorage.setItem('access_token', token)
-    localStorage.setItem('userId', id)
+  userStore.setToken(token)
+  userStore.setUserId(id)
+  localStorage.setItem('access_token', token)
+  localStorage.setItem('userId', id)
 
-    // 跳轉至首頁
+  try {
+    const res = await axios.get(
+      `https://buttersuger.zeabur.app/api/v1/users/${id}`,
+      { headers: { Authorization: `Bearer ${token}` } }
+    )
+    userStore.setAvatar(res.data.profile_image_url)
+    localStorage.setItem('avatarUrl', res.data.profile_image_url)
+
     router.replace('/home');
-  } else {
-    // 沒有 token，跳轉回登入頁
+  } catch (e) {
+    console.error('取得完整用戶資料失敗', e)
     router.replace('/login');
   }
+  
 });
 </script>
