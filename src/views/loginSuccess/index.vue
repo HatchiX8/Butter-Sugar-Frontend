@@ -16,6 +16,7 @@ onMounted(async() => {
   // 從網址取得 JWT token
   const token = route.query.token as string;
   const id = route.query.id as string;
+  if (!token || !id) return router.replace('/')
 
   userStore.setToken(token)
   userStore.setUserId(id)
@@ -35,6 +36,8 @@ onMounted(async() => {
     console.error('取得完整用戶資料失敗', e)
     router.replace('/login');
   }
+
+  router.replace('/home');
   
 });
 </script>
