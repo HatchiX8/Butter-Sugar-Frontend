@@ -46,7 +46,7 @@
 </template>
 
 <script setup lang="ts">
-import { ref, onMounted } from 'vue';
+import { ref, onMounted, reactive } from 'vue';
 import axios from 'axios'
 import { useUserStore } from '@/stores/models/user/userStore'
 import { NButton, NForm, NFormItem, NInput, NSpace, NDatePicker, datePickerProps  } from 'naive-ui'
@@ -66,7 +66,7 @@ interface StudentData {
 
 const userStore = useUserStore();
 const isEdit = ref(false);
-const formData = ref<StudentData>({
+const formData = reactive<StudentData>({
   name: '',
   birthday: null,
   nickname: '',
@@ -76,32 +76,30 @@ const formData = ref<StudentData>({
   profile_image_url: '',
 });
 
-const originalData = ref({ ...formData.value });
+const originalData = reactive({ ...formData });
 
 // 讀取學生資料
 const fetchData = async () => {
   try {
-    const res = await axios.get(
-      `/api/v1/users/info`,
-      {
-        headers: { Authorization: `Bearer ${userStore.token}` }
-      }
-    )
+    
+    const res = await axios.get(`${import.meta.env.VITE_API_URL}/api/v1/users/info`, {
+      headers: { Authorization: `Bearer ${userStore.token}` },
+    });
     console.log('info', res);
     
     // 後端回的 data
-    const data = res.data.data
-    formData.value = {
-      name: data.name || '',
-      nickname: data.nickname || '',
-      email: data.email,
-      birthday: data.birthday || '',
-      phone: data.phone || '',
-      address: data.address || '',
-      profile_image_url: data.profile_image_url || '',
-    }
-    
-    originalData.value = { ...formData.value }
+    const user = res.data.data
+    formData.name = user.name || ''
+    formData.nickname = user.nickname || ''
+    formData.email = user.email
+    formData.birthday = user.birthday || null
+    formData.phone = user.phone || ''
+    formData.address = user.address || ''
+    formData.profile_image_url = user.profile_image_url || ''
+
+    // 更新備份
+    Object.assign(originalData, formData)
+
   } catch (err) {
     console.error('取得學生資料失敗', err)
   }
@@ -110,16 +108,13 @@ const fetchData = async () => {
 // 提交更新學生資料
 const handleSubmit = async () => {
   try {
-    const res = await axios.put(
-      `/api/v1/users/info`,
-      formData.value,
-      {
-        headers: { Authorization: `Bearer ${userStore.token}` }
-      }
-    )
+    const res = await axios.put(`${import.meta.env.VITE_API_URL}/api/v1/users/info`, {
+      headers: { Authorization: `Bearer ${userStore.token}` },
+    });
     console.log('更新成功', res.data)
     isEdit.value = false
-    originalData.value = { ...formData.value }
+    // 將備份更新為最新
+    Object.assign(originalData, formData)
   } catch (err: unknown) {
     if (axios.isAxiosError(err)) {
       console.error('更新失敗', err.response?.status, err.response?.data)
@@ -132,7 +127,8 @@ const handleSubmit = async () => {
 // 取消編輯
 const handleCancel = () => {
   isEdit.value = false
-  formData.value = { ...originalData.value }
+  // 把表單資料還原成備份
+  Object.assign(formData, originalData)
 }
 
 // onMounted 時先拿一次後端資料

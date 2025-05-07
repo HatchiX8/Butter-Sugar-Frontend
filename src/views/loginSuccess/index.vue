@@ -6,7 +6,7 @@
 import { onMounted } from 'vue';
 import { useRouter, useRoute } from 'vue-router';
 import { useUserStore } from '@/stores/models/user/userStore';
-import axios from 'axios';
+
 
 const userStore = useUserStore();
 const router = useRouter();
