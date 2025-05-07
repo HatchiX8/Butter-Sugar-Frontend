@@ -25,7 +25,7 @@ const router = createRouter({
         {
           path: 'student',
           name: 'Student',
-          component: () => import('@/views/home/student/index.vue'), // 所有課程資訊
+          component: () => import('@/views/home/student/index.vue'), // 學生個人資訊
         },
       ],
     },
@@ -38,7 +38,7 @@ const router = createRouter({
     {
       path: '/login-success',
       name: 'loginSuccess',
-      component: () => import('@/views/loginSuccess/index.vue'), // 講師後台
+      component: () => import('@/views/loginSuccess/index.vue'), // 登入
     },
   ],
 });
