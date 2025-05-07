@@ -82,7 +82,7 @@ const originalData = ref({ ...formData.value });
 const fetchData = async () => {
   try {
     const res = await axios.get(
-      `/api/v1/users/${userStore.userId}`,
+      `/api/v1/users/info`,
       {
         headers: { Authorization: `Bearer ${userStore.token}` }
       }
@@ -109,7 +109,7 @@ const fetchData = async () => {
 const handleSubmit = async () => {
   try {
     const res = await axios.put(
-      `/api/v1/users/${userStore.userId}`,
+      `/api/v1/users/info`,
       formData.value,
       {
         headers: { Authorization: `Bearer ${userStore.token}` }
