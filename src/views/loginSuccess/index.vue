@@ -27,7 +27,7 @@ onMounted(async() => {
 
   try {
     const res = await axios.get(
-      `https://buttersuger.zeabur.app/api/v1/users/${id}`,
+      `https://buttersuger-frontend.zeabur.app/api/v1/users/${id}`,
       { headers: { Authorization: `Bearer ${token}` } }
     )
     userStore.setAvatar(res.data.profile_image_url)
