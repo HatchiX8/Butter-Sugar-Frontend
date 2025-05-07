@@ -26,12 +26,12 @@ onMounted(async() => {
   localStorage.setItem('userId', id)
 
   try {
-    const res = await axios.get(
-      `https://buttersuger-frontend.zeabur.app/api/v1/users/${id}`,
-      { headers: { Authorization: `Bearer ${token}` } }
-    )
-    userStore.setAvatar(res.data.profile_image_url)
-    localStorage.setItem('avatarUrl', res.data.profile_image_url)
+    // const res = await axios.get(
+    //   `https://buttersuger-frontend.zeabur.app/api/v1/users/${id}`,
+    //   { headers: { Authorization: `Bearer ${token}` } }
+    // )
+    // userStore.setAvatar(res.data.profile_image_url)
+    // localStorage.setItem('avatarUrl', res.data.profile_image_url)
 
     router.replace('/Home');
   } catch (e) {

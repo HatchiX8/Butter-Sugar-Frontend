@@ -87,8 +87,10 @@ const fetchData = async () => {
         headers: { Authorization: `Bearer ${userStore.token}` }
       }
     )
+    console.log('info', res);
+    
     // 後端回的 data
-    const data = res.data
+    const data = res.data.data
     formData.value = {
       name: data.name || '',
       nickname: data.nickname || '',
