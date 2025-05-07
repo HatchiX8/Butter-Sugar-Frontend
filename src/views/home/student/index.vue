@@ -108,7 +108,7 @@ const fetchData = async () => {
 // 提交更新學生資料
 const handleSubmit = async () => {
   try {
-    const res = await axios.put(`${import.meta.env.VITE_API_URL}/api/v1/users/info`, 
+    const res = await axios.patch(`${import.meta.env.VITE_API_URL}/api/v1/users/update`, 
     formData,
     {
       headers: { Authorization: `Bearer ${userStore.token}` },
