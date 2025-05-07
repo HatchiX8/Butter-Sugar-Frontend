@@ -5,17 +5,23 @@
 <script setup lang="ts">
 import { onMounted } from 'vue';
 import { useRouter, useRoute } from 'vue-router';
+import { useUserStore } from '@/stores/models/user/userStore';
 
+const userStore = useUserStore();
 const router = useRouter();
 const route = useRoute();
 
 onMounted(() => {
   // 從網址取得 JWT token
   const token = route.query.token as string;
+  const id = route.query.id as string;
 
-  if (token) {
+  if (token && id) {
     // 寫入 localStorage
-    localStorage.setItem('access_token', token);
+    userStore.setToken(token)
+    userStore.setUserId(id)
+    localStorage.setItem('access_token', token)
+    localStorage.setItem('userId', id)
 
     // 跳轉至首頁
     router.replace('/home');
