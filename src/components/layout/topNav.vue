@@ -67,9 +67,10 @@
 </template>
 
 <script setup lang="ts">
-import {  ref, onMounted, onBeforeUnmount } from 'vue'
+import {  ref, computed, onMounted, onBeforeUnmount } from 'vue'
 import { useRouter } from 'vue-router'
 import loginComps from '@/components/feedback/misc/loginComps.vue'
+import { useUserStore } from '@/stores/models/user/userStore'
 
 
 // 控制下拉
@@ -86,13 +87,17 @@ function go(path: string) {
 }
 function logout() {
   showMenu.value = false
-  localStorage.removeItem('access_token')
+  // 清掉 store 里的 token/avatar
+  userStore.logout()
   router.replace('/')
 }
 
 // Avatar 狀態
-const userAvatar = ref(localStorage.getItem('access_token') || '')
-const isLoggedIn = ref(userAvatar.value !== '')
+const userStore = useUserStore()
+const isLoggedIn = computed(() => !!userStore.token)
+const userAvatar = computed(
+  () => userStore.avatarUrl || '/assets/images/avatar.png'
+)
 
 // 取得根節點，監聽外部點擊 // 點外面要關掉
 const menuRoot = ref<HTMLElement | null>(null)

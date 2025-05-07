@@ -4,7 +4,7 @@ export const useUserStore = defineStore('user', {
   state: () => ({
     token: '' as string,
     userId: '' as string,
-    avatarUrl: ''
+    avatarUrl: '' as string,
   }),
   actions: {
     setToken(t: string) {
