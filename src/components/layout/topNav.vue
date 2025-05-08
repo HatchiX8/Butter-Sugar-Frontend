@@ -67,9 +67,15 @@
 <script setup lang="ts">
 import { ref, computed, onMounted, onBeforeUnmount } from 'vue';
 import { useRouter } from 'vue-router';
+import axios from 'axios';
 import loginComps from '@/components/feedback/misc/loginComps.vue';
 import { useUserStore } from '@/stores/models/user/userStore';
-import axios from 'axios';
+
+// Pinia store
+const userStore = useUserStore();
+
+// router helper
+const router = useRouter();
 
 // 控制下拉
 const showMenu = ref(false);
@@ -77,21 +83,17 @@ function toggleMenu() {
   showMenu.value = !showMenu.value;
 }
 
-// router helpers
-const router = useRouter();
 function go(path: string) {
   showMenu.value = false;
   router.push(path);
 }
 function logout() {
   showMenu.value = false;
-  // 清掉 store 里的 token/avatar
   userStore.logout();
   router.replace('/');
 }
 
 // Avatar 狀態
-const userStore = useUserStore();
 const isLoggedIn = computed(() => !!userStore.token);
 const userAvatar = computed(() => userStore.avatarUrl || '/assets/images/avatar.png');
 
@@ -102,41 +104,30 @@ function onClickOutside(e: MouseEvent) {
     showMenu.value = false;
   }
 }
+
 onMounted(async () => {
   document.addEventListener('click', onClickOutside);
 
   const token = localStorage.getItem('access_token');
-  console.log('觸發', token);
-
-  if (token) {
-    const res = await axios.get(`${import.meta.env.VITE_API_URL}/api/v1/users/check`, {
+  if (!token) {
+    // 沒 token，不做任何事（未登入狀態）
+    return;
+  }
+  try {
+    // 驗證 token
+    await axios.get(`${import.meta.env.VITE_API_URL}/api/v1/users/check`, {
       headers: { Authorization: `Bearer ${token}` },
     });
-    console.log('測', res);
-    if (res.data.status === true) {
-      userStore.token = token;
-    } else {
-      localStorage.removeItem('access_token');
-      router.push('/home');
-    }
+    // 驗證 OK，再把 token 寫回 Pinia
+    userStore.setToken(token);
+    // 之前有存在 avatarUrl，也同步到 store
+    const avatar = localStorage.getItem('avatarUrl');
+    if (avatar) userStore.setAvatar(avatar);
+  } catch {
+    // 驗證失敗，直接登出、清除
+    userStore.logout();
   }
 });
-// onMounted(async () => {
-//     // ✅ 登入驗證成功，設定使用者狀態
-//     userStore.setUser(res.data);
-//     // ...你可以在這裡進入主頁，或顯示 UI
-//   } catch (error) {
-//     // ❌ 驗證失敗 → 清除 token 並回登入頁
-//     localStorage.removeItem('token');
-//     userStore.clearUser();
-//     router.push('/login');
-//   }
-// } else {
-//   // ❌ token 不存在 → 視為未登入
-//   router.push('/login');
-// }
-//   }
-// });
 onBeforeUnmount(() => {
   document.removeEventListener('click', onClickOutside);
 });

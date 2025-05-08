@@ -43,4 +43,15 @@ const router = createRouter({
   ],
 });
 
+router.beforeEach( (to) => {
+  const publicPages = ['login', 'loginSuccess','HomeDashboard'] // 不用驗證的 route name
+  const token = localStorage.getItem('access_token')
+
+  if (!token && !publicPages.includes(to.name as string)) {
+    // 如果没有 token，又不是公開页，就重定向到 HomeDashboard
+    return { name: 'HomeDashboard' }
+  }
+})
+
+
 export default router;
