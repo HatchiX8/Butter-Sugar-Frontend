@@ -53,7 +53,7 @@
 <script setup lang="ts">
 import { ref, onMounted, reactive } from 'vue';
 import axios from 'axios';
-import { useUserStore } from '@/stores/models/user/userStore';
+import { useUserStore } from '@/stores/models/index';
 import { NButton, NForm, NFormItem, NInput, NSpace, NDatePicker, datePickerProps } from 'naive-ui';
 import type { ExtractPropTypes } from 'vue';
 type DatePickerProps = ExtractPropTypes<typeof datePickerProps>;
@@ -87,7 +87,7 @@ const originalData = reactive({ ...formData });
 const fetchData = async () => {
   try {
     const res = await axios.get(`${import.meta.env.VITE_API_URL}/api/v1/users/info`, {
-      headers: { Authorization: `Bearer ${userStore.token}` },
+      headers: { Authorization: `Bearer ${userStore.userToken}` },
     });
     console.log('info', res);
 
@@ -112,7 +112,7 @@ const fetchData = async () => {
 const handleSubmit = async () => {
   try {
     const res = await axios.patch(`${import.meta.env.VITE_API_URL}/api/v1/users/update`, formData, {
-      headers: { Authorization: `Bearer ${userStore.token}` },
+      headers: { Authorization: `Bearer ${userStore.userToken}` },
     });
     console.log('更新成功', res.data);
 

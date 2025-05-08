@@ -5,7 +5,7 @@
 <script setup lang="ts">
 import { onMounted } from 'vue';
 import { useRouter, useRoute } from 'vue-router';
-import { useUserStore } from '@/stores/models/user/userStore';
+import { useUserStore } from '@/stores/models/index';
 
 const userStore = useUserStore();
 const router = useRouter();
@@ -14,18 +14,13 @@ const route = useRoute();
 onMounted(async () => {
   // 從網址取得 JWT token
   const token = route.query.token as string;
-  const id = route.query.id as string;
-  console.log('>>> OAuth callback, token =', token, 'id =', id);
-  if (!token || !id) {
+
+  // TODO:後續會導入登入失敗提示
+  if (!token) {
     return router.replace('/Home');
   }
 
   userStore.setToken(token);
-  userStore.setUserId(id);
-
-  localStorage.setItem('access_token', token);
-  localStorage.setItem('userId', id);
-
-  return router.replace('/Home');
+  router.replace('/Home');
 });
 </script>

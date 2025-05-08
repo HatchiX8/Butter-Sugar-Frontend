@@ -1,9 +1,5 @@
 <template>
-  <TopNav />
-  <RouterView />
+  <router-view />
 </template>
 
-<script setup lang="ts">
-import { RouterView } from 'vue-router';
-import TopNav from '@/components/layout/topNav.vue';
-</script>
+<script setup lang="ts"></script>
