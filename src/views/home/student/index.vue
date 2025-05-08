@@ -30,55 +30,35 @@
     </n-space>
   </n-form>
 
-<<<<<<< HEAD
+  <!-- Removed duplicate v-else block -->
+
   <div v-else class="personal-info space-y-2 text-white">
     <p>姓名：{{ formData.name }}</p>
-    <p>頭像：{{ formData.profile_image_url }}</p>
+    <p>
+      頭像：
+      <img
+        :src="formData.profile_image_url"
+        alt="avatar"
+        class="h-16 w-16 rounded-full object-cover"
+      />
+    </p>
     <p>暱稱：{{ formData.nickname }}</p>
     <p>Email：{{ formData.email }}</p>
     <p>生日：{{ formData.birthday || '未填' }}</p>
     <p>電話：{{ formData.phone || '未填' }}</p>
     <p>地址：{{ formData.address || '未填' }}</p>
   </div>
-=======
-    <div v-else class="space-y-2 text-white personal-info">
-      <p>姓名：{{ formData.name }}</p>
-      <p>頭像：
-        <img
-          :src="formData.profile_image_url"
-          alt="avatar"
-          class="w-16 h-16 rounded-full object-cover"
-        />
-      </p>
-      <p>暱稱：{{ formData.nickname }}</p>
-      <p>Email：{{ formData.email }}</p>
-      <p>生日：{{ formData.birthday || '未填' }}</p>
-      <p>電話：{{ formData.phone || '未填' }}</p>
-      <p>地址：{{ formData.address || '未填' }}</p>
-    </div>
->>>>>>> origin/dev
 </template>
 
 <script setup lang="ts">
 import { ref, onMounted, reactive } from 'vue';
-<<<<<<< HEAD
 import axios from 'axios';
 import { useUserStore } from '@/stores/models/user/userStore';
 import { NButton, NForm, NFormItem, NInput, NSpace, NDatePicker, datePickerProps } from 'naive-ui';
 import type { ExtractPropTypes } from 'vue';
-import router from '@/router';
 type DatePickerProps = ExtractPropTypes<typeof datePickerProps>;
-// 接著「挖出」裡面 value 的那個屬性，這就是 v-model:value 要的型別
-type DatePickerValue = DatePickerProps['value'];
-=======
-import axios from 'axios'
-import { useUserStore } from '@/stores/models/user/userStore'
-import { NButton, NForm, NFormItem, NInput, NSpace, NDatePicker, datePickerProps  } from 'naive-ui'
-import type { ExtractPropTypes } from 'vue'
-type DatePickerProps = ExtractPropTypes<typeof datePickerProps>
 // 挖出裡面 value 的那個屬性，這就是 v-model:value 要的型別
-type DatePickerValue = DatePickerProps['value']
->>>>>>> origin/dev
+type DatePickerValue = DatePickerProps['value'];
 interface StudentData {
   name: string;
   birthday: DatePickerValue | null;
@@ -106,15 +86,10 @@ const originalData = reactive({ ...formData });
 // 讀取學生資料
 const fetchData = async () => {
   try {
-<<<<<<< HEAD
-=======
-    
->>>>>>> origin/dev
     const res = await axios.get(`${import.meta.env.VITE_API_URL}/api/v1/users/info`, {
       headers: { Authorization: `Bearer ${userStore.token}` },
     });
     console.log('info', res);
-<<<<<<< HEAD
 
     // 後端回的 data
     const user = res.data.data;
@@ -128,51 +103,22 @@ const fetchData = async () => {
 
     // 更新備份
     Object.assign(originalData, formData);
-=======
-    
-    // 後端回的 data
-    const user = res.data.data
-    formData.name = user.name || ''
-    formData.nickname = user.nickname || ''
-    formData.email = user.email
-    formData.birthday = user.birthday || null
-    formData.phone = user.phone || ''
-    formData.address = user.address || ''
-    formData.profile_image_url = user.profile_image_url || ''
-
-    // 更新備份
-    Object.assign(originalData, formData)
-
->>>>>>> origin/dev
   } catch (err) {
     console.error('取得學生資料失敗', err);
-    router.push('/home');
   }
 };
 
 // 提交更新學生資料
 const handleSubmit = async () => {
   try {
-<<<<<<< HEAD
     const res = await axios.patch(`${import.meta.env.VITE_API_URL}/api/v1/users/update`, formData, {
       headers: { Authorization: `Bearer ${userStore.token}` },
     });
     console.log('更新成功', res.data);
+
     isEdit.value = false;
     // 將備份更新為最新
     Object.assign(originalData, formData);
-=======
-    const res = await axios.patch(`${import.meta.env.VITE_API_URL}/api/v1/users/update`, 
-    formData,
-    {
-      headers: { Authorization: `Bearer ${userStore.token}` },
-    });
-    console.log('更新成功', res.data)
-    
-    isEdit.value = false
-    // 將備份更新為最新
-    Object.assign(originalData, formData)
->>>>>>> origin/dev
   } catch (err: unknown) {
     if (axios.isAxiosError(err)) {
       console.error('更新失敗', err.response?.status, err.response?.data);
@@ -184,17 +130,10 @@ const handleSubmit = async () => {
 
 // 取消編輯
 const handleCancel = () => {
-<<<<<<< HEAD
   isEdit.value = false;
   // 把表單資料還原成備份
   Object.assign(formData, originalData);
 };
-=======
-  isEdit.value = false
-  // 把表單資料還原成備份
-  Object.assign(formData, originalData)
-}
->>>>>>> origin/dev
 
 // onMounted 時先拿一次後端資料
 onMounted(() => {

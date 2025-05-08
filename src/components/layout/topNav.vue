@@ -67,7 +67,7 @@
 <script setup lang="ts">
 import { ref, computed, onMounted, onBeforeUnmount } from 'vue';
 import { useRouter } from 'vue-router';
-import axios from 'axios';
+// import axios from 'axios';
 import loginComps from '@/components/feedback/misc/loginComps.vue';
 import { useUserStore } from '@/stores/models/user/userStore';
 
@@ -108,25 +108,25 @@ function onClickOutside(e: MouseEvent) {
 onMounted(async () => {
   document.addEventListener('click', onClickOutside);
 
-  const token = localStorage.getItem('access_token');
-  if (!token) {
-    // 沒 token，不做任何事（未登入狀態）
-    return;
-  }
-  try {
-    // 驗證 token
-    await axios.get(`${import.meta.env.VITE_API_URL}/api/v1/users/check`, {
-      headers: { Authorization: `Bearer ${token}` },
-    });
-    // 驗證 OK，再把 token 寫回 Pinia
-    userStore.setToken(token);
-    // 之前有存在 avatarUrl，也同步到 store
-    const avatar = localStorage.getItem('avatarUrl');
-    if (avatar) userStore.setAvatar(avatar);
-  } catch {
-    // 驗證失敗，直接登出、清除
-    userStore.logout();
-  }
+  // const token = localStorage.getItem('access_token');
+  // if (!token) {
+  //   // 沒 token，不做任何事（未登入狀態）
+  //   return;
+  // }
+  // try {
+  //   // 驗證 token
+  //   await axios.get(`${import.meta.env.VITE_API_URL}/api/v1/users/check`, {
+  //     headers: { Authorization: `Bearer ${token}` },
+  //   });
+  //   // 驗證 OK，再把 token 寫回 Pinia
+  //   userStore.setToken(token);
+  //   // 之前有存在 avatarUrl，也同步到 store
+  //   const avatar = localStorage.getItem('avatarUrl');
+  //   if (avatar) userStore.setAvatar(avatar);
+  // } catch {
+  //   // 驗證失敗，直接登出、清除
+  //   userStore.logout();
+  // }
 });
 onBeforeUnmount(() => {
   document.removeEventListener('click', onClickOutside);
