@@ -68,7 +68,7 @@
 
 <script setup lang="ts">
 import {  ref, computed, onMounted, onBeforeUnmount } from 'vue'
-// import { useRouter, useRoute } from 'vue-router'
+import { useRouter } from 'vue-router'
 // import axios from 'axios'
 import loginComps from '@/components/feedback/misc/loginComps.vue'
 import { useUserStore } from '@/stores/models/user/userStore'
