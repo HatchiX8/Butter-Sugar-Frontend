@@ -68,10 +68,16 @@
 
 <script setup lang="ts">
 import {  ref, computed, onMounted, onBeforeUnmount } from 'vue'
-import { useRouter } from 'vue-router'
+import { useRouter, useRoute } from 'vue-router'
+import axios from 'axios'
 import loginComps from '@/components/feedback/misc/loginComps.vue'
 import { useUserStore } from '@/stores/models/user/userStore'
 
+// Pinia store
+const userStore = useUserStore()
+
+// router helper
+const router = useRouter()
 
 // 控制下拉
 const showMenu = ref(false)
@@ -79,21 +85,17 @@ function toggleMenu() {
   showMenu.value = !showMenu.value
 }
 
-// router helpers
-const router = useRouter()
 function go(path: string) {
   showMenu.value = false
   router.push(path)
 }
 function logout() {
   showMenu.value = false
-  // 清掉 store 里的 token/avatar
   userStore.logout()
   router.replace('/')
 }
 
 // Avatar 狀態
-const userStore = useUserStore()
 const isLoggedIn = computed(() => !!userStore.token)
 const userAvatar = computed(
   () => userStore.avatarUrl || '/assets/images/avatar.png'
@@ -106,6 +108,7 @@ function onClickOutside(e: MouseEvent) {
     showMenu.value = false
   }
 }
+
 
 onMounted(() => {
   document.addEventListener('click', onClickOutside)
