@@ -28,21 +28,6 @@ onMounted(async() => {
   localStorage.setItem('access_token', token)
   localStorage.setItem('userId', id)
 
-  // try {
-  //   // 呼叫驗證 API
-  //   await axios.get(
-  //     `${import.meta.env.VITE_API_URL}/api/v1/users/check`,
-  //     { headers: { Authorization: `Bearer ${token}` } }
-  //   )
-  //   // 驗證成功，可從 localStorage 拿 avatarUrl
-  //   const avatarUrl = localStorage.getItem('avatarUrl')
-  //   if (avatarUrl) userStore.setAvatar(avatarUrl)
-
-  //   router.replace('/Home');
-  // } catch (e) {
-  //   console.error('取得完整用戶資料失敗', e)
-  //   router.replace('/Home');
-  // }
   return router.replace('/Home')
 
   
