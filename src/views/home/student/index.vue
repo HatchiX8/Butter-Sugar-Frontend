@@ -52,7 +52,7 @@ import { useUserStore } from '@/stores/models/user/userStore'
 import { NButton, NForm, NFormItem, NInput, NSpace, NDatePicker, datePickerProps  } from 'naive-ui'
 import type { ExtractPropTypes } from 'vue'
 type DatePickerProps = ExtractPropTypes<typeof datePickerProps>
-// 接著「挖出」裡面 value 的那個屬性，這就是 v-model:value 要的型別
+// 挖出裡面 value 的那個屬性，這就是 v-model:value 要的型別
 type DatePickerValue = DatePickerProps['value']
 interface StudentData {
   name: string
@@ -82,7 +82,7 @@ const originalData = reactive({ ...formData });
 const fetchData = async () => {
   try {
     
-    const res = await axios.get('/api/v1/users/info', {
+    const res = await axios.get(`${import.meta.env.VITE_API_URL}/api/v1/users/info`, {
       headers: { Authorization: `Bearer ${userStore.token}` },
     });
     console.log('info', res);
@@ -108,7 +108,7 @@ const fetchData = async () => {
 // 提交更新學生資料
 const handleSubmit = async () => {
   try {
-    const res = await axios.patch('/api/v1/users/update', 
+    const res = await axios.patch(`${import.meta.env.VITE_API_URL}/api/v1/users/update`, 
     formData,
     {
       headers: { Authorization: `Bearer ${userStore.token}` },

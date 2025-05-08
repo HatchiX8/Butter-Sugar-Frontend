@@ -1,6 +1,4 @@
 import { createRouter, createWebHistory } from 'vue-router';
-import axios from 'axios'
-import { useUserStore } from '@/stores/models/user/userStore'
 
 const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
