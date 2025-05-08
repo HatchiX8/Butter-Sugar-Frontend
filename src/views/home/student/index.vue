@@ -36,7 +36,13 @@
 
     <div v-else class="space-y-2 text-white personal-info">
       <p>姓名：{{ formData.name }}</p>
-      <p>頭像：{{ formData.profile_image_url }}</p>
+      <p>頭像：
+        <img
+          :src="formData.profile_image_url"
+          alt="avatar"
+          class="w-16 h-16 rounded-full object-cover"
+        />
+      </p>
       <p>暱稱：{{ formData.nickname }}</p>
       <p>Email：{{ formData.email }}</p>
       <p>生日：{{ formData.birthday || '未填' }}</p>

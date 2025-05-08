@@ -97,8 +97,8 @@ function logout() {
 
 // Avatar 狀態
 const isLoggedIn = computed(() => !!userStore.token)
-const userAvatar = computed(
-  () => userStore.avatarUrl || '/assets/images/avatar.png'
+const userAvatar = computed(() => 
+  userStore.avatarUrl || '/assets/images/avatar.png'
 )
 
 // 取得根節點，監聽外部點擊 // 點外面要關掉
