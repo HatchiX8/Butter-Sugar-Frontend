@@ -4,6 +4,10 @@ const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
   routes: [
     {
+      path: '/',
+      redirect: '/Home/homeDashboard', // ✅ 訪問 / 時導向 /Home/homeDashboard
+    },
+    {
       path: '/Home',
       component: () => import('@/views/home/index.vue'), // 母頁
       children: [
@@ -43,15 +47,14 @@ const router = createRouter({
   ],
 });
 
-router.beforeEach( (to) => {
-  const publicPages = ['login', 'loginSuccess','HomeDashboard'] // 不用驗證的 route name
-  const token = localStorage.getItem('access_token')
+router.beforeEach((to) => {
+  const publicPages = ['login', 'loginSuccess', 'HomeDashboard']; // 不用驗證的 route name
+  const token = localStorage.getItem('access_token');
 
   if (!token && !publicPages.includes(to.name as string)) {
     // 如果没有 token，又不是公開页，就重定向到 HomeDashboard
-    return { name: 'HomeDashboard' }
+    return { name: 'HomeDashboard' };
   }
-})
-
+});
 
 export default router;
