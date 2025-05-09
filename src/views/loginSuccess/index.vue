@@ -6,8 +6,7 @@
 import { onMounted } from 'vue';
 import { useRouter, useRoute } from 'vue-router';
 import { useUserStore } from '@/stores/models/user/userStore';
-import axios from 'axios'
-
+import axios from 'axios';
 
 const userStore = useUserStore();
 const router = useRouter();
@@ -22,12 +21,20 @@ onMounted(async() => {
     return router.replace('/Home')
   }
 
+ 
+
   userStore.setToken(token)
   userStore.setUserId(id)
   
   localStorage.setItem('access_token', token)
   localStorage.setItem('userId', id)
 
+  const res = await axios.get(`${import.meta.env.VITE_API_URL}/api/v1/users/info`, {
+    headers: { Authorization: `Bearer ${token}` }
+  })
+  const avatar = res.data.data.profile_image_url
+  userStore.setAvatar(avatar)
+  localStorage.setItem('avatarUrl', avatar)
 
   return router.replace('/Home')
 
