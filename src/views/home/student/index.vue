@@ -4,11 +4,11 @@
     <n-button v-if="!isEdit" @click="isEdit = true">編輯</n-button>
   </div>
 
-  <n-form v-if="isEdit" :model="formData" class="personal-form">
+  <n-form v-if="isEdit" :model="formData" class="personal-form" ref="formRef" :rules="rules">
     <n-form-item label="姓名">
       <n-input v-model:value="formData.name" />
     </n-form-item>
-    <n-form-item label="生日">
+    <n-form-item label="生日" path="birthday">
       <n-date-picker v-model:value="formData.birthday" type="date" placeholder="選擇生日" />
     </n-form-item>
     <n-form-item label="暱稱">
@@ -17,7 +17,7 @@
     <n-form-item label="Email">
       <n-input v-model:value="formData.email" disabled />
     </n-form-item>
-    <n-form-item label="電話">
+    <n-form-item label="電話" path="phone">
       <n-input v-model:value="formData.phone" />
     </n-form-item>
     <n-form-item label="地址">
@@ -51,6 +51,7 @@
 </template>
 
 <script setup lang="ts">
+import type { FormRules, FormItemRule } from 'naive-ui';
 import { ref, onMounted, reactive } from 'vue';
 import axios from 'axios';
 import { useUserStore } from '@/stores/models/index';
@@ -111,6 +112,7 @@ const fetchData = async () => {
 // 提交更新學生資料
 const handleSubmit = async () => {
   try {
+    await formRef.value?.validate();
     const res = await axios.patch(`${import.meta.env.VITE_API_URL}/api/v1/users/update`, formData, {
       headers: { Authorization: `Bearer ${userStore.userToken}` },
     });
@@ -139,6 +141,29 @@ const handleCancel = () => {
 onMounted(() => {
   fetchData();
 });
+
+// 驗證
+const rules: FormRules = {
+  birthday: {
+    validator(_: FormItemRule, value: number) {
+      if (!value) return new Error('請選擇生日');
+      const today = new Date().setHours(0, 0, 0, 0);
+      if (value > today) return new Error('生日不可設定未來日期');
+      return true;
+    },
+    trigger: 'change',
+  },
+  phone: {
+    validator(_: FormItemRule, value: string) {
+      if (!value) return new Error('請輸入電話');
+      if (!/^09\d{8}$/.test(value)) return new Error('電話格式錯誤，需以09開頭，共10碼');
+      return true;
+    },
+    trigger: ['input', 'blur'],
+  },
+};
+
+const formRef = ref();
 </script>
 <style>
 .personal-info,
