@@ -3,18 +3,16 @@
     <a href="#" class="cursor-pointer text-white no-underline" @click="onGoogleLogin">登入</a>
   </div>
   <n-dropdown v-else :options="options" @select="handleSelect">
-    <n-avatar
-      round
-      :size="32"
-      class="cursor-pointer"
-      src="https://07akioni.oss-cn-beijing.aliyuncs.com/07akioni.jpeg"
-    />
+    <n-avatar round :size="32" class="cursor-pointer" :src="userImage" />
   </n-dropdown>
 </template>
 
 <script setup lang="ts">
+import { onMounted, ref } from 'vue';
 import { useUserStore } from '@/stores/models/index';
 import { useRouter } from 'vue-router';
+
+import axios from 'axios';
 
 const userStore = useUserStore();
 const router = useRouter();
@@ -47,4 +45,22 @@ const handleSelect = (key: string) => {
       break;
   }
 };
+
+const userImage = ref('');
+// 讀取學生資料
+const fetchData = async () => {
+  try {
+    const res = await axios.get(`${import.meta.env.VITE_API_URL}/api/v1/users/info`, {
+      headers: { Authorization: `Bearer ${userStore.userToken}` },
+    });
+    userImage.value = res.data.data.profile_image_url;
+    console.log('info', res);
+  } catch (err) {
+    console.error('取得學生資料失敗', err);
+  }
+};
+
+onMounted(() => {
+  fetchData();
+});
 </script>
