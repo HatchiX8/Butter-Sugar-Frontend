@@ -8,8 +8,13 @@
     <n-form-item label="姓名">
       <n-input v-model:value="formData.name" />
     </n-form-item>
-    <n-form-item label="生日" path="birthday">
-      <n-date-picker v-model:value="formData.birthday" type="date" placeholder="選擇生日" />
+    <n-form-item label="生日">
+      <n-date-picker
+        v-model:value="formData.birthday"
+        type="date"
+        :is-date-disabled="(ts: number) => ts > Date.now()"
+        placeholder="選擇生日"
+      />
     </n-form-item>
     <n-form-item label="暱稱">
       <n-input v-model:value="formData.nickname" />
@@ -44,7 +49,7 @@
     </p>
     <p>暱稱：{{ formData.nickname }}</p>
     <p>Email：{{ formData.email }}</p>
-    <p>生日：{{ formData.birthday || '未填' }}</p>
+    <p>生日：{{ birthdayDisplay }}</p>
     <p>電話：{{ formData.phone || '未填' }}</p>
     <p>地址：{{ formData.address || '未填' }}</p>
   </div>
@@ -52,17 +57,13 @@
 
 <script setup lang="ts">
 import type { FormRules, FormItemRule } from 'naive-ui';
-import { ref, onMounted, reactive } from 'vue';
+import { ref, onMounted, reactive, computed } from 'vue';
 import axios from 'axios';
 import { useUserStore } from '@/stores/models/index';
-import { NButton, NForm, NFormItem, NInput, NSpace, NDatePicker, datePickerProps } from 'naive-ui';
-import type { ExtractPropTypes } from 'vue';
-type DatePickerProps = ExtractPropTypes<typeof datePickerProps>;
-// 挖出裡面 value 的那個屬性，這就是 v-model:value 要的型別
-type DatePickerValue = DatePickerProps['value'];
+import { NButton, NForm, NFormItem, NInput, NSpace, NDatePicker } from 'naive-ui';
 interface StudentData {
   name: string;
-  birthday: DatePickerValue | null;
+  birthday: number | null; // 使用 timestamp，n-date-picker 綁定必須用 timestamp
   nickname: string;
   email: string;
   phone: string;
@@ -84,6 +85,14 @@ const formData = reactive<StudentData>({
 
 const originalData = reactive({ ...formData });
 
+// ✅ computed 格式化生日顯示
+const birthdayDisplay = computed(() => {
+  if (formData.birthday) {
+    return new Date(formData.birthday).toLocaleDateString('sv-SE');
+  }
+  return '未填';
+});
+
 // 讀取學生資料
 const fetchData = async () => {
   try {
@@ -97,7 +106,7 @@ const fetchData = async () => {
     formData.name = user.name || '';
     formData.nickname = user.nickname || '';
     formData.email = user.email;
-    formData.birthday = user.birthday || null;
+    formData.birthday = user.birthday ? new Date(user.birthday).getTime() : null;
     formData.phone = user.phone || '';
     formData.address = user.address || '';
     formData.profile_image_url = user.profile_image_url || '';
@@ -112,8 +121,18 @@ const fetchData = async () => {
 // 提交更新學生資料
 const handleSubmit = async () => {
   try {
-    await formRef.value?.validate();
-    const res = await axios.patch(`${import.meta.env.VITE_API_URL}/api/v1/users/update`, formData, {
+    if (formData.birthday && formData.birthday > Date.now()) {
+      alert('生日不能晚於今天');
+      return;
+    }
+
+    const payload = {
+      ...formData,
+      birthday: formData.birthday
+        ? new Date(formData.birthday).toLocaleDateString('sv-SE')
+        : null,
+    };
+    const res = await axios.patch(`${import.meta.env.VITE_API_URL}/api/v1/users/update`, payload, {
       headers: { Authorization: `Bearer ${userStore.userToken}` },
     });
     console.log('更新成功', res.data);
