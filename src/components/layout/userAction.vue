@@ -27,6 +27,7 @@ const onGoogleLogin = () => {
 const options = [
   { label: '我的課程', key: 'course' },
   { label: '個人資料', key: 'student' },
+  { label: '訂單記錄', key: 'order' },
   { label: '登出', key: 'logout' },
 ];
 
