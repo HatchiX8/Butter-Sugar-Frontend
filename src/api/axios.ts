@@ -7,7 +7,7 @@ const instance = axios.create({
 
 instance.interceptors.request.use(
   (config) => {
-    const token = localStorage.getItem('token'); //從localStorage 獲取 token
+    const token = localStorage.getItem('token'); // 從localStorage 獲取 token
     if (token) {
       config.headers.Authorization = `Bearer ${token}`; // 設定 Bearer Token
     }

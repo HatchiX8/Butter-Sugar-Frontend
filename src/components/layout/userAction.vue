@@ -44,6 +44,8 @@ const handleSelect = (key: string) => {
       userStore.logout();
       router.push('/home');
       break;
+    default:
+      router.push('/home');
   }
 };
 
