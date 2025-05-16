@@ -5,7 +5,7 @@ const router = createRouter({
   routes: [
     {
       path: '/',
-      redirect: '/Home/homeDashboard', // ✅ 訪問 / 時導向 /Home/homeDashboard
+      redirect: '/Home', // ✅ 訪問 / 時導向 /Home/homeDashboard
     },
     {
       path: '/Home',
