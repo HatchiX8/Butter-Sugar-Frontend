@@ -11,11 +11,11 @@
         class="flex items-start gap-3 border-b border-white p-4">
         <img :src="item.course_smallimage" class="w-25 h-18.5 object-cover rounded" />
         <div class="flex-1">
-          <div class="clamped-text line-height-5 text-white">{{ item.course_name }}</div>
+          <div class="font-bold line-height-5 text-white clamped-text">{{ item.course_name }}</div>
           <div class="text-3.5 text-neutral_200 m-t-2">{{ formatCurrency(item.price) }}</div>
         </div>
         <n-button text @click="cartStore.removeItem(item.course_id)">
-          <div class="i-ion:trash-outline w-4 h-4 ml-1 color-white"></div>
+          <div class="i-ion:trash-outline w-4 h-4 color-neutral_200 hover:text-primaryDefault"></div>
         </n-button>
       </div>
 

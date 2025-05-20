@@ -34,7 +34,7 @@ export function withNaiveProviders(App: Component) {
                 colorHover: '#1D1810',
                 colorPressed: '#1D1810',
                 colorFocus: '#1D1810',
-                textColor: '#FFFDFA',
+                textColor: '#B0A7A7',
                 textColorHover: '#FFFDFA',
                 textColorPressed: '#FFFDFA',
                 textColorFocus: '#FFFDFA',
