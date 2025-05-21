@@ -1,5 +1,5 @@
 <template>
-  <!-- TODO: 未完成 -->
+  <!-- TODO: CSS未完成 -->
   <n-card
     class="w-[302px] h-[302px] relative overflow-hidden bg-[#2A2117] rounded-xl"
     content-style="padding: 0;"

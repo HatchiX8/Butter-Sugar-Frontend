@@ -29,6 +29,6 @@
 <script setup lang="ts">
 import breadcrumbComps from '@/components/layout/breadcrumbComps.vue';
 import selectComps from '@/components/layout/selectComps.vue';
-import sortTab from './sortTab.vue';
-import courseCardList from './courseCardList.vue';
+import sortTab from './comps/sortTab.vue';
+import courseCardList from './comps/courseCardList.vue';
 </script>
