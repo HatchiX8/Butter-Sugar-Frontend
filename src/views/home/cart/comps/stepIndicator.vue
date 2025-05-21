@@ -19,9 +19,9 @@ const route = useRoute();
 const steps = ['購物車', '結帳資訊', '確認付款', '訂購完成'];
 
 const current = computed(() => {
-  if (route.path.startsWith('/cart-flow/order-success')) return 4
-  if (route.path.startsWith('/cart-flow/order-return')) return 3
-  if (route.path.startsWith('/cart-flow/checkout')) return 2
+  if (route.path.startsWith('/home/cart-flow/order-success')) return 4
+  if (route.path.startsWith('/home/cart-flow/order-return')) return 3
+  if (route.path.startsWith('/home/cart-flow/checkout')) return 2
   return 1
 });
 
