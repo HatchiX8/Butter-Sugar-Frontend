@@ -21,7 +21,7 @@
               <!-- 課程資訊 -->
               <div class="flex justify-between items-start w-full">
                 <!-- 課程名稱 -->
-                <div class="font-bold text-white text-base leading-snug line-clamp-2 pr-4">
+                <div class="font-bold text-white text-base leading-snug clamped-text pr-4">
                   {{ item.course_name }}
                 </div>
                 <div class="text-right min-w-30">
@@ -77,9 +77,7 @@ const goToCheckout = () => {
   router.push('/home/cart-flow/checkout');
 };
 
-function formatCurrency(value: number, currency = 'NT$') {
-  return `${currency} ${value.toLocaleString('en-US')}`
-}
+const formatCurrency = (value: number, currency = 'NT$'): string => `${currency} ${value.toLocaleString('en-US')}`;
 
 onMounted(() => {
   cartStore.getCart()

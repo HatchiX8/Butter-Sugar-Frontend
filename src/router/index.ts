@@ -33,7 +33,7 @@ const router = createRouter({
         },
         {
           path: 'cart-flow',
-          component: () => import('@/views/home/cart/layout.vue'), // 購物車流程
+          component: () => import('@/views/home/cart/index.vue'), // 購物車流程
           children: [
             {
               path: 'cart',

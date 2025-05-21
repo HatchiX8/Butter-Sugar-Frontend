@@ -4,15 +4,15 @@ import { ref } from 'vue'
 export const useCartUIStore = defineStore('ui', () => {
   const isCartOpen = ref(false)
 
-  function toggleCart() {
+  const toggleCart = () => {
     isCartOpen.value = !isCartOpen.value
   }
 
-  function openCart() {
+  const openCart = () => {
     isCartOpen.value = true
   }
 
-  function closeCart() {
+  const closeCart = () => {
     isCartOpen.value = false
   }
 

@@ -47,9 +47,7 @@ const goToCart = () => {
   router.push('/home/cart-flow/cart');
 };
 
-function formatCurrency(value: number, currency = 'NT$') {
-  return `${currency} ${value.toLocaleString('en-US')}`
-}
+const formatCurrency = (value: number, currency = 'NT$'): string => `${currency} ${value.toLocaleString('en-US')}`;
 </script>
 
 <style scoped>
