@@ -28,6 +28,37 @@ export function withNaiveProviders(App: Component) {
                 placeholderColor: '#9e9e9e',
                 color: '#9e9e9e',
               },
+              Button: {
+                // Default
+                color: '#1D1810',
+                colorHover: '#1D1810',
+                colorPressed: '#1D1810',
+                colorFocus: '#1D1810',
+                textColor: '#B0A7A7',
+                textColorHover: '#FFFDFA',
+                textColorPressed: '#FFFDFA',
+                textColorFocus: '#FFFDFA',
+                border: '1px solid #DCDCDC40',
+                borderHover: '1px solid #DCDCDC40',
+                borderPressed: '1px solid #DCDCDC40',
+                // Primary
+                colorPrimary: '#D68E39',
+                colorHoverPrimary: '#E2BD7D',
+                colorPressedPrimary: '#FAEAD0',
+                colorFocusPrimary: '#D68E39',
+                textColorPrimary: '#FFFDFA',
+                textColorHoverPrimary: '#FFFDFA',
+                textColorPressedPrimary: '#FFFDFA',
+                borderPrimary: 'none',
+                borderHoverPrimary: '1px solid #E2BD7D',
+                borderPressedPrimary: '1px solid #FAEAD0',
+                borderFocusPrimary: '1px solid #D68E39',
+                // 其他樣式
+                borderRadiusMedium: '2px',
+                paddingMedium: '.75rem 1.5rem',
+                fontSizeMedium: '1rem',
+                heightMedium: '',
+              },
               Select: {
                 peers: {
                   InternalSelection: {
@@ -64,7 +95,7 @@ export function withNaiveProviders(App: Component) {
                     optionPaddingSmall: '0 8px'
                   }
                 }
-              }
+              },
             },
           },
           {
