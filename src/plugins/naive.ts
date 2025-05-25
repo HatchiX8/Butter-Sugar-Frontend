@@ -74,7 +74,7 @@ export function withNaiveProviders(App: Component) {
                     border: '1px solid #FFFDFD',
                     iconColor: '#FFFDFD',
                     gap: '4px',
-                    transition: 'none'
+                    transition: 'none',
                   },
                   InternalSelectMenu: {
                     color: '#3e382e', // 下拉選單背景色
@@ -84,7 +84,8 @@ export function withNaiveProviders(App: Component) {
                     optionTextColor: '#FFFDFD', // 一般選項文字色
                     optionTextColorActive: '#FFFDFD', // 被選取的選項文字色
                     optionTextColorPending: '#FFFDFD', // hover/focus 文字色
-                    boxShadow: '0 3px 6px -4px rgba(0, 0, 0, .12), 0 6px 16px 0 rgba(0, 0, 0, .08), 0 9px 28px 8px rgba(0, 0, 0, .05)',
+                    boxShadow:
+                      '0 3px 6px -4px rgba(0, 0, 0, .12), 0 6px 16px 0 rgba(0, 0, 0, .08), 0 9px 28px 8px rgba(0, 0, 0, .05)',
 
                     borderRadius: '4px',
                     optionFontSizeSmall: '14px',
@@ -92,9 +93,9 @@ export function withNaiveProviders(App: Component) {
                     optionFontWeightActive: '400',
                     optionFontWeight: '400',
                     optionFontFamily: 'Noto Serif TC',
-                    optionPaddingSmall: '0 8px'
-                  }
-                }
+                    optionPaddingSmall: '0 8px',
+                  },
+                },
               },
             },
           },
