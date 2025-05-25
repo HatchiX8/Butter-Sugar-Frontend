@@ -70,7 +70,7 @@
           <n-button type="primary" class="mt-4 w-full">
             確認送出
           </n-button>
-          <div class="font-['Noto Sans TC'] text-3 text-align-center line-height-5 mt-2 cursor-pointer" @click="showContract = true">
+          <div class="font-['Noto Sans TC'] text-3 text-align-center line-height-5 mt-2 cursor-pointer" @click="showContractModal = true">
             <span>點擊上方按鈕即表示</span><br>
             <span>您已閱讀並同意</span>
             <span class="text-primaryDefault"> Butter&Sugar 服務契約</span>
@@ -79,12 +79,16 @@
       </div>
     </div>
   </div>
+  <serviceContractModal v-model="showContractModal" />
 </template>
 
 <script setup lang="ts">
 import { ref, computed, onMounted } from 'vue';
 import { useCartStore } from '@/stores/models/cart/store';
 import { storeToRefs } from 'pinia';
+import serviceContractModal from '@/views/home/cart/comps/serviceContractModal.vue';
+
+const showContractModal = ref(false);
 
 const cartStore = useCartStore();
 

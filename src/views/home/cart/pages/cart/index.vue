@@ -37,7 +37,7 @@
                 </div>
                 <!-- 移除按鈕 -->
                 <div class="flex items-center justify-end gap-2">
-                  <n-button text @click="cartStore.removeItem(item.course_id)">
+                  <n-button text @click="showConfirmModal = true">
                     <span class="text-neutral-300 hover:text-primaryDefault">移除</span>
                   </n-button>
                   <n-button text @click="cartStore.removeItem(item.course_id)">
@@ -73,13 +73,17 @@
       </div>
     </div>
   </div>
+  <confirmModal v-model="showConfirmModal" />
 </template>
 
 <script setup lang="ts">
-import { onMounted } from 'vue';
+import { ref, onMounted } from 'vue';
 import { useCartStore } from '@/stores/models/cart/store';
 import { storeToRefs } from 'pinia';
 import { useRouter } from 'vue-router';
+import confirmModal from '@/views/home/cart/comps/confirmModal.vue';
+
+const showConfirmModal = ref(false);
 
 const cartStore = useCartStore();
 
