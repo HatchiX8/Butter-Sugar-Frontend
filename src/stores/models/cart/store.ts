@@ -1,11 +1,13 @@
-import { defineStore } from 'pinia'
-import { ref, computed } from 'vue'
-import type { CartItem } from '@/api/cart/types'
+import { defineStore } from 'pinia';
+import { ref, computed } from 'vue';
+import type { CartItem } from '@/api/cart/types';
+import { useUserStore } from '@/stores/models/user/store';
 
 const LOCAL_STORAGE_KEY = 'cart';
 
 export const useCartStore = defineStore('cart', () => {
-  const isLoggedIn = ref(false); // 登入狀態由外部登入流程更新
+  const userStore = useUserStore();
+  const isLoggedIn = computed(() => userStore.isLoggedIn); // 登入狀態由外部登入流程更新
   const model = computed(() => (isLoggedIn.value ? 'api' : 'local'));
 
   // 購物車資料
