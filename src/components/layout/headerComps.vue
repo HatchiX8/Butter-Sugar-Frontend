@@ -1,5 +1,5 @@
 <template>
-    <div class="relative z-10">
+    <div class="fixed top-0 left-0 w-full z-50 shadow-md bg-neutral_600">
       <header
       class="font-['Noto Serif TC'] border-b-solid border-b-1 border-b-white/25% flex h-20 items-center px-6 z-20 relative"
 >

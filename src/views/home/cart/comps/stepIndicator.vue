@@ -3,8 +3,8 @@
   <div class="text-white p-6">
     <n-config-provider :theme-overrides="themeOverrides">
       <div class="text-white p-6">
-        <n-steps v-model:current="current" size="medium">
-          <n-step v-for="(title, index) in steps" :key="index" :title="title" />
+        <n-steps :current="current" size="medium">
+          <n-step v-for="(title, index) in steps" :key="index" :title="title"/>
         </n-steps>
       </div>
     </n-config-provider>
@@ -28,7 +28,10 @@ const current = computed(() => {
 const themeOverrides = {
   Steps: {
     // 未開始
-    headerTextColorWait: '#FFFDFA',
+    indicatorTextColorWait: '#FFFDFA80',
+    headerTextColorWait: '#FFFDFA80',
+    indicatorBorderColorWait: '#FFFDFA80',
+    splitorColorWait: '#FFFDFA80',
     // 進行中
     indicatorTextColorProcess: '#FFFDFA',
     headerTextColorProcess: '#FFFDFA',
