@@ -5,7 +5,7 @@ const router = createRouter({
   routes: [
     {
       path: '/',
-      redirect: '/Home/homeDashboard', // ✅ 訪問 / 時導向 /Home/homeDashboard
+      redirect: '/Home', // ✅ 訪問 / 時導向 /Home/homeDashboard
     },
     {
       path: '/Home',
@@ -31,6 +31,27 @@ const router = createRouter({
           name: 'Student',
           component: () => import('@/views/home/student/index.vue'), // 學生個人資訊
         },
+        {
+          path: 'cart-flow',
+          component: () => import('@/views/home/cart/index.vue'), // 購物車流程
+          children: [
+            {
+              path: 'cart',
+              name: 'Cart',
+              component: () => import('@/views/home/cart/pages/cart/index.vue'),
+            },
+            {
+              path: 'checkout',
+              name: 'Checkout',
+              component: () => import('@/views/home/cart/pages/checkout/index.vue'),
+            },
+            {
+              path: 'order-success',
+              name: 'OrderSuccess',
+              component: () => import('@/views/home/cart/pages/orderSuccess/index.vue'),
+            },
+          ],
+        },
       ],
     },
     // 其他路由（如講師後台）可放在外層
@@ -48,7 +69,7 @@ const router = createRouter({
 });
 
 router.beforeEach((to) => {
-  const publicPages = ['login', 'loginSuccess', 'HomeDashboard']; // 不用驗證的 route name
+  const publicPages = ['login', 'loginSuccess', 'HomeDashboard', 'Cart']; // 不用驗證的 route name
   const token = localStorage.getItem('access_token');
 
   if (!token && !publicPages.includes(to.name as string)) {

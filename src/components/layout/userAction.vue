@@ -1,9 +1,9 @@
 <template>
   <div v-if="userStore.isLoggedIn === false">
-    <a href="#" class="cursor-pointer text-white no-underline" @click="onGoogleLogin">登入</a>
+    <a href="#" class="cursor-pointer text-white no-underline" @click="onGoogleLogin">登入/註冊</a>
   </div>
   <n-dropdown v-else :options="options" @select="handleSelect">
-    <n-avatar round :size="32" class="cursor-pointer" :src="userImage" />
+    <n-avatar round :size="40" class="cursor-pointer" :src="userImage" />
   </n-dropdown>
 </template>
 
