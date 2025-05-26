@@ -53,6 +53,10 @@ export function withNaiveProviders(App: Component) {
                 borderHoverPrimary: '1px solid #E2BD7D',
                 borderPressedPrimary: '1px solid #FAEAD0',
                 borderFocusPrimary: '1px solid #D68E39',
+                // Disabled Primary
+                colorDisabledPrimary: '#B0A7A7',
+                textColorDisabledPrimary: '#FFFDFA',
+                borderDisabledPrimary: '1px solid #B0A7A7',
                 // 其他樣式
                 borderRadiusMedium: '2px',
                 paddingMedium: '.75rem 1.5rem',
