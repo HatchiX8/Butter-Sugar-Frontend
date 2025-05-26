@@ -66,7 +66,7 @@
             <span>總計</span>
             <span class="text-white text-5">{{ formatCurrency(totalPrice) }}</span>
           </div>
-          <n-button type="primary" class="mt-4 w-full" @click="goToCheckout">
+          <n-button type="primary" class="mt-4 w-full" :disabled="itemCount === 0" @click="goToCheckout">
             前往結帳
           </n-button>
         </div>
