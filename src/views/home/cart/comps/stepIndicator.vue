@@ -1,8 +1,8 @@
 <!-- 步驟條 -->
 <template>
-  <div class="text-white p-6">
+  <div class="text-white p-6 flex justify-center">
     <n-config-provider :theme-overrides="themeOverrides">
-      <div class="text-white p-6">
+      <div class="w-60 pl-4 py-4 md:w-168 md:pl-16 md:py-6">
         <n-steps :current="current" size="medium">
           <n-step v-for="(title, index) in steps" :key="index" :title="title"/>
         </n-steps>
