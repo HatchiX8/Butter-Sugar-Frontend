@@ -41,6 +41,7 @@ export function withNaiveProviders(App: Component) {
                 border: '1px solid #DCDCDC40',
                 borderHover: '1px solid #DCDCDC40',
                 borderPressed: '1px solid #DCDCDC40',
+                rippleColor: '#DCDCDC40',
                 // Primary
                 colorPrimary: '#D68E39',
                 colorHoverPrimary: '#E2BD7D',
