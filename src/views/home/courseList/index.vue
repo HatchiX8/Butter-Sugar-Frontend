@@ -1,6 +1,7 @@
 <template>
   <div class="w-full max-w-[1280px] mx-auto px-4 flex flex-col items-start">
     <breadcrumbComps
+      class="mt-30"
       :items="[
         { label: '首頁', to: '/' },
         { label: '探索課程', to: '/explore' },
@@ -8,7 +9,7 @@
       ]"
     />
 
-    <h1 class="text-8 font-not-italic font-700 lh-9.6 tracking-0.32 mt-25 text-center text-white">
+    <h1 class="text-8 font-not-italic font-700 lh-9.6 tracking-0.32 mt-10 text-center text-white">
       所有課程
     </h1>
     <span class="w-18 h-0.25 bg-primaryDefault mt-19px"></span>
@@ -44,7 +45,7 @@ import selectComps from '@/components/layout/selectComps.vue';
 import sortTab from './comps/sortTab.vue';
 import courseCardList from './comps/courseCardList.vue';
 import paginationComps from '@/components/layout/paginationComps.vue';
-import courseTag from './courseTag.vue';
+import courseTag from './comps/courseTag.vue';
 import { ref } from 'vue';
 
 const currentSort = ref('hot');

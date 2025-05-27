@@ -50,6 +50,10 @@ export default defineComponent({
 </script>
 
 <style scoped>
+:deep(.custom-pagination) {
+  background-color: var(--neutral_600, #1d1810);
+}
+
 :deep(.custom-pagination .n-pagination-item) {
   width: 2.5rem;
   height: 2.5rem;
@@ -74,5 +78,22 @@ export default defineComponent({
   background-color: var(--primaryDefault, #d68e39);
   color: var(--white, #fffdfa);
   border-color: var(--primaryDefault, #d68e39);
+}
+
+:deep(.custom-pagination .n-pagination-item.n-pagination-item--button:first-child) {
+  background-color: var(--neutral_600, #1d1810);
+  color: var(--white, #fffdfa);
+  border: none;
+}
+
+:deep(.custom-pagination .n-pagination-item.n-pagination-item--button:last-child) {
+  background-color: var(--neutral_600, #1d1810);
+  color: var(--white, #fffdfa);
+  border: none;
+}
+
+:deep(.custom-pagination .n-pagination-item.n-pagination-item--button.n-pagination-item--disabled) {
+  background-color: var(--neutral_600, #1d1810);
+  color: var(--neutral_300, #575656);
 }
 </style>

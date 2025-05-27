@@ -4,13 +4,12 @@
       <template v-if="!isLastItem(index) && item.to">
         <router-link
           :to="item.to"
-          class="text-3.5 font-not-italic font-400 lh-6 hover:text-primaryDefault text-white transition-colors"
         >
-          {{ item.label }}
+          <span class="text-sm font-400 hover:text-primaryDefault text-white">{{ item.label }}</span>
         </router-link>
       </template>
       <template v-else>
-        <span class="text-primaryDefault text-3.5 font-not-italic font-400 lh-6">
+        <span class="text-primaryDefault text-sm font-400">
           {{ item.label }}
         </span>
       </template>
