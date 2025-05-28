@@ -65,11 +65,16 @@ const router = createRouter({
       name: 'loginSuccess',
       component: () => import('@/views/loginSuccess/index.vue'), // 登入
     },
+    {
+      path: '/compTest',
+      name: 'CompTest',
+      component: () => import('@/views/CompTest/index.vue'), // 測試元件用頁面
+    },
   ],
 });
 
 router.beforeEach((to) => {
-  const publicPages = ['login', 'loginSuccess', 'HomeDashboard', 'Cart']; // 不用驗證的 route name
+  const publicPages = ['login', 'loginSuccess', 'HomeDashboard', 'Cart', 'CompTest']; // 不用驗證的 route name
   const token = localStorage.getItem('access_token');
 
   if (!token && !publicPages.includes(to.name as string)) {
