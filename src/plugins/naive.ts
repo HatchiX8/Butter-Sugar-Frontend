@@ -10,6 +10,9 @@ import {
 } from 'naive-ui';
 import { h } from 'vue';
 import type { Component } from 'vue'; // Component 是 Vue 提供的通用型別，代表傳入的是一個 Vue 元件。
+import { hexToRgba, themeColors } from '@/utils';
+
+const colors = themeColors.colors;
 
 export { naive };
 export function withNaiveProviders(App: Component) {
@@ -30,34 +33,34 @@ export function withNaiveProviders(App: Component) {
               },
               Button: {
                 // Default
-                color: '#1D1810',
-                colorHover: '#1D1810',
-                colorPressed: '#1D1810',
-                colorFocus: '#1D1810',
-                textColor: '#B0A7A7',
-                textColorHover: '#FFFDFA',
-                textColorPressed: '#FFFDFA',
-                textColorFocus: '#FFFDFA',
-                border: '1px solid #DCDCDC40',
-                borderHover: '1px solid #DCDCDC40',
-                borderPressed: '1px solid #DCDCDC40',
-                rippleColor: '#DCDCDC40',
+                color: colors.neutral_600,
+                colorHover: colors.neutral_600,
+                colorPressed: colors.neutral_600,
+                colorFocus: colors.neutral_600,
+                textColor: colors.neutral_200,
+                textColorHover: colors.white,
+                textColorPressed: colors.white,
+                textColorFocus: colors.white,
+                border: `1px solid ${hexToRgba(colors.neutral_100, 0.25)}`,
+                borderHover: `1px solid ${hexToRgba(colors.neutral_100, 0.25)}`,
+                borderPressed: `1px solid ${hexToRgba(colors.neutral_100, 0.25)}`,
+                rippleColor: hexToRgba(colors.neutral_100, 0.25),
                 // Primary
-                colorPrimary: '#D68E39',
-                colorHoverPrimary: '#E2BD7D',
-                colorPressedPrimary: '#FAEAD0',
-                colorFocusPrimary: '#D68E39',
-                textColorPrimary: '#FFFDFA',
-                textColorHoverPrimary: '#FFFDFA',
-                textColorPressedPrimary: '#FFFDFA',
+                colorPrimary: colors.primaryDefault,
+                colorHoverPrimary: colors.primaryLight,
+                colorPressedPrimary: colors.primaryPestel,
+                colorFocusPrimary: colors.primaryDefault,
+                textColorPrimary: colors.white,
+                textColorHoverPrimary: colors.white,
+                textColorPressedPrimary: colors.white,
                 borderPrimary: 'none',
-                borderHoverPrimary: '1px solid #E2BD7D',
-                borderPressedPrimary: '1px solid #FAEAD0',
-                borderFocusPrimary: '1px solid #D68E39',
+                borderHoverPrimary: `1px solid ${colors.primaryLight}`,
+                borderPressedPrimary: `1px solid ${colors.primaryPestel}`,
+                borderFocusPrimary: `1px solid ${colors.primaryDefault}`,
                 // Disabled Primary
-                colorDisabledPrimary: '#B0A7A7',
-                textColorDisabledPrimary: '#FFFDFA',
-                borderDisabledPrimary: '1px solid #B0A7A7',
+                colorDisabledPrimary: colors.neutral_200,
+                textColorDisabledPrimary: colors.white,
+                borderDisabledPrimary: `1px solid ${colors.neutral_200}`,
                 // 其他樣式
                 borderRadiusMedium: '2px',
                 paddingMedium: '.75rem 1.5rem',
