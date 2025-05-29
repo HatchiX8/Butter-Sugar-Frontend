@@ -9,10 +9,7 @@
       ]"
     />
 
-    <h1 class="text-8 font-not-italic font-700 lh-9.6 tracking-0.32 mt-10 text-center text-white">
-      所有課程
-    </h1>
-    <span class="w-18 h-0.25 bg-primaryDefault mt-19px"></span>
+    <typography variant="h2" font-type="title" underline>所有課程</typography>
 
     <div class="mt-10 pr-8 flex flex-col md:flex-row items-center justify-between self-stretch">
       <selectComps class="w-full md:w-50 h-12 px-3 py-4" />
@@ -30,10 +27,7 @@
       @page-change="handlePageChange"
     />
 
-    <h1 class="text-8 font-not-italic font-700 lh-9.6 tracking-0.32 mt-25 text-center text-white">
-      探索其他主題
-    </h1>
-    <span class="w-18 h-0.25 bg-primaryDefault mt-19px"></span>
+    <typography variant="h2" font-type="title" underline>探索其他主題</typography>
 
     <courseTag/>
   </div>
@@ -41,6 +35,7 @@
 
 <script setup lang="ts">
 import breadcrumbComps from '@/components/layout/breadcrumbComps.vue';
+import typography from '@/components/layout/typography.vue';
 import selectComps from '@/components/layout/selectComps.vue';
 import sortTab from './comps/sortTab.vue';
 import courseCardList from './comps/courseCardList.vue';
