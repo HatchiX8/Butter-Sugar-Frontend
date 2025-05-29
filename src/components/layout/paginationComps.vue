@@ -7,10 +7,6 @@
       :page-slot="7"
       @update:page="handlePageChange"
       class="custom-pagination"
-      :class="{
-        'text-white border border-white bg-neutral_500': true,
-        'hover:border-primaryDefault hover:text-primaryDefault': true
-      }"
     />
   </div>
 </template>
@@ -51,49 +47,28 @@ export default defineComponent({
 
 <style scoped>
 :deep(.custom-pagination) {
-  background-color: var(--neutral_600, #1d1810);
+  @apply bg-neutral_600;
 }
 
 :deep(.custom-pagination .n-pagination-item) {
-  width: 2.5rem;
-  height: 2.5rem;
-  margin-left: 0.25rem;
-  margin-right: 0.25rem;
-  border-radius: 0.5rem;
-  font-size: 0.875rem;
-  font-weight: 500;
-  color: var(--white, #fffdfa);
-  border: 1px solid var(--white, #fffdfa);
-  background-color: var(--neutral_500, #27231b);
-  transition: all 0.2s;
+  @apply w-10 h-10 mx-1 rounded-lg text-sm font-medium  text-white border border-white bg-neutral_500 transition-all duration-200;
 }
 
-:deep(.custom-pagination .n-pagination-item:not(.n-pagination-item--disabled):hover) {
-  border-color: var(--primaryDefault, #d68e39);
-  color: var(--primaryDefault, #d68e39);
-  background-color: var(--neutral_500, #27231b);
+:deep(.custom-pagination .n-pagination-item:not(.n-pagination-item--disabled):hover),
+:deep(.custom-pagination .n-pagination-item.n-pagination-item--hover) {
+  @apply border-primaryDefault text-primaryDefault bg-neutral_500;
 }
 
 :deep(.custom-pagination .n-pagination-item.n-pagination-item--active) {
-  background-color: var(--primaryDefault, #d68e39);
-  color: var(--white, #fffdfa);
-  border-color: var(--primaryDefault, #d68e39);
+  @apply bg-primaryDefault text-white border-primaryDefault;
 }
 
-:deep(.custom-pagination .n-pagination-item.n-pagination-item--button:first-child) {
-  background-color: var(--neutral_600, #1d1810);
-  color: var(--white, #fffdfa);
-  border: none;
-}
-
+:deep(.custom-pagination .n-pagination-item.n-pagination-item--button:first-child),
 :deep(.custom-pagination .n-pagination-item.n-pagination-item--button:last-child) {
-  background-color: var(--neutral_600, #1d1810);
-  color: var(--white, #fffdfa);
-  border: none;
+  @apply bg-neutral_600 text-white border-none;
 }
 
 :deep(.custom-pagination .n-pagination-item.n-pagination-item--button.n-pagination-item--disabled) {
-  background-color: var(--neutral_600, #1d1810);
-  color: var(--neutral_300, #575656);
+  @apply bg-neutral_600 text-neutral_300;
 }
 </style>
