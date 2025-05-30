@@ -31,13 +31,13 @@
 <script setup lang="ts">
 import { defineProps } from 'vue';
 
-defineProps({
-    imageUrl: String,
-    imageAlt: String,
-    title: String,
-    subtitle: String,
-    description: String,
-});
+defineProps<{
+  imageUrl: string
+  imageAlt: string
+  title: string
+  subtitle: string
+  description: string
+}>();
 
 const wheatLeftImgUrl = new URL('@/assets/images/home/wheat-left.png', import.meta.url).href;
 const wheatRightImgUrl = new URL('@/assets/images/home/wheat-right.png', import.meta.url).href;

@@ -1,21 +1,21 @@
 <template>
-    <div class="bg-gray-950 w-full">
-      <n-config-provider :theme-overrides="themeOverrides">
-        <div class="pt-14 pb-4 bg-neutral_600">
-            <n-carousel autoplay dot-type="line">
-                <carouselHeroItem
-                    v-for="(item, index) in slides"
-                    :key="index"
-                    :imageUrl="item.imageUrl"
-                    :imageAlt="item.imageAlt"
-                    :title="item.title"
-                    :subtitle="item.subtitle"
-                    :description="item.description"
-                />
-            </n-carousel>
-        </div>
-      </n-config-provider>
-    </div>
+  <div class="bg-gray-950 w-full">
+    <n-config-provider :theme-overrides="themeOverrides">
+      <div class="pt-14 pb-4 bg-neutral_600">
+        <n-carousel autoplay dot-type="line">
+          <carouselHeroItem
+            v-for="(item, index) in slides"
+            :key="index"
+            :imageUrl="item.imageUrl"
+            :imageAlt="item.imageAlt"
+            :title="item.title"
+            :subtitle="item.subtitle"
+            :description="item.description"
+          />
+        </n-carousel>
+      </div>
+    </n-config-provider>
+  </div>
 </template>
 
 <script setup lang="ts">

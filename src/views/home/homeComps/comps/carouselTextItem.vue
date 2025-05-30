@@ -8,8 +8,8 @@
 <script setup lang="ts">
 import { defineProps } from 'vue';
 
-defineProps({
-    subtitle: String,
-    description: String,
-});
+defineProps<{
+    subtitle: string
+    description: string
+}>();
 </script>
