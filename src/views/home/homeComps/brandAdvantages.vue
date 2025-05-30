@@ -11,11 +11,11 @@
       <div class="relative rounded-lg bg-neutral_600/80% shadow-md px-4 py-6 w-110 max-w-72
       sm:px-6 sm:py-8 sm:max-w-128">
         <!-- 輪播箭頭 -->
-        <button class="carousel-arrow absolute top-1/24 left-[-4.5rem] md:left-[-6rem]"
+        <button class="carousel-arrow left-[-4.5rem] md:left-[-6rem]"
           @click="prev">
           <span class="inline-block w-6 h-6 i-ion:arrow-back color-white"></span>
         </button>
-        <button class="carousel-arrow absolute top-1/2 right-[-4.5rem] md:right-[-6rem]"
+        <button class="carousel-arrow right-[-4.5rem] md:right-[-6rem]"
           @click="next">
           <span class="inline-block w-6 h-6 i-ion:arrow-forward color-white"></span>
         </button>
@@ -84,6 +84,7 @@ const next = () => {
 <style scoped>
 /* 輪播箭頭按鈕 */
 .carousel-arrow {
-    @apply absolute z-10 top-1/2 -translate-y-1/2 rounded-full b-1 b-solid b-white/25% w-12 h-12 flex items-center justify-center cursor-pointer bg-transparent;
+    @apply absolute top-1/2 -translate-y-1/2 rounded-full b-1 b-solid b-white/25% w-12 h-12 cursor-pointer bg-transparent transition-all duration-300
+    hover:(bg-white/10% b-white/50% scale-105);
 }
 </style>
