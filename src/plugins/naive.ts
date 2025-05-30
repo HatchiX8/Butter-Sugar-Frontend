@@ -44,6 +44,7 @@ export function withNaiveProviders(App: Component) {
                 border: `1px solid ${hexToRgba(colors.neutral_100, 0.25)}`,
                 borderHover: `1px solid ${hexToRgba(colors.neutral_100, 0.25)}`,
                 borderPressed: `1px solid ${hexToRgba(colors.neutral_100, 0.25)}`,
+                borderFocus: `1px solid ${hexToRgba(colors.neutral_100, 0.25)}`,
                 rippleColor: hexToRgba(colors.neutral_100, 0.25),
                 // Primary
                 colorPrimary: colors.primaryDefault,
