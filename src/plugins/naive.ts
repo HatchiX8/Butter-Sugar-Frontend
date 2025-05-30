@@ -74,33 +74,23 @@ export function withNaiveProviders(App: Component) {
                     fontSizeSmall: '14px',
                     paddingSingle: '0 8px',
                     borderRadius: '4px',
-                    textColor: '#FFFDFD',
+                    textColor: '#FFFDFA',
                     fontWeight: '400',
-                    // fontFamily: 'Noto Serif TC',
-                    color: '#000000', // 無背景色或透明
+                    color: '#0D0B07', // 預設黑背景色
                     boxShadowFocus: '0 0 0 2px rgba(255, 255, 255, 0.2)',
-                    border: '1px solid #FFFDFD',
-                    // iconColor: '#FFFDFD',
-                    // gap: '4px',
-                    // transition: 'none',
+                    border: '1px solid #FFFDFA',
+                    colorActive: '#1D1810'
                   },
                   InternalSelectMenu: {
                     color: '#3e382e', // 下拉選單背景色
                     optionColorActive: '#6e6961', // 被選取的選項底色
                     optionColorPending: '#6e6961', // hover/focus 底色
-                    // optionColor: '#3e382e', // 一般選項底色
-                    optionTextColor: '#FFFDFD', // 一般選項文字色
-                    optionTextColorActive: '#FFFDFD', // 被選取的選項文字色
-                    // optionTextColorPending: '#FFFDFD', // hover/focus 文字色
-                    // boxShadow:
-                    //   '0 3px 6px -4px rgba(0, 0, 0, .12), 0 6px 16px 0 rgba(0, 0, 0, .08), 0 9px 28px 8px rgba(0, 0, 0, .05)',
-
+                    optionColorActivePending: '#6e6961', // 預設選項 hover/focus 底色
+                    optionTextColor: '#FFFDFA', // 一般選項文字色
+                    optionTextColorActive: '#FFFDFA', // 被選取的選項文字色
                     borderRadius: '4px',
                     optionFontSizeSmall: '14px',
                     optionHeightSmall: '24px',
-                    // optionFontWeightActive: '400',
-                    // optionFontWeight: '400',
-                    // optionFontFamily: 'Noto Serif TC',
                     optionPaddingSmall: '0 8px',
                   },
                 },
