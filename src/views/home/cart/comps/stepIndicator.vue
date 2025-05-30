@@ -14,6 +14,7 @@
 <script setup lang="ts">
 import { computed } from 'vue';
 import { useRoute } from 'vue-router';
+import { hexToRgba, themeColors } from '@/utils';
 
 const route = useRoute();
 const steps = ['購物車', '結帳資訊', '確認付款', '訂購完成'];
@@ -25,25 +26,26 @@ const current = computed(() => {
   return 1
 });
 
+const colors = themeColors.colors;
 const themeOverrides = {
   Steps: {
     // 未開始
-    indicatorTextColorWait: '#FFFDFA80',
-    headerTextColorWait: '#FFFDFA80',
-    indicatorBorderColorWait: '#FFFDFA80',
-    splitorColorWait: '#FFFDFA80',
+    indicatorTextColorWait: hexToRgba(colors.white, 0.5),
+    headerTextColorWait: hexToRgba(colors.white, 0.5),
+    indicatorBorderColorWait: hexToRgba(colors.white, 0.5),
+    splitorColorWait: hexToRgba(colors.white, 0.5),
     // 進行中
-    indicatorTextColorProcess: '#FFFDFA',
-    headerTextColorProcess: '#FFFDFA',
-    indicatorColorProcess: '#D68E39',
-    indicatorBorderColorProcess: '#D68E39',
-    splitorColorProcess: '#FFFDFA',
+    indicatorTextColorProcess: colors.white,
+    headerTextColorProcess: colors.white,
+    indicatorColorProcess: colors.primaryDefault,
+    indicatorBorderColorProcess: colors.primaryDefault,
+    splitorColorProcess: colors.white,
     // 已完成
-    indicatorTextColorFinish: '#FFFDFA',
-    headerTextColorFinish: '#FFFDFA',
-    indicatorColorFinish: '#D68E39',
-    indicatorBorderColorFinish: '#D68E39',
-    splitorColorFinish: '#FFFDFA',
+    indicatorTextColorFinish: colors.white,
+    headerTextColorFinish: colors.white,
+    indicatorColorFinish: colors.primaryDefault,
+    indicatorBorderColorFinish: colors.primaryDefault,
+    splitorColorFinish: colors.white,
   }
 };
 </script>
