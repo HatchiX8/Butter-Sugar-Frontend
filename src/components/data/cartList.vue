@@ -1,49 +1,95 @@
+<!-- 結帳資訊頁面 -->
 <template>
-  <div class="border-b border-neutral-700 p-4">
-    <div class="flex items-start gap-4 pb-4">
-      <!-- 課程圖片 -->
-      <div class="shrink-0">
-        <img
-          src="@/assets/images/cart/8fc588efdbb79272a54f5e9b7a2ed0ea694a6e74.jpg"
-          alt="課程小圖"
-          class="h-24 w-36 rounded-md object-cover transition-transform duration-300 group-hover:scale-105"
-        />
-      </div>
-      <!-- 課程資訊 -->
-      <div class="flex w-full items-start justify-between">
-        <!-- 課程名稱 -->
-        <div class="clamped-text pr-4 text-base font-bold leading-snug text-white">
-          香濃奶油香氣四溢！手作日式生吐司
+  <div class="flex gap-6">
+    <div class="bg-neutral_600 border-1 border-white/10% rounded-0.5 flex-1 border-solid p-4">
+      <div class="mb-4 flex items-center justify-between p-4">
+        <div>
+          <h2 class="text-6 font-bold">訂單明細</h2>
+          <div class="h-0.1 bg-primaryDefault mt-4 w-14"></div>
         </div>
-        <div class="min-w-30 text-right">
-          <div class="mb-3 text-xl font-bold text-white">NT$ 500</div>
-          <!-- 移除按鈕 -->
-          <div class="flex items-center justify-end gap-2">
-            <n-button text>
-              <span class="hover:text-primaryDefault text-neutral-300">移除</span>
-            </n-button>
-            <n-button text>
-              <div
-                class="i-ion:trash-outline hover:text-primaryDefault h-4 w-4 text-neutral-300"
-              ></div>
-            </n-button>
+        <div class="font-['Noto Sans TC'] text-primaryDefault text-4 text-right">
+          總共 {{ itemCount }} 件
+        </div>
+      </div>
+      <div v-for="(item, index) in visibleItems" :key="item.course_id" class="p-4">
+        <div
+          class="flex items-start gap-4 pb-4"
+          :class="{ 'custom-border-bottom': index !== visibleItems.length - 1 }"
+        >
+          <router-link
+            :to="`/home/course/${item.course_id}`"
+            class="group flex flex-1 cursor-pointer items-start gap-4 no-underline"
+          >
+            <!-- 課程圖片 -->
+            <div
+              class="h-24 w-36 shrink-0 overflow-hidden rounded-md transition-shadow duration-300 group-hover:shadow-lg"
+            >
+              <img
+                :src="item.course_smallimage"
+                alt="課程小圖"
+                class="h-full w-full object-cover transition-transform duration-300 group-hover:scale-105"
+              />
+            </div>
+            <!-- 課程名稱 -->
+            <div class="clamped-text text-base font-bold leading-snug text-white">
+              {{ item.course_name }}
+            </div>
+          </router-link>
+          <div>
+            <div class="w-21 min-w-28 text-right">
+              <div class="mb-3 text-lg font-bold text-white">
+                {{ formatCurrency(item.price) }}
+              </div>
+            </div>
           </div>
         </div>
+      </div>
+      <div
+        v-if="cartItems.length > 2"
+        class="mt-4 flex cursor-pointer justify-center"
+        @click="toggleExpanded"
+      >
+        <span>{{ expanded ? '收合內容' : '查看更多' }}</span>
+        <span
+          class="inline-block h-3.5 w-3.5 align-middle"
+          :class="[expanded ? 'i-ion:chevron-up' : 'i-ion:chevron-down']"
+        ></span>
       </div>
     </div>
   </div>
 </template>
 
 <script setup lang="ts">
-// import { useCartStore } from '@/stores/models/cart/store';
-// import { storeToRefs } from 'pinia';
+import { ref, computed } from 'vue';
 
-// const cartStore = useCartStore();
+interface CartItem {
+  course_id: number;
+  course_name: string;
+  course_smallimage: string;
+  price: number;
+}
 
-// const { cartItems } = storeToRefs(cartStore);
+const props = withDefaults(
+  defineProps<{
+    cartItems?: CartItem[];
+    itemCount?: number;
+  }>(),
+  {
+    cartItems: () => [],
+    itemCount: 0,
+  }
+);
+const formatCurrency = (value: number, currency = 'NT$'): string =>
+  `${currency} ${value.toLocaleString('en-US')}`;
 
-// const formatCurrency = (value: number, currency = 'NT$'): string =>
-//   `${currency} ${value.toLocaleString('en-US')}`;
+// 控制展開明細
+const expanded = ref(false);
+const visibleItems = computed(() =>
+  expanded.value ? props.cartItems : props.cartItems.slice(0, 2)
+);
+const toggleExpanded = () => {
+  expanded.value = !expanded.value;
+};
 </script>
 
 <style scoped>
@@ -52,5 +98,8 @@
   display: -webkit-box;
   -webkit-box-orient: vertical;
   -webkit-line-clamp: 2;
+}
+.custom-border-bottom {
+  @apply: border-b-1 border-b-solid border-b-white/20%;
 }
 </style>
