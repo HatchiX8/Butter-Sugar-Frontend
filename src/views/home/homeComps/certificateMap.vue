@@ -30,7 +30,7 @@
       <!-- 按鈕 -->
       <div class="text-right mt-10">
         <n-button>
-          <span>立即加入學習 GO</span>
+          <span class="text-white">立即加入學習 GO</span>
           <span class="inline-block w-4 h-4 ml-1 i-ion:arrow-forward color-white"></span>
         </n-button>
       </div>
