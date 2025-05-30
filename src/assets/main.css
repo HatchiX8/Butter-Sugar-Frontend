@@ -7,6 +7,10 @@
   font-family: Noto Sans TC;
   src: url(fonts/NotoSansTC-VariableFont_wght.ttf);
 }
+@font-face {
+  font-family: ChenYuluoyan;
+  src: url(fonts/ChenYuluoyan-2.0-Thin.ttf);
+}
 body{
   background: #1D1810;
   font-family: Noto Serif TC;
