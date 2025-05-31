@@ -9,7 +9,7 @@
       ]"
     />
 
-    <typography variant="h2" font-type="title" underline>所有課程</typography>
+    <typography class="text-white mt-10" variant="h2" font-type="title" underline>所有課程</typography>
 
     <div class="mt-10 pr-8 flex flex-col md:flex-row items-center justify-between self-stretch">
       <selectComps class="w-full md:w-50 h-12 px-3 py-4" />
@@ -27,7 +27,7 @@
       @page-change="handlePageChange"
     />
 
-    <typography variant="h2" font-type="title" underline>探索其他主題</typography>
+    <typography class="text-white mt-10" variant="h2" font-type="title" underline>探索其他主題</typography>
 
     <courseTag/>
   </div>
