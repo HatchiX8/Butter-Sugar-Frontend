@@ -1,5 +1,5 @@
 <template>
-  <div class="w-full max-w-sm mx-auto p-2 cursor-pointer flex flex-col">
+  <div class="w-full max-w-sm mx-auto cursor-pointer flex flex-col">
     <!-- 圖片區塊 -->
     <div class="group relative overflow-hidden aspect-[4/3] transition-shadow duration-300 group-hover:shadow-lg">
       <img
@@ -20,7 +20,7 @@
     </div>
 
     <!-- 課程資訊 -->
-    <div class="mt-4 px-1">
+    <div class="mt-4 px-2">
       <h4 class="text-4.5 font-bold text-white leading-snug line-clamp-2 mb-1">
         {{ courseTitle }}
       </h4>

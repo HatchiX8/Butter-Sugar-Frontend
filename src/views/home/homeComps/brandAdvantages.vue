@@ -1,10 +1,10 @@
 <template>
-  <div class="relative h-64vh">
+  <div class="relative h-54vh md:h-64vh">
     <!-- 背景圖片 -->
-    <img class="w-full h-full object-cover" :src="bannerBgImgUrl" alt="Baking Class Background Image"/>
+    <img class="w-full h-full" :src="bannerBgImgUrl" alt="Baking Class Background Image"/>
     <!-- 內容 -->
-    <div class="absolute inset-0 flex flex-col items-center justify-end text-white px-4 py-20">
-      <h2 class="text-center font-bold mb-12 text-8">
+    <div class="absolute inset-0 flex flex-col items-center justify-end text-white py-20">
+      <h2 class="text-center font-bold mb-12 text-6 md:text-8">
         專業 ✖︎ 便利 ✖︎ 樂趣，讓烘焙學習更輕鬆！
       </h2>
 

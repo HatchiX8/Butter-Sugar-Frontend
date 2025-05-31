@@ -1,5 +1,5 @@
 <template>
-  <div class="px-4 py-15 bg-neutral_600 overflow-x-hidden">
+  <div class="py-15 bg-neutral_600 overflow-x-hidden">
     <div class="mx-auto max-w-[1200px]">
       <!-- 標題 -->
       <div class="mb-8 flex justify-center">

@@ -1,6 +1,6 @@
 <template>
-  <div class="bg-neutral_600 text-white py-20">
-    <div class="max-w-6xl mx-auto px-4">
+  <div class="bg-neutral_600 text-white">
+    <div class="px-12 py-15 max-w-[1200px] mx-auto">
       <typography variant="h2" font-type="title" underline>輕鬆考證</typography>
       <p class="text-4 leading-tight text-neutral_200 my-6">想考烘焙證照？線上學習，輕鬆通過考試！<br>考證照不用跑補習班！線上學習 + 模擬考試，助你快速通過。</p>
 

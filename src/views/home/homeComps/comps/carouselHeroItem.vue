@@ -18,11 +18,11 @@
 
       <!-- 文字區塊（覆蓋在圖片上）-->
       <div class="absolute inset-0 w-2/3 m-auto flex items-end text-center text-white font-['Noto Serif TC']">
-        <n-typography>
+        <div>
           <h2 class="text-8 sm:text-16 leading-normal font-['ChenYuluoyan']">{{ title }}</h2>
           <h3 class="mb-3 text-4 sm:text-7 font-bold leading-tight">{{ subtitle }}</h3>
           <h3 class="mb-2 text-3 sm:text-5 font-bold leading-normal">{{ description }}</h3>
-        </n-typography>
+        </div>
       </div>
     </div>
   </div>
