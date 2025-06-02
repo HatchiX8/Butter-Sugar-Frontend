@@ -13,6 +13,11 @@ const router = createRouter({
       children: [
         {
           path: '',
+          name: 'HomePage',
+          component: () => import('@/views/home/pages/index.vue'), // 首頁內容
+        },
+        {
+          path: '',
           name: 'HomeDashboard',
           component: () => import('@/views/home/homeDashboard/index.vue'), // 預設首頁內容
         },

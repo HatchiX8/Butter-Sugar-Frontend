@@ -38,10 +38,10 @@
                 <!-- 移除按鈕 -->
                 <div class="flex items-center justify-end gap-2">
                   <n-button text @click="showConfirmModal = true">
-                    <span class="text-neutral-300 hover:text-primaryDefault">移除</span>
+                    <span class="text-neutral_300 hover:text-primaryDefault">移除</span>
                   </n-button>
                   <n-button text @click="cartStore.removeItem(item.course_id)">
-                    <div class="i-ion:trash-outline w-4 h-4 text-neutral-300 hover:text-primaryDefault"></div>
+                    <div class="i-ion:trash-outline w-4 h-4 text-neutral_300 hover:text-primaryDefault"></div>
                   </n-button>
                 </div>
               </div>
@@ -66,7 +66,7 @@
             <span>總計</span>
             <span class="text-white text-5">{{ formatCurrency(totalPrice) }}</span>
           </div>
-          <n-button type="primary" class="mt-4 w-full" @click="goToCheckout">
+          <n-button type="primary" class="mt-4 w-full" :disabled="itemCount === 0" @click="goToCheckout">
             前往結帳
           </n-button>
         </div>
