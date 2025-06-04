@@ -4,7 +4,7 @@
     <div class="mx-12 py-15 max-w-[1200px]">
       <!-- 標題 -->
       <div class="mb-8 flex justify-center">
-        <typography variant="h2" font-type="title" underline class="headingTitle">精選講師</typography>
+        <typography variant="h2" font-type="title" underline class="headingTitle text-white">精選講師</typography>
       </div>
 
       <!-- 副標題 -->
