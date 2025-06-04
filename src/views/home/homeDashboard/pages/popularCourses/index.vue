@@ -38,7 +38,7 @@
 
 <script setup lang="ts">
 import { ref } from 'vue';
-import courseCardItem from '@/views/home/homeComps/comps/courseCardItem.vue';
+import courseCardItem from '@/views/home/homeDashboard/comps/courseCardItem.vue';
 import typography from '@/components/layout/typography.vue';
 
 interface Course {

@@ -39,7 +39,7 @@
 </template>
 
 <script setup lang="ts">
-import mapCardItem from '@/views/home/homeComps/comps/mapCardItem.vue';
+import mapCardItem from '@/views/home/homeDashboard/comps/mapCardItem.vue';
 import typography from '@/components/layout/typography.vue';
 
 const tags = [
