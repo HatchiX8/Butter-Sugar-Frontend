@@ -25,6 +25,13 @@ const router = createRouter({
           path: 'course',
           name: 'Course',
           component: () => import('@/views/home/courseIntroduction/index.vue'), // 課程介紹
+          children: [
+            {
+              path: 'course-video',
+              name: 'CourseVideo',
+              component: () => import('@/views/home/courseVideo/index.vue'), // 課程影片
+            },
+          ]
         },
         {
           path: 'course-info',
