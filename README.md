@@ -1,39 +1,41 @@
-# ButterSugarFrontend
+# Butter & Sugar
 
-This template should help get you started developing with Vue 3 in Vite.
+這是一個烘焙領域的線上課程平台，功能包含前台使用者的課程瀏覽、購買、提問，後台使用者的課程上傳、新增、編輯、問題回覆等。
 
-## Recommended IDE Setup
+## 功能特色
 
-[VSCode](https://code.visualstudio.com/) + [Volar](https://marketplace.visualstudio.com/items?itemName=Vue.volar) (and disable Vetur).
+- 前台使用者：
+  - 課程瀏覽、搜尋與分類
+  - 加入購物車、下單購買
+  - 提問與回覆、課程評價
+- 後台講師：
+  - 課程上傳、編輯與刪除
+  - 回覆學員提問
+- 管理者功能（未來擴充）：
+  - 管理講師、使用者與訂單
 
-## Type Support for `.vue` Imports in TS
+## 技術架構
 
-TypeScript cannot handle type information for `.vue` imports by default, so we replace the `tsc` CLI with `vue-tsc` for type checking. In editors, we need [Volar](https://marketplace.visualstudio.com/items?itemName=Vue.volar) to make the TypeScript language service aware of `.vue` types.
+- Vue3 + Vite
+- Pinia狀態管理
+- UnoCSS + Naive
+- TypeScript
+- Axios 串接API
 
-## Customize configuration
+## 專案安裝
 
-See [Vite Configuration Reference](https://vite.dev/config/).
+1.Clone 本專案
 
-## Project Setup
+git clone https://github.com/HatchiX8/Butter-Sugar-Frontend.git
 
-```sh
+2.安裝依賴
+
 npm install
-```
 
-### Compile and Hot-Reload for Development
+3.啟動開發伺服器
 
-```sh
 npm run dev
-```
 
-### Type-Check, Compile and Minify for Production
+## 專案結構說明
 
-```sh
-npm run build
-```
-
-### Lint with [ESLint](https://eslint.org/)
-
-```sh
-npm run lint
-```
+src/

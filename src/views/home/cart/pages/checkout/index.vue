@@ -70,10 +70,10 @@
           <n-button type="primary" class="mt-4 w-full">
             確認送出
           </n-button>
-          <div class="font-['Noto Sans TC'] text-3 text-align-center line-height-5 mt-2 cursor-pointer" @click="showContractModal = true">
+          <div class="font-['Noto Sans TC'] text-3 text-align-center line-height-5 mt-2">
             <span>點擊上方按鈕即表示</span><br>
             <span>您已閱讀並同意</span>
-            <span class="text-primaryDefault"> Butter&Sugar 服務契約</span>
+            <span class="text-primaryDefault cursor-pointer" @click="showContractModal = true"> Butter&Sugar 服務契約</span>
           </div>
         </div>
       </div>

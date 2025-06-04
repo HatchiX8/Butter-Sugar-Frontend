@@ -1,9 +1,10 @@
 <template>
   <n-config-provider :theme-overrides="themeOverrides">
-      <n-modal
-        v-model:show="show"
-        :mask-closable="true"
-        class="max-h-80vh">
+    <n-modal
+      v-model:show="show"
+      :mask-closable="true"
+      class="max-h-80vh"
+    >
       <n-card
         :title="title"
         :bordered="false"
@@ -70,11 +71,11 @@ const onCancel = ()=> {
 
 const themeOverrides = {
   Card: {
-    color: '#1D1810', // 背景色(沒有效果)
+    colorModal: '#1D1810',
     titleTextColor: '#D68E39',
     titleFontWeight: '700',
-    textColor: '#1D1810',
-    boxShadow: '0 0 20px #D68E3999',
+    textColor: '#FFFDFA',
+    boxShadow: '0 0 10px #D68E39CC',
   },
 };
 </script>
