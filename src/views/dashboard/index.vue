@@ -14,27 +14,12 @@ const menuOptions: MenuOption[] = [
     key: 'basic-info',
   },
   {
-    label: '教師資訊',
-    key: 'teacher-info',
-  },
-  {
     label: '課程資訊',
     key: 'course-info',
-    children: [
-      {
-        type: 'group',
-        label: '建立新課程',
-        key: 'people',
-      },
-      {
-        label: '新增課程章節',
-        key: 'beverage',
-      },
-      {
-        label: '定價&提交審核',
-        key: 'food',
-      },
-    ],
+  },
+  {
+    label: '建立新課程',
+    key: 'new-course',
   },
 ];
 </script>

@@ -71,14 +71,14 @@ const router = createRouter({
           component: () => import('@/views/dashboard/basicInfo/index.vue'),
         },
         {
-          path: 'teacherInfo',
-          name: 'TeacherInfo',
-          component: () => import('@/views/dashboard/teacherInfo/index.vue'),
-        },
-        {
           path: 'courseInfo',
           name: 'CourseInfo',
           component: () => import('@/views/dashboard/courseInfo/index.vue'),
+        },
+        {
+          path: 'newCourse',
+          name: 'NewCourse',
+          component: () => import('@/views/dashboard/newCourse/index.vue'),
         },
       ], // 講師後台
     },
