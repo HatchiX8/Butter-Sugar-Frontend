@@ -63,7 +63,24 @@ const router = createRouter({
     {
       path: '/Teacher',
       name: 'TeacherBackend',
-      component: () => import('@/views/dashboard/index.vue'), // 講師後台
+      component: () => import('@/views/dashboard/index.vue'),
+      children: [
+        {
+          path: 'basicInfo',
+          name: 'BasicInfo',
+          component: () => import('@/views/dashboard/basicInfo/index.vue'),
+        },
+        {
+          path: 'teacherInfo',
+          name: 'TeacherInfo',
+          component: () => import('@/views/dashboard/teacherInfo/index.vue'),
+        },
+        {
+          path: 'courseInfo',
+          name: 'CourseInfo',
+          component: () => import('@/views/dashboard/courseInfo/index.vue'),
+        },
+      ], // 講師後台
     },
     {
       path: '/login-success',
