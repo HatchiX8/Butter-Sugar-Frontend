@@ -4,7 +4,7 @@
     <typography
       :variant="teacherVariant"
       font-type="title"
-      :class="teacherClass"
+      class="text-neutral-200 mb-2"
     >
       {{ courseData.teacher }}
     </typography>
@@ -64,12 +64,6 @@ const teacherVariant = computed(() => isDesktop.value ? 'h5' : 'body1')
 const titleVariant = computed(() => isDesktop.value ? 'h1' : 'h3')
 const descriptionVariant = computed(() => isDesktop.value ? 'h5' : 'body1')
 
-const teacherClass = computed(() =>
-  isDesktop.value
-    ? 'text-neutral-200 mb-2'
-    : 'text-neutral-300 mb-2'
-)
-
 const titleClass = computed(() =>
   isDesktop.value
     ? 'text-white mr-8 text-wrap xl:whitespace-nowrap'
@@ -79,6 +73,6 @@ const titleClass = computed(() =>
 const descriptionClass = computed(() =>
   isDesktop.value
     ? 'text-neutral-100 mr-8 mt-4 text-wrap xl:whitespace-nowrap'
-    : 'text-neutral-200 mb-4 leading-relaxed'
+    : 'text-neutral-100 mb-4 leading-relaxed'
 )
 </script>
