@@ -21,13 +21,12 @@
 
     <!-- 課程資訊 -->
     <div class="mt-4 px-2">
-      <h4 class="text-4.5 font-bold text-white leading-snug line-clamp-2 mb-1">
+      <h4 class="text-4.5 font-bold text-white leading-snug clamped-text-1 mb-1">
         {{ courseTitle }}
       </h4>
-      <p class="text-3.5 text-neutral_200 leading-snug line-clamp-2 mb-2">
+      <p class="text-3.5 text-neutral_200 leading-snug clamped-text-2 mb-2 h-10">
         {{ courseSubtitle }}
       </p>
-
       <div class="flex items-center text-3.5 text-white">
         <!-- 評分 -->
         <div class="flex items-center pr-4">
@@ -65,7 +64,13 @@ const formatNumber = (value: number): string => `${value.toLocaleString('en-US')
 </script>
 
 <style scoped>
-.clamped-text {
+.clamped-text-1 {
+  overflow: hidden;
+  display: -webkit-box;
+  -webkit-box-orient: vertical;
+  -webkit-line-clamp: 1;
+}
+.clamped-text-2 {
   overflow: hidden;
   display: -webkit-box;
   -webkit-box-orient: vertical;
