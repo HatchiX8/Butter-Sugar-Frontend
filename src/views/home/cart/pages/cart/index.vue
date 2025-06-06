@@ -37,17 +37,24 @@
                 </div>
                 <!-- 移除按鈕 -->
                 <div class="flex items-center justify-end gap-2">
-                  <n-button text @click="showConfirmModal = true">
+                  <n-button text @click="openConfirmModal(item)">
                     <span class="text-neutral_300 hover:text-primaryDefault">移除</span>
+                    <div class="i-ion:trash-outline w-4 h-4 ml-1 text-neutral_300 hover:text-primaryDefault"></div>
                   </n-button>
                   <n-button text @click="cartStore.removeItem(item.course_id)">
-                    <div class="i-ion:trash-outline w-4 h-4 text-neutral_300 hover:text-primaryDefault"></div>
+
                   </n-button>
                 </div>
               </div>
             </div>
           </div>
         </div>
+        <!-- 移除課程確認彈窗 -->
+        <confirmModal
+          v-if="itemToDelete"
+          v-model:modelValue="showConfirmModal"
+          :item="itemToDelete"
+        />
         <!-- 訂單資訊 -->
         <div class="bg-black px-4 py-8 rounded text-4 md:w-1/3 flex-shrink-0 flex flex-col h-1/4 sticky top-24">
           <h3 class="font-['Noto Sans TC'] font-bold mb-4">訂單資訊</h3>
@@ -73,7 +80,6 @@
       </div>
     </div>
   </div>
-  <confirmModal v-model="showConfirmModal" />
 </template>
 
 <script setup lang="ts">
@@ -83,11 +89,16 @@ import { storeToRefs } from 'pinia';
 import { useRouter } from 'vue-router';
 import confirmModal from '@/views/home/cart/comps/confirmModal.vue';
 
-const showConfirmModal = ref(false);
-
 const cartStore = useCartStore();
-
 const { cartItems, itemCount, totalPrice } = storeToRefs(cartStore);
+
+// 移除課程彈窗
+const itemToDelete = ref<{ course_id: string; course_name: string } | null>(null);
+const showConfirmModal = ref(false);
+const openConfirmModal = (item: { course_id: string; course_name: string }) => {
+  itemToDelete.value = item
+  showConfirmModal.value = true
+};
 
 const router = useRouter();
 const goToCheckout = () => {
