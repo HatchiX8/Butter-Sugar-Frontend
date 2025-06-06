@@ -24,9 +24,12 @@
         </n-tab>
       </n-tabs>
 
-      <div :v-if="showNotify" class="course-container">
-        <notify />
+      <div class="page-container mt-15">
+        <notify v-if="showNotify" />
+
+        <courseInfo :course-data="props.courseData" @purchase="handlePurchase" @toggle-bookmark="handleToggleBookmark" />
       </div>
+
     </div>
 
     <div v-if="activeTab === 'info' || activeTab === 'chapters' || activeTab === 'questions'" class="tab-content">
@@ -53,8 +56,17 @@
 </template>
 
 <script setup lang="ts">
-import { ref } from 'vue';
+import { ref, defineProps, defineEmits } from 'vue';
 import notify from './notify.vue';
+import courseInfo from './courseInfo.vue';
+
+const props = defineProps({
+  courseData: {
+    type: Object,
+    required: false,
+    default: () => ({})
+  }
+});
 
 const showNotify = ref(true);
 const activeTab = ref('info');
@@ -66,22 +78,35 @@ const scrollToSection = (sectionId: string) => {
   }
 };
 
+const emit = defineEmits(['tab-change', 'purchase', 'toggle-bookmark']);
+
 const handleTabChange = (tabName: string) => {
   activeTab.value = tabName;
   // Emit event to parent component to handle tab content change for all tabs
-  const emit = defineEmits(['tab-change']);
   emit('tab-change', tabName);
+};
+
+const handlePurchase = () => {
+  emit('purchase');
+};
+
+const handleToggleBookmark = () => {
+  emit('toggle-bookmark');
 };
 
 </script>
 
 <style scoped>
 .tabs-container {
-  @apply px-6 mt-15;
+  @apply mt-15;
+  width: 100%;
 }
 
-.course-container {
-  @apply flex flex-col items-center max-w-1280px mx-auto;
+.page-container {
+  @apply flex flex-col items-center mx-auto p-6;
+  max-width: 1280px;
+  width: 100%;
+  box-sizing: border-box;
 }
 
 .n-tab span {

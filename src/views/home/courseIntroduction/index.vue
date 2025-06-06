@@ -5,7 +5,15 @@
       @purchase="handlePurchase"
       @toggle-bookmark="handleToggleBookmark"
     />
-    <tabs @tab-change="handleTabChange" />
+    <div class="page-container">
+      <tabs
+        :course-data="courseData"
+        @tab-change="handleTabChange"
+        @purchase="handlePurchase"
+        @toggle-bookmark="handleToggleBookmark"
+      />
+    </div>
+
   </div>
 </template>
 
@@ -27,11 +35,13 @@ const course = ref([
     hours: 11,
     price: 4200,
     originPrice: 9800,
-    is_bookmark: false
+    is_bookmark: false,
+    created_at: '2025-06-06T15:00:00.000Z'
   },
 ])
 
 const activeTab = ref('info')
+const showNotify = ref(true)
 
 // 取得對應ID的課程資料
 const courseData = course.value[0]

@@ -1,7 +1,7 @@
 <template>
   <div class="notify-container">
     <div class="notify-header">
-      <notifyIcon />
+      <notifyIcon class="me-2"/>
       <typography variant="h6" font-type="title" class="text-neutral-100">最新公告：</typography>
     </div>
     <div class="notify-content">
@@ -41,12 +41,14 @@ export default defineComponent({
 <style scoped>
 .notify-container {
   width: 100%;
+  box-sizing: border-box;
   display: flex;
   align-items: flex-start;
   border: 1px solid rgba(255, 255, 255, 0.2);
-  background-color: rgba(255, 255, 255, 0.2);
-  padding: 1rem;
+  background-color: rgba(255, 255, 255, 0.05);
+  padding: 1.5rem;
   margin: 15px 0;
+  border-radius: 0.125rem;
 }
 
 .notify-header {
