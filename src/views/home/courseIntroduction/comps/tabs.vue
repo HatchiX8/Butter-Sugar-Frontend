@@ -23,6 +23,10 @@
           <span>課程評價</span>
         </n-tab>
       </n-tabs>
+
+      <div :v-if="showNotify" class="course-container">
+        <notify />
+      </div>
     </div>
 
     <div v-if="activeTab === 'info' || activeTab === 'chapters' || activeTab === 'questions'" class="tab-content">
@@ -50,7 +54,9 @@
 
 <script setup lang="ts">
 import { ref } from 'vue';
+import notify from './notify.vue';
 
+const showNotify = ref(true);
 const activeTab = ref('info');
 
 const scrollToSection = (sectionId: string) => {
@@ -72,6 +78,10 @@ const handleTabChange = (tabName: string) => {
 <style scoped>
 .tabs-container {
   @apply px-6 mt-15;
+}
+
+.course-container {
+  @apply flex flex-col items-center max-w-1280px mx-auto;
 }
 
 .n-tab span {
