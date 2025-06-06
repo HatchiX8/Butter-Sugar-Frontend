@@ -1,14 +1,18 @@
 <template>
-  <heroSection
-    :course-data="courseData"
-    @purchase="handlePurchase"
-    @toggle-bookmark="handleToggleBookmark"
-  />
+  <div>
+    <heroSection
+      :course-data="courseData"
+      @purchase="handlePurchase"
+      @toggle-bookmark="handleToggleBookmark"
+    />
+    <tabs @tab-change="handleTabChange" />
+  </div>
 </template>
 
 <script setup lang="ts">
 import { ref } from 'vue'
 import heroSection from './comps/heroSection.vue'
+import tabs from './comps/tabs.vue'
 
 const course = ref([
   {
@@ -27,6 +31,8 @@ const course = ref([
   },
 ])
 
+const activeTab = ref('info')
+
 // 取得對應ID的課程資料
 const courseData = course.value[0]
 
@@ -39,4 +45,36 @@ const handlePurchase = () => {
 const handleToggleBookmark = () => {
   courseData.is_bookmark = !courseData.is_bookmark
 }
+
+// 處理標籤切換
+const handleTabChange = (tabName: string) => {
+  activeTab.value = tabName
+  // 滾動到頂部以顯示切換的內容
+  window.scrollTo({
+    top: 600, // 調整這個值以匹配您的標題高度
+    behavior: 'smooth'
+  })
+}
 </script>
+
+<style scoped>
+.section {
+  padding: 40px 0;
+  max-width: 1200px;
+  margin: 0 auto;
+}
+
+.tab-content {
+  padding: 40px 24px;
+  max-width: 1200px;
+  margin: 0 auto;
+  min-height: 300px; /* 確保內容有足夠高度 */
+}
+
+h2 {
+  color: #333;
+  margin-bottom: 20px;
+  font-size: 24px;
+  font-weight: 600;
+}
+</style>
