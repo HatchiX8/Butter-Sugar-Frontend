@@ -1,42 +1,29 @@
 <template>
   <div class="course-section">
-    <!-- 購買課程區塊 (手機版時顯示在上方) -->
-    <div class="course-purchase-container order-first md:order-last">
-      <div class="course-price-section">
-        <typography variant="h6" font-type="title" class="text-neutral-200">購買課程</typography>
-        <div class="price-display">
-          <typography variant="h3" font-type="title" class="current-price">NT$ {{ courseData?.price?.toLocaleString() || '4,200' }}</typography>
-          <div class="original-price">NT$ {{ courseData?.originPrice?.toLocaleString() || '9,800' }}</div>
-        </div>
-      </div>
-
-      <div class="action-buttons">
-        <n-button type="primary" size="large" class="purchase-button" @click="handlePurchase">
-          <div class="button-content">
-            <typography variant="paragraph-regular" font-type="content" class="text-neutral-100">立即購課</typography>
-            <div class="i-ion:arrow-forward-outline cursor-pointer w-5 h-5"></div>
-          </div>
-        </n-button>
-        <n-button size="large" class="cart-button" @click="handleAddToCart">
-          <div class="button-content">
-            <typography variant="paragraph-regular" font-type="content" class="text-neutral-100">加入購物車</typography>
-            <div class="i-ion:cart cursor-pointer w-5 h-5"></div>
-          </div>
-        </n-button>
-      </div>
+    <!-- 課程資訊區塊 (左欄) -->
+    <div class="course-info-container border-solid border-white/10 order-last md:order-first">
+      <courseDetail :course-data="courseData" />
     </div>
 
-    <!-- 課程資訊區塊 -->
-    <div class="course-info-container order-last md:order-first">
-      <courseDetail :course-data="courseData" />
+    <!-- 右欄內容：購買課程和講師介紹 -->
+    <div class="right-column order-first md:order-last">
+      <!-- 購買課程區塊 -->
+      <coursePurchase 
+        :course-data="courseData" 
+        @purchase="handlePurchase" 
+        @add-to-cart="handleAddToCart" 
+      />
+
+      <!-- 講師介紹區塊 -->
+      <teacherIntro class="mt-6" />
     </div>
   </div>
 </template>
 
 <script setup lang="ts">
 import courseDetail from './courseDetail.vue';
-import typography from '@/components/layout/typography.vue';
-import { NButton } from 'naive-ui';
+import teacherIntro from './teacherIntro.vue';
+import coursePurchase from './coursePurchase.vue';
 
 interface CourseData {
   id?: number;
@@ -67,12 +54,22 @@ const handleAddToCart = () => {
 
 <style scoped>
 .course-section {
-  @apply w-full flex flex-col gap-6 mt-[3.75rem] max-w-[1280px] mx-auto items-center;
+  @apply w-full flex flex-col gap-6 mt-[3.75rem] max-w-[1280px] mx-auto items-center box-border;
 }
 
 @media (min-width: 768px) {
   .course-section {
-    @apply flex-row items-start;
+    @apply flex-row items-start justify-center;
+  }
+}
+
+.right-column {
+  @apply flex flex-col w-full max-w-full;
+}
+
+@media (min-width: 768px) {
+  .right-column {
+    @apply w-[411px];
   }
 }
 
@@ -80,12 +77,18 @@ const handleAddToCart = () => {
   @apply border border-white/20 p-6 rounded-[0.125rem];
 }
 
+@media (max-width: 768px) {
+  .course-info-container, .course-purchase-container {
+    @apply p-3 w-full;
+  }
+}
+
 .course-info-container {
-  @apply flex flex-col gap-6 w-full;
+  @apply flex flex-col gap-6 w-full box-border;
 }
 
 .course-purchase-container {
-  @apply flex flex-col gap-6 w-95% bg-black;
+  @apply flex flex-col gap-6 w-full bg-black mb-6 box-border;
 }
 
 @media (min-width: 768px) {
