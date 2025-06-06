@@ -40,47 +40,29 @@ export default defineComponent({
 
 <style scoped>
 .notify-container {
-  width: 100%;
-  box-sizing: border-box;
-  display: flex;
-  align-items: flex-start;
-  border: 1px solid rgba(255, 255, 255, 0.2);
-  background-color: rgba(255, 255, 255, 0.05);
-  padding: 1.5rem;
-  margin: 15px 0;
-  border-radius: 0.125rem;
+  @apply w-full box-border flex items-start border border-solid border-white/20 bg-white/5 p-6 my-[15px] rounded-[0.125rem];
 }
 
 .notify-header {
-  display: flex;
-  align-items: center;
-  margin-right: 1rem;
+  @apply flex items-center mr-4;
 }
 
 .notify-content {
-  display: flex;
-  flex-direction: row;
-  align-items: center;
-  flex-wrap: wrap;
-  gap: 0.5rem;
+  @apply flex flex-row items-center flex-wrap gap-2;
 }
 
 /* 手機版響應式設計 */
 @media (max-width: 768px) {
   .notify-container {
-    flex-direction: column;
-    padding: 0.75rem;
-    max-height: none;
+    @apply flex-col p-3 max-h-none;
   }
 
   .notify-header {
-    margin-right: 0;
-    margin-bottom: 0.5rem;
+    @apply mr-0 mb-2;
   }
 
   .notify-content {
-    flex-direction: column;
-    align-items: flex-start;
+    @apply flex-col items-start;
   }
 }
 </style>

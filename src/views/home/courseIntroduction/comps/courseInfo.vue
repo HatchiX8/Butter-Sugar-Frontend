@@ -1,14 +1,9 @@
 <template>
   <div class="course-section">
-    <!-- 課程資訊區塊 -->
-    <div class="course-info-container">
-      <courseDetail :course-data="courseData" />
-    </div>
-
-    <!-- 購買課程區塊 -->
-    <div class="course-purchase-container bg-black">
+    <!-- 購買課程區塊 (手機版時顯示在上方) -->
+    <div class="course-purchase-container order-first md:order-last">
       <div class="course-price-section">
-        <div class="price-label">購買課程</div>
+        <typography variant="h6" font-type="title" class="text-neutral-200">購買課程</typography>
         <div class="price-display">
           <typography variant="h3" font-type="title" class="current-price">NT$ {{ courseData?.price?.toLocaleString() || '4,200' }}</typography>
           <div class="original-price">NT$ {{ courseData?.originPrice?.toLocaleString() || '9,800' }}</div>
@@ -29,6 +24,11 @@
           </div>
         </n-button>
       </div>
+    </div>
+
+    <!-- 課程資訊區塊 -->
+    <div class="course-info-container order-last md:order-first">
+      <courseDetail :course-data="courseData" />
     </div>
   </div>
 </template>
@@ -67,110 +67,84 @@ const handleAddToCart = () => {
 
 <style scoped>
 .course-section {
-  width: 100%;
-  display: flex;
-  flex-direction: column;
-  gap: 1.5rem;
-  margin-top: 3.75rem;
-  max-width: 1280px;
-  margin: 0 auto;
+  @apply w-full flex flex-col gap-6 mt-[3.75rem] max-w-[1280px] mx-auto items-center;
 }
 
 @media (min-width: 768px) {
   .course-section {
-    flex-direction: row;
+    @apply flex-row items-start;
   }
 }
 
 .course-info-container, .course-purchase-container {
-  border: 1px solid rgba(255, 255, 255, 0.2);
-  padding: 1.5rem;
-  border-radius: 0.125rem;
+  @apply border border-white/20 p-6 rounded-[0.125rem];
 }
 
 .course-info-container {
-  display: flex;
-  flex-direction: column;
-  gap: 1.5rem;
-  width: 845px;
+  @apply flex flex-col gap-6 w-full;
 }
 
 .course-purchase-container {
-  display: flex;
-  flex-direction: column;
-  gap: 2.5rem;
-  width: 411px;
+  @apply flex flex-col gap-6 w-95% bg-black;
+}
+
+@media (min-width: 768px) {
+  .course-info-container {
+    @apply w-[845px];
+  }
+
+  .course-purchase-container {
+    @apply w-[411px];
+  }
 }
 
 .course-price-section {
-  display: flex;
-  flex-direction: column;
-  align-items: flex-start;
-  margin-bottom: 1.5rem;
+  @apply flex flex-col items-start;
 }
 
 .price-label {
-  color: white;
-  font-size: 1.25rem;
-  font-weight: 600;
-  margin-bottom: 0.5rem;
+  @apply text-white text-xl font-semibold mb-2;
 }
 
 .price-display {
-  display: flex;
-  align-items: baseline;
-  gap: 1rem;
+  @apply flex items-baseline gap-4;
 }
 
 .current-price {
-  color: white;
-  font-size: 2rem;
-  font-weight: 700;
+  @apply text-white text-2xl font-bold;
 }
 
 .original-price {
-  color: rgba(255, 255, 255, 0.6);
-  text-decoration: line-through;
-  font-size: 1rem;
+  @apply text-white/60 line-through text-base;
 }
 
 .action-buttons {
-  display: flex;
-  gap: 0.75rem;
+  @apply flex gap-3;
 }
 
 @media (max-width: 767px) {
   .action-buttons {
-    flex-direction: column;
+    @apply flex-col;
   }
 }
 
 .purchase-button, .cart-button {
-  height: 3rem;
-  font-size: 1rem;
-  font-weight: 600;
-  flex: 1;
+  @apply text-base font-semibold flex-1 p-6 max-h-12;
 }
 
 .purchase-button {
-  background-color: #F5A623;
-  border: none;
+  @apply bg-primaryDefault border-none;
 }
 
 .purchase-button:hover {
-  background-color: #e69b1f;
+  @apply bg-primaryLight;
 }
 
 .cart-button {
-  background-color: transparent;
-  border: 1px solid white;
-  color: white;
+  @apply bg-transparent border border-white text-white;
 }
 
 .button-content {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  gap: 0.5rem;
+  @apply flex items-center justify-center gap-2;
 }
 </style>

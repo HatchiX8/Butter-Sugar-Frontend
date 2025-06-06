@@ -1,6 +1,6 @@
 <template>
   <div class="course-info-header">
-    <typography variant="h2" font-type="title" class="text-white">課程資訊</typography>
+    <typography variant="h2" font-type="title" class="text-white" underline>課程資訊</typography>
   </div>
   <!-- 課程資訊內容 -->
   <div class="course-info-content">
@@ -8,7 +8,7 @@
       <div class="icon-container">
         <div class="i-ion:star text-primary-light"></div>
       </div>
-      <div>開課日期 {{ formatDate(courseData?.created_at) || '2025/06/06' }}</div>
+      <div>開課日期 {{ formatDate(courseData?.created_at) || '尚未開課' }}</div>
     </div>
     <div class="info-item">
       <div class="icon-container">
@@ -20,13 +20,13 @@
       <div class="icon-container">
         <div class="i-ion:time-outline text-primary-light"></div>
       </div>
-      <div>課程時數 {{ courseData?.hours || 11 }} 小時</div>
+      <div>課程時數 {{ courseData?.hours || " - " }} 小時</div>
     </div>
     <div class="info-item">
       <div class="icon-container">
         <div class="i-ion:people text-primary-light"></div>
       </div>
-      <div>學員人數 {{ formatNumber(courseData?.students || 1308) }} 人</div>
+      <div>學員人數 {{ formatNumber(courseData?.students || 0) }} 人</div>
     </div>
   </div>
 </template>
@@ -67,30 +67,24 @@ defineProps<{
 
 <style scoped>
 .course-info-header {
-  margin-bottom: 1.5rem;
-  border-bottom: 1px solid rgba(255, 255, 255, 0.2);
-  padding-bottom: 1rem;
+  @apply border-b border-white/20 ;
 }
 
 .course-info-content {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 1rem;
+  @apply flex flex-wrap gap-4;
 }
 
 .info-item {
-  display: flex;
-  align-items: center;
-  gap: 0.75rem;
-  color: white;
-  width: calc(50% - 0.5rem);
+  @apply flex items-center gap-4 text-white w-full;
+}
+
+@media (min-width: 768px) {
+  .info-item {
+    @apply w-[calc(50%-0.5rem)];
+  }
 }
 
 .icon-container {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  width: 16px;
-  height: 16px;
+  @apply flex items-center justify-center w-4 h-4;
 }
 </style>
