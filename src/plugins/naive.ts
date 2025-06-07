@@ -48,7 +48,7 @@ export function withNaiveProviders(App: Component) {
               },
               Button: {
                 // Default
-                color: colors.neutral_600,
+                color: 'none',
                 colorHover: colors.neutral_600,
                 colorPressed: colors.neutral_600,
                 colorFocus: colors.neutral_600,

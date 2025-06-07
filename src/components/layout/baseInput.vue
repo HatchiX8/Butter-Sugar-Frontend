@@ -4,7 +4,6 @@
     :type="type"
     :placeholder="placeholder"
     :disabled="disabled"
-    :autosize="type === 'textarea'"
     :input-props="inputAttrs"
   />
 </template>
