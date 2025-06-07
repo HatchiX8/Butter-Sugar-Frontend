@@ -6,6 +6,7 @@
       <courseIntro />
       <courseChapter />
       <faq />
+      <courseFaq />
     </div>
 
     <!-- 右欄內容：購買課程和講師介紹 -->
@@ -30,6 +31,7 @@ import coursePurchase from './coursePurchase.vue';
 import courseIntro from './courseIntro.vue';
 import courseChapter from './courseChapter.vue';
 import faq from './faq.vue';
+import courseFaq from './courseFaq.vue';
 
 interface CourseData {
   id?: number;

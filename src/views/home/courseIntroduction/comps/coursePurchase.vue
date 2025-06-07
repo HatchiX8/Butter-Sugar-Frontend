@@ -100,12 +100,6 @@ const handleAddToCart = () => {
   @apply flex gap-3;
 }
 
-@media (max-width: 767px) {
-  .action-buttons {
-    @apply flex-col;
-  }
-}
-
 .purchase-button, .cart-button {
   @apply text-base font-semibold flex-1 p-6 max-h-12;
 }
