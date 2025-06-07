@@ -17,15 +17,14 @@
       <p class="text-5 md:text-8 text-neutral-200 font-['ChenYuluoyan'] py-2">
         點擊下方按鈕，開始探索百變風味的烘焙世界，滿足你的甜點靈感！
       </p>
-      <n-button type="primary" class="mt-4" @click="goToCourses">
-        <span>前往我的課程</span>
-      </n-button>
+      <baseButton label="前往我的課程" type="primary" @click="goToCourses" class="mt-4" />
     </div>
   </section>
 </template>
 
 <script setup lang="ts">
 import { useRouter } from 'vue-router';
+import baseButton from '@/components/layout/baseButton.vue';
 
 const router = useRouter();
 

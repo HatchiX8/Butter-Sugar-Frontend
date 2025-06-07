@@ -29,10 +29,7 @@
 
       <!-- 按鈕 -->
       <div class="text-right mt-10">
-        <n-button>
-          <span class="text-white">立即加入學習 GO</span>
-          <span class="inline-block w-4 h-4 ml-1 i-ion:arrow-forward color-white"></span>
-        </n-button>
+        <baseButton label="立即加入學習 GO" icon="i-ion:arrow-forward" iconPosition="right" iconClass="w-4 h-4" class="text-white" />
       </div>
     </div>
   </div>
@@ -41,6 +38,7 @@
 <script setup lang="ts">
 import mapCardItem from '@/views/home/homeDashboard/comps/mapCardItem.vue';
 import typography from '@/components/layout/typography.vue';
+import baseButton from '@/components/layout/baseButton.vue';
 
 const tags = [
   'HD 高清影音',

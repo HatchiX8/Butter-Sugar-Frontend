@@ -45,9 +45,7 @@
               <div class="font-bold line-height-5 text-white clamped-text">{{ item.course_name }}</div>
               <div class="text-3.5 text-neutral_200 mt-2">{{ formatCurrency(item.price) }}</div>
             </div>
-            <n-button text @click="cartStore.removeItem(item.course_id)">
-              <div class="i-ion:trash-outline w-4 h-4 color-neutral_200 hover:text-primaryDefault"></div>
-            </n-button>
+            <baseButton text @click="cartStore.removeItem(item.course_id)" icon="i-ion:trash-outline" iconClass="w-4 h-4 text-neutral_200 hover:text-primaryDefault" />
           </div>
         </div>
 
@@ -57,10 +55,7 @@
             <div class="text-3.5 text-neutral_200">總計 {{ cartStore.itemCount }} 項商品</div>
             <div class="text-5 font-bold text-white">{{ formatCurrency(cartStore.totalPrice) }}</div>
           </div>
-          <n-button type="primary" class="w-full mb-2" @click="goToCart">
-            <span>前往購物車</span>
-            <span class="inline-block align-middle w-3.5 h-3.5 i-ion:arrow-forward ml-1 color-white"></span>
-          </n-button>
+          <baseButton label="前往購物車" type="primary" @click="goToCart" icon="i-ion:arrow-forward" iconPosition="right" class="w-full mb-2" />
         </div>
       </template>
     </div>
@@ -71,6 +66,7 @@
 import { useCartStore } from '@/stores/models/cart/store';
 import { useCartUIStore } from '@/stores/models/cart/uiStore';
 import { useRouter } from 'vue-router';
+import baseButton from '@/components/layout/baseButton.vue';
 
 const cartStore = useCartStore();
 const uiCartStore = useCartUIStore();

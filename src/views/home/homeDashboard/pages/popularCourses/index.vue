@@ -1,5 +1,5 @@
 <template>
-  <div class="py-15 bg-neutral_600 overflow-x-hidden">
+  <div class="px-12 py-15 bg-neutral_600 overflow-x-hidden">
     <div class="mx-auto max-w-[1200px]">
       <!-- 標題 -->
       <div class="mb-8 flex justify-center">
@@ -27,10 +27,7 @@
 
       <!-- 按鈕 -->
       <div class="mt-10 text-center md:text-right">
-        <n-button>
-          <span class="text-white">更多課程</span>
-          <span class="inline-block w-4 h-4 ml-1 i-ion:arrow-forward color-white"></span>
-        </n-button>
+        <baseButton label="更多課程" icon="i-ion:arrow-forward" iconPosition="right" iconClass="w-4 h-4" class="text-white" />
       </div>
     </div>
   </div>
@@ -40,6 +37,7 @@
 import { ref } from 'vue';
 import courseCardItem from '@/views/home/homeDashboard/comps/courseCardItem.vue';
 import typography from '@/components/layout/typography.vue';
+import baseButton from '@/components/layout/baseButton.vue';
 
 interface Course {
   courseImgUrl: string

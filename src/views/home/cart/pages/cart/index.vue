@@ -36,15 +36,7 @@
                   {{ formatCurrency(item.price) }}
                 </div>
                 <!-- 移除按鈕 -->
-                <div class="flex items-center justify-end gap-2">
-                  <n-button text @click="openConfirmModal(item)">
-                    <span class="text-neutral_300 hover:text-primaryDefault">移除</span>
-                    <div class="i-ion:trash-outline w-4 h-4 ml-1 text-neutral_300 hover:text-primaryDefault"></div>
-                  </n-button>
-                  <n-button text @click="cartStore.removeItem(item.course_id)">
-
-                  </n-button>
-                </div>
+                <baseButton text label="移除" @click="openConfirmModal(item)" icon="i-ion:trash-outline" iconPosition="right" iconClass="w-4 h-4 text-neutral_200 hover:text-primaryDefault" labelClass="text-neutral_200 hover:text-primaryDefault" />
               </div>
             </div>
           </div>
@@ -73,9 +65,7 @@
             <span>總計</span>
             <span class="text-white text-5">{{ formatCurrency(totalPrice) }}</span>
           </div>
-          <n-button type="primary" class="mt-4 w-full" :disabled="itemCount === 0" @click="goToCheckout">
-            前往結帳
-          </n-button>
+          <baseButton label="前往結帳" type="primary" @click="goToCheckout" :disabled="itemCount === 0" class="mt-4 w-full" />
         </div>
       </div>
     </div>
@@ -88,6 +78,7 @@ import { useCartStore } from '@/stores/models/cart/store';
 import { storeToRefs } from 'pinia';
 import { useRouter } from 'vue-router';
 import confirmModal from '@/views/home/cart/comps/confirmModal.vue';
+import baseButton from '@/components/layout/baseButton.vue';
 
 const cartStore = useCartStore();
 const { cartItems, itemCount, totalPrice } = storeToRefs(cartStore);

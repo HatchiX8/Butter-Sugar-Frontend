@@ -15,14 +15,14 @@
         @close="show = false"
         class="w-150"
       >
-        <div class="max-h-[60vh] text-4 leading-normal">
+        <div class="overflow-y-auto max-h-[60vh] text-4 leading-normal">
           <slot />
           <div class="mt-2">{{ detail }}</div>
         </div>
         <template #footer v-if="showFooter">
           <div class="flex justify-end gap-2 mt-4">
-            <n-button @click="onCancel">{{ cancelText }}</n-button>
-            <n-button type="primary" @click="onConfirm">{{ confirmText }}</n-button>
+            <baseButton :label="cancelText" @click="onCancel" />
+            <baseButton :label="confirmText" type="primary" @click="onConfirm" />
           </div>
         </template>
       </n-card>
@@ -33,6 +33,7 @@
 <script setup lang="ts">
 import { ref, watch } from 'vue';
 import { hexToRgba, themeColors } from '@/utils';
+import baseButton from '@/components/layout/baseButton.vue';
 
 interface Props {
   modelValue: boolean

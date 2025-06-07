@@ -1,5 +1,5 @@
 <template>
-  <BaseModal
+  <baseModal
     :modelValue="modelValue"
     @update:modelValue="(val) => emit('update:modelValue', val)"
     title="Butter&Sugar 服務契約"
@@ -22,11 +22,11 @@
         </li>
       </ol>
     </div>
-  </BaseModal>
+  </baseModal>
 </template>
 
 <script setup lang="ts">
-import BaseModal from '@/components/layout/baseModal.vue';
+import baseModal from '@/components/layout/baseModal.vue';
 
 defineProps<{ modelValue: boolean }>();
 const emit = defineEmits<{ (e: 'update:modelValue', value: boolean): void }>();
