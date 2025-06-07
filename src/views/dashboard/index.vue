@@ -1,5 +1,5 @@
 <template>
-  <div>講師頁面</div>
+  <div class="text-white">講師頁面</div>
   <div class="h-100dvh flex flex-col md:flex-row">
     <div class="w-full md:w-1/4">
       <n-menu
