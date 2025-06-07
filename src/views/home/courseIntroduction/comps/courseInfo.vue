@@ -4,6 +4,7 @@
     <div class="course-info-container border-solid border-white/10 order-last md:order-first gap-25">
       <courseDetail :course-data="courseData" />
       <courseIntro />
+      <courseChapter />
     </div>
 
     <!-- 右欄內容：購買課程和講師介紹 -->
@@ -26,6 +27,7 @@ import courseDetail from './courseDetail.vue';
 import teacherIntro from './teacherIntro.vue';
 import coursePurchase from './coursePurchase.vue';
 import courseIntro from './courseIntro.vue';
+import courseChapter from './courseChapter.vue';
 
 interface CourseData {
   id?: number;
