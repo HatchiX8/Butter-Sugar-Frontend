@@ -1,3 +1,177 @@
 <template>
-  <div>課程簡介</div>
+  <div>
+    <div class="mb-5">
+      <p>「撰寫一個吸引人的課程簡介」</p>
+      <br />
+      <ul>
+        <li>
+          <p>課程名稱：簡單明瞭，能夠立即傳達課程主題。</p>
+        </li>
+        <li>
+          <p>課程簡介：用幾句話概述課程內容，強調獨特價值</p>
+        </li>
+        <li>
+          <p>適合對象：明確說明此課程適合哪些學員，如初學者、進階學員或專業人士。</p>
+        </li>
+        <li>
+          <p>課程長度與章節：說明學習時間，幫助學生規劃學習進度。</p>
+        </li>
+        <li>
+          <p>學習收穫：告知學生完成課程後能夠掌握的技能與應用。</p>
+        </li>
+        <li>
+          <p>課程圖片：視覺是學生對課程的第一印象，請選擇一張專屬於課程的封面</p>
+        </li>
+      </ul>
+    </div>
+    <div class="mb-5">
+      <p>課程圖片</p>
+      <div class="h-50 w-50 bg-yellow-900">圖片內容</div>
+    </div>
+    <div class="w-40%">
+      <div class="mb-5">
+        <p>課程名稱</p>
+        <n-input type="text" placeholder="請輸入課程名稱" class="bg-black focus:outline-none" />
+      </div>
+      <div class="mb-5">
+        <p>課程描述</p>
+        <n-input type="text" placeholder="請輸入課程描述" class="bg-black focus:outline-none" />
+      </div>
+      <div class="w-40% mb-5">
+        <p>課程類別</p>
+        <n-space vertical>
+          <n-select v-model:value="value" :options="options" placeholder="請選擇類別" />
+        </n-space>
+      </div>
+      <div class="mb-5">
+        <p>課程簡介</p>
+        <n-input type="text" placeholder="請輸入課程簡介" class="bg-black focus:outline-none" />
+      </div>
+      <div class="mb-5">
+        <p>課程簡介說明圖片</p>
+        <div class="mb-5 flex gap-3">
+          <div class="w-50 h-40 bg-yellow-900">圖片內容</div>
+          <div class="w-50 h-40 bg-yellow-900">圖片內容</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="mb-5">
+      <p>課前準備</p>
+      <div class="mb-5">
+        <p>預告片</p>
+        <div class="w-40% flex items-center justify-between">
+          <!-- 左邊：已上傳影片 (這邊你之後可以放影片預覽 或 file name 等) -->
+          <div v-show="isVideo" class="mr-4 flex-1">
+            <n-upload
+              ref="videoUploadRef"
+              accept="video/mp4"
+              :max="1"
+              :custom-request="customVideoUpload"
+              :show-file-list="true"
+              :show-trigger="false"
+              @remove="handleVideoRemove"
+            />
+          </div>
+          <div v-show="!isVideo">尚未選擇影片</div>
+          <!-- 右邊：上傳按鈕 -->
+          <div>
+            <n-button @click="triggerVideoUpload">上傳影片</n-button>
+          </div>
+        </div>
+      </div>
+      <div class="mb-5">
+        <p>課程講義</p>
+        <div class="w-40% flex items-center justify-between">
+          <!-- 左邊：已上傳影片 (這邊你之後可以放影片預覽 或 file name 等) -->
+          <div v-show="isFile" class="mr-4 flex-1">
+            <n-upload
+              ref="fileUploadRef"
+              accept="video/mp4,application/pdf,application/vnd.ms-powerpoint,application/vnd.openxmlformats-officedocument.presentationml.presentation,application/msword,application/vnd.openxmlformats-officedocument.wordprocessingml.document"
+              :max="1"
+              :custom-request="customFileUpload"
+              :show-file-list="true"
+              :show-trigger="false"
+              @remove="handleFileRemove"
+            />
+          </div>
+          <div v-show="!isFile">尚未選擇檔案</div>
+          <!-- 右邊：上傳按鈕 -->
+          <div>
+            <n-button @click="triggerFileUpload">上傳檔案</n-button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="w-40%">
+      <div class="mb-5">
+        <p>適合對象</p>
+        <n-input type="text" placeholder="請輸入適合對象" class="bg-black focus:outline-none" />
+      </div>
+      <div class="mb-5">
+        <p>課程目標</p>
+        <n-input type="text" placeholder="請輸入課程目標" class="bg-black focus:outline-none" />
+      </div>
+    </div>
+  </div>
 </template>
+
+<script setup lang="ts">
+import { ref } from 'vue';
+
+const options = [
+  { label: '麵包', value: 'bank01' },
+  { label: '蛋糕', value: 'bank02' },
+  { label: '餅乾', value: 'bank03' },
+];
+const value = ref(options[0].value);
+
+// -----------影片上傳-----------
+const videoUploadRef = ref();
+const isVideo = ref(false);
+const triggerVideoUpload = () => {
+  // 拿到內部 input element 手動 click
+  const inputEl = videoUploadRef.value?.$el?.querySelector('input[type="file"]');
+  if (inputEl) {
+    inputEl.click();
+  } else {
+    console.warn('找不到 input element');
+  }
+};
+
+const customVideoUpload = () => {
+  console.log('影片後續API函式');
+  isVideo.value = true;
+};
+
+const handleVideoRemove = () => {
+  console.log('使用者移除影片');
+  isVideo.value = false;
+};
+// -----------------------------
+
+// -----------檔案上傳-----------
+const fileUploadRef = ref();
+const isFile = ref(false);
+const triggerFileUpload = () => {
+  // 拿到內部 input element 手動 click
+  const inputEl = fileUploadRef.value?.$el?.querySelector('input[type="file"]');
+  if (inputEl) {
+    inputEl.click();
+  } else {
+    console.warn('找不到 input element');
+  }
+};
+
+const customFileUpload = () => {
+  console.log('檔案後續API函式');
+  isFile.value = true;
+};
+
+const handleFileRemove = () => {
+  console.log('使用者移除檔案');
+  isFile.value = false;
+};
+// -----------------------------
+</script>
