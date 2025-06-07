@@ -2,7 +2,7 @@
   <section class="relative w-full overflow-hidden mt-20">
     <!-- 桌面版佈局 -->
     <desktopHeroLayout
-      :course-data="courseData"
+      :course-data="props.courseData"
       :course-hero-image="courseHeroImage"
       @purchase="handlePurchase"
       @toggle-bookmark="handleToggleBookmark"
@@ -10,7 +10,7 @@
 
     <!-- 移動端佈局 -->
     <mobileHeroLayout
-      :course-data="courseData"
+      :course-data="props.courseData"
       :course-hero-image="courseHeroImage"
       @purchase="handlePurchase"
       @toggle-bookmark="handleToggleBookmark"

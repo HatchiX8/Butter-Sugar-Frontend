@@ -60,9 +60,9 @@ const props = withDefaults(defineProps<{
 
 const isDesktop = computed(() => props.variant === 'desktop')
 
-const teacherVariant = computed(() => isDesktop.value ? 'h5' : 'body1')
+const teacherVariant = computed(() => isDesktop.value ? 'h5' : 'h6')
 const titleVariant = computed(() => isDesktop.value ? 'h1' : 'h3')
-const descriptionVariant = computed(() => isDesktop.value ? 'h5' : 'body1')
+const descriptionVariant = computed(() => isDesktop.value ? 'h5' : 'h6')
 
 const titleClass = computed(() =>
   isDesktop.value

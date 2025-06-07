@@ -41,7 +41,6 @@ const course = ref([
 ])
 
 const activeTab = ref('info')
-const showNotify = ref(true)
 
 // 取得對應ID的課程資料
 const courseData = course.value[0]
