@@ -32,7 +32,7 @@ const menuOptions: MenuOption[] = [
   },
   {
     label: '建立新課程',
-    key: 'NewCourse',
+    key: 'courseAction/addCourse',
   },
 ];
 

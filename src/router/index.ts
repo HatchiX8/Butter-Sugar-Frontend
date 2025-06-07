@@ -76,9 +76,21 @@ const router = createRouter({
           component: () => import('@/views/dashboard/courseInfo/index.vue'),
         },
         {
-          path: 'newCourse',
-          name: 'NewCourse',
-          component: () => import('@/views/dashboard/newCourse/index.vue'),
+          path: 'courseAction',
+          name: 'CourseAction',
+          component: () => import('@/views/dashboard/courseAction/index.vue'),
+          children: [
+            {
+              path: 'addCourse',
+              name: 'AddCourse',
+              component: () => import('@/views/dashboard/courseAction/pages/addCourse/index.vue'),
+            },
+            {
+              path: 'editCourse',
+              name: 'EditCourse',
+              component: () => import('@/views/dashboard/courseAction/pages/editCourse/index.vue'),
+            },
+          ],
         },
       ], // 講師後台
     },
