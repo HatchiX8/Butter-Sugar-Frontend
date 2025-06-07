@@ -5,6 +5,7 @@
       <courseDetail :course-data="courseData" />
       <courseIntro />
       <courseChapter />
+      <faq />
     </div>
 
     <!-- 右欄內容：購買課程和講師介紹 -->
@@ -28,6 +29,7 @@ import teacherIntro from './teacherIntro.vue';
 import coursePurchase from './coursePurchase.vue';
 import courseIntro from './courseIntro.vue';
 import courseChapter from './courseChapter.vue';
+import faq from './faq.vue';
 
 interface CourseData {
   id?: number;

@@ -2,7 +2,6 @@
   <div class="flex flex-col gap-6 w-full">
     <typography variant="h2" font-type="title" class="text-white" underline>章節內容</typography>
 
-    <div class="chapter-content">
       <n-collapse arrow-placement="right">
         <n-collapse-item title="章節一：課前準備與講義下載" name="1">
           <router-link to="/">
@@ -44,7 +43,6 @@
           </router-link>
         </n-collapse-item>
       </n-collapse>
-    </div>
   </div>
 </template>
 
