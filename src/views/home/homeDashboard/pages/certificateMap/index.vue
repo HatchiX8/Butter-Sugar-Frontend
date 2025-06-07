@@ -29,7 +29,9 @@
 
       <!-- 按鈕 -->
       <div class="text-right mt-10">
-        <baseButton label="立即加入學習 GO" icon="i-ion:arrow-forward" iconPosition="right" iconClass="w-4 h-4" class="text-white" />
+        <router-link :to="`/home/course-info`">
+          <baseButton label="立即加入學習 GO" icon="i-ion:arrow-forward" iconPosition="right" iconClass="w-4 h-4" class="text-white" />
+        </router-link>
       </div>
     </div>
   </div>

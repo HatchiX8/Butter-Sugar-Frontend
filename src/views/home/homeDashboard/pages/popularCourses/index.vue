@@ -27,7 +27,9 @@
 
       <!-- 按鈕 -->
       <div class="mt-10 text-center md:text-right">
-        <baseButton label="更多課程" icon="i-ion:arrow-forward" iconPosition="right" iconClass="w-4 h-4" class="text-white" />
+        <router-link :to="`/home/course-info`">
+          <baseButton label="更多課程" icon="i-ion:arrow-forward" iconPosition="right" iconClass="w-4 h-4" class="text-white" />
+        </router-link>
       </div>
     </div>
   </div>
