@@ -4,12 +4,12 @@
 
     <div class="chapter-content">
       <n-collapse arrow-placement="right">
-        <n-collapse-item title="章節一：課前準備與講義下載" name="1" class="px-3 py-4">
+        <n-collapse-item title="章節一：課前準備與講義下載" name="1">
           <router-link to="/">
             <typography variant="paragraph-medium" font-type="content" class="text-white mb-2 px-3 py-2">1-1 | 歐式麵包風格概論：從長棍到拖鞋麵包 (5:12)</typography>
           </router-link>
         </n-collapse-item>
-        <n-collapse-item title="章節二：理解歐式麵包與高水量麵糰的基礎理論" name="2" class="px-3 py-4">
+        <n-collapse-item title="章節二：理解歐式麵包與高水量麵糰的基礎理論" name="2">
           <div class="text-white">
             <router-link to="/">
               <typography variant="paragraph-medium" font-type="content" class="text-white mb-2 px-3 py-2">1-1 | 歐式麵包風格概論：從長棍到拖鞋麵包 (5:12)</typography>
@@ -28,17 +28,17 @@
             </router-link>
           </div>
         </n-collapse-item>
-        <n-collapse-item title="章節三：發酵過程全解析（時間 × 酵母 × 環境）" name="3" class="px-3 py-4">
+        <n-collapse-item title="章節三：發酵過程全解析（時間 × 酵母 × 環境）" name="3">
           <router-link to="/">
             <typography variant="paragraph-medium" font-type="content" class="text-white mb-2 px-3 py-2">1-1 | 歐式麵包風格概論：從長棍到拖鞋麵包 (5:12)</typography>
           </router-link>
         </n-collapse-item>
-        <n-collapse-item title="章節四：經典高水量歐式麵包實作教學" name="4" class="px-3 py-4">
+        <n-collapse-item title="章節四：經典高水量歐式麵包實作教學" name="4">
           <router-link to="/">
             <typography variant="paragraph-medium" font-type="content" class="text-white mb-2 px-3 py-2">1-1 | 歐式麵包風格概論：從長棍到拖鞋麵包 (5:12)</typography>
           </router-link>
         </n-collapse-item>
-        <n-collapse-item title="章節五：進階實作與個人風格開發" name="5" class="px-3 py-4">
+        <n-collapse-item title="章節五：進階實作與個人風格開發" name="5">
           <router-link to="/">
             <typography variant="paragraph-medium" font-type="content" class="text-white mb-2 px-3 py-2">1-1 | 歐式麵包風格概論：從長棍到拖鞋麵包 (5:12)</typography>
           </router-link>
@@ -69,5 +69,9 @@ import {NCollapse,NCollapseItem} from 'naive-ui';
 
 .n-collapse .n-collapse-item .n-collapse-item__content-inner {
   @apply text-white;
+}
+
+.n-collapse .n-collapse-item {
+  border: none !important;
 }
 </style>
