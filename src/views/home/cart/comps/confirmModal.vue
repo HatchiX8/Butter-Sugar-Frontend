@@ -1,5 +1,5 @@
 <template>
-  <BaseModal
+  <baseModal
     :modelValue="modelValue"
     @update:modelValue="(val) => emit('update:modelValue', val)"
     title="確定移除此課程嗎？"
@@ -7,11 +7,11 @@
     :showFooter="true"
     :onConfirm="handleConfirm"
     >
-  </BaseModal>
+  </baseModal>
 </template>
 
 <script setup lang="ts">
-import BaseModal from '@/components/layout/baseModal.vue';
+import baseModal from '@/components/layout/baseModal.vue';
 import { useCartStore } from '@/stores/models/cart/store';
 
 const props = defineProps<{

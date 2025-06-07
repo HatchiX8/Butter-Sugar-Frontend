@@ -11,10 +11,10 @@
           <nav class="flex max-w-[596px] items-center gap-4">
             <a href="#" class="p-2 text-white no-underline">探索課程</a>
             <div class="pos-relative flex items-center justify-between">
-              <n-input
+              <baseInput
                 type="text"
                 placeholder="輸入關鍵字搜尋"
-                class="w-300px h-48px bg-black leading-[48px] focus:outline-none"
+                class="w-300px h-48px leading-[48px]"
               />
               <div
                 class="i-ion:search-outline pos-absolute text-5 text-neutral_300 right-2 top-1/2 -translate-y-1/2 cursor-pointer"
@@ -43,6 +43,7 @@ import cartSidebar from './cartSidebar.vue';
 import { useCartStore } from '@/stores/models/cart/store';
 import { useCartUIStore } from '@/stores/models/cart/uiStore';
 import { onMounted } from 'vue';
+import baseInput from '@/components/layout/baseInput.vue';
 
 const cartStore = useCartStore();
 const uiCartStore = useCartUIStore();
