@@ -10,14 +10,14 @@
     </div>
 
     <div class="action-buttons">
-      <n-button type="primary" size="large" class="purchase-button" @click="handlePurchase">
+      <n-button type="primary" size="large" class="purchase-button max-w-132px" @click="handlePurchase">
         <div class="button-content">
           <typography variant="paragraph-regular" font-type="content" class="text-neutral-100">立即購課</typography>
           <div class="i-ion:arrow-forward-outline cursor-pointer w-5 h-5"></div>
         </div>
       </n-button>
 
-      <n-button size="large" class="cart-button" @click="handleAddToCart">
+      <n-button size="large" class="cart-button max-w-146px" @click="handleAddToCart">
         <div class="button-content">
           <typography variant="paragraph-regular" font-type="content" class="text-neutral-100">加入購物車</typography>
           <div class="i-ion:cart cursor-pointer w-5 h-5"></div>

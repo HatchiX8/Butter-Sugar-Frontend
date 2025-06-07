@@ -27,7 +27,7 @@
       </typography>
     </div>
 
-      <n-button size="large" class="px-3 py-6">
+      <n-button size="large" class="px-3 py-6 max-w-164px">
         <div class="flex items-center gap-1">
           <typography variant="paragraph-regular" font-type="content" class="text-neutral-100">前往講師頁面</typography>
           <div class="i-ion:arrow-forward-outline cursor-pointer w-5 h-5"></div>

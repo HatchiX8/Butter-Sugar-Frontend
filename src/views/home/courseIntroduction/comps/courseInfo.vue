@@ -1,17 +1,18 @@
 <template>
   <div class="course-section">
     <!-- 課程資訊區塊 (左欄) -->
-    <div class="course-info-container border-solid border-white/10 order-last md:order-first">
+    <div class="course-info-container border-solid border-white/10 order-last md:order-first gap-25">
       <courseDetail :course-data="courseData" />
+      <courseIntro />
     </div>
 
     <!-- 右欄內容：購買課程和講師介紹 -->
     <div class="right-column order-first md:order-last">
       <!-- 購買課程區塊 -->
-      <coursePurchase 
-        :course-data="courseData" 
-        @purchase="handlePurchase" 
-        @add-to-cart="handleAddToCart" 
+      <coursePurchase
+        :course-data="courseData"
+        @purchase="handlePurchase"
+        @add-to-cart="handleAddToCart"
       />
 
       <!-- 講師介紹區塊 -->
@@ -24,6 +25,7 @@
 import courseDetail from './courseDetail.vue';
 import teacherIntro from './teacherIntro.vue';
 import coursePurchase from './coursePurchase.vue';
+import courseIntro from './courseIntro.vue';
 
 interface CourseData {
   id?: number;
