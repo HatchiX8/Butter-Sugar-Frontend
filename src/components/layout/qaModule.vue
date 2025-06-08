@@ -201,7 +201,7 @@ const submitReply = (idx: number): void => {
 }
 
 /* ---------- 儲存 ---------- */
-const syncStorageAndBackend = async (): Promise<void> =>{
+const syncStorageAndBackend = async (): Promise<void> => {
   localStorage.setItem('qaList', JSON.stringify(qaList.value))
   try {
     await axios.post('/api/saveQa', qaList.value)
