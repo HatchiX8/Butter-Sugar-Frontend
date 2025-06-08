@@ -164,7 +164,7 @@ const filteredQaList = computed(() => {
 })
 
 /* ---------- 新增提問 ---------- */
-function addQuestion() {
+const addQuestion = (): void => {
   const q = newQuestion.value.trim()
   if (!q) return
   qaList.value.push({
@@ -180,11 +180,11 @@ function addQuestion() {
 }
 
 /* ---------- 回覆邏輯 ---------- */
-function cancelReply(idx: number) {
+const cancelReply = (idx: number): void => {
   replyDraft.value[idx] = ''
 }
 
-function submitReply(idx: number) {
+const submitReply = (idx: number): void => {
   const txt = replyDraft.value[idx].trim()
   if (!txt) return
   const now = new Date().toLocaleString()
@@ -201,7 +201,7 @@ function submitReply(idx: number) {
 }
 
 /* ---------- 儲存 ---------- */
-async function syncStorageAndBackend() {
+const syncStorageAndBackend = async (): Promise<void> =>{
   localStorage.setItem('qaList', JSON.stringify(qaList.value))
   try {
     await axios.post('/api/saveQa', qaList.value)
@@ -211,7 +211,7 @@ async function syncStorageAndBackend() {
 }
 
 /* ---------- 其他 ---------- */
-function showAll() {
+const showAll = (): void => {
   filterOption.value = ''
 }
 </script>
