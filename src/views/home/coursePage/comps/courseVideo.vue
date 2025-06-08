@@ -223,9 +223,9 @@ const menuThemeOverrides = ref<ThemeOverrides>({
 })
 
 // 5. 點選影片後切換 src
-function switchVideo(key: string) {
+const switchVideo = (key: string): void => {
   currentVideoSrc.value = key
-  currentVideoLabel.value = urlToLabelMap.get(key) || ''// 從 map 裡找對應的標題文字，如果沒找到就給空字串
+  currentVideoLabel.value = urlToLabelMap.get(key) || ''
   const v = videoRef.value
   if (v) {
     v.load()
