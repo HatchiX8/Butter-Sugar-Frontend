@@ -17,7 +17,12 @@
         <instructorCardItem
           v-for="(item, index) in instructors"
           :key="index"
-          v-bind="item"
+          :teacherImgUrl="item.teacherImgUrl"
+          :teacherImgAlt="item.teacherImgAlt"
+          :name="item.name"
+          :nickname="item.nickname"
+          :teacherDesc="item.teacherDesc"
+          :courseTitle="item.courseTitle"
         />
       </div>
     </div>
@@ -25,7 +30,7 @@
 </template>
 
 <script setup lang="ts">
-import instructorCardItem from '@/views/home/homeComps/comps/instructorCardItem.vue';
+import instructorCardItem from '@/views/home/homeDashboard/comps/instructorCardItem.vue';
 import typography from '@/components/layout/typography.vue';
 
 const bgImgUrl = new URL('@/assets/images/home/bg-grey-wrinkle.png', import.meta.url).href;

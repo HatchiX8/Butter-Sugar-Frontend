@@ -24,16 +24,31 @@ export function withNaiveProviders(App: Component) {
           {
             themeOverrides: {
               Input: {
-                border: '1px solid #0D0B07',
-                borderHover: '1px solid #0D0B07',
-                borderFocus: '1px solid #0D0B07',
+                border: `1px solid ${colors.black}`,
+                borderHover: `1px solid ${colors.black}`,
+                borderFocus: `1px solid ${colors.white}`,
                 borderRadius: '4px',
-                placeholderColor: '#9e9e9e',
-                color: '#9e9e9e',
+                boxShadowFocus: colors.white,
+                colorFocus: colors.black,
+                color: colors.black,
+                placeholderColor: colors.neutral_300,
+                textColor: colors.white,
+                caretColor: colors.white,
+                // Disabled
+                borderDisabled: `1px solid ${colors.neutral_500}`,
+                colorDisabled: colors.neutral_500,
+                textColorDisabled: colors.neutral_200,
+                // Error
+                caretColorError: colors.secondaryDefault,
+                colorFocusError: colors.secondaryDefault,
+                borderError: colors.secondaryDefault,
+                borderHoverError: `1px solid ${colors.secondaryDefault}`,
+                borderFocusError: `1px solid ${colors.secondaryDefault}`,
+                loadingColorError: colors.secondaryDefault,
               },
               Button: {
                 // Default
-                color: colors.neutral_600,
+                color: 'none',
                 colorHover: colors.neutral_600,
                 colorPressed: colors.neutral_600,
                 colorFocus: colors.neutral_600,
@@ -58,6 +73,7 @@ export function withNaiveProviders(App: Component) {
                 borderHoverPrimary: `1px solid ${colors.primaryLight}`,
                 borderPressedPrimary: `1px solid ${colors.primaryPestel}`,
                 borderFocusPrimary: `1px solid ${colors.primaryDefault}`,
+                rippleColorPrimary: colors.primaryDefault,
                 // Disabled Primary
                 colorDisabledPrimary: colors.neutral_200,
                 textColorDisabledPrimary: colors.white,

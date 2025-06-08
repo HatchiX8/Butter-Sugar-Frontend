@@ -67,9 +67,7 @@
             <span>總計</span>
             <span class="text-white text-5">{{ formatCurrency(totalPrice) }}</span>
           </div>
-          <n-button type="primary" class="mt-4 w-full">
-            確認送出
-          </n-button>
+          <baseButton label="確認送出" type="primary" :disabled="itemCount === 0" class="mt-4 w-full" />
           <div class="font-['Noto Sans TC'] text-3 text-align-center line-height-5 mt-2">
             <span>點擊上方按鈕即表示</span><br>
             <span>您已閱讀並同意</span>
@@ -87,6 +85,7 @@ import { ref, computed, onMounted } from 'vue';
 import { useCartStore } from '@/stores/models/cart/store';
 import { storeToRefs } from 'pinia';
 import serviceContractModal from '@/views/home/cart/comps/serviceContractModal.vue';
+import baseButton from '@/components/layout/baseButton.vue';
 
 const showContractModal = ref(false);
 
