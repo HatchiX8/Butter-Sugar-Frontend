@@ -1,6 +1,6 @@
 <template>
   <div>
-    <div class="tabs-container">
+    <div class="mt-15 w-full">
       <n-tabs
         type="line"
         v-model:value="activeTab"
@@ -8,23 +8,23 @@
         justify-content="space-between"
       >
         <n-tab name="info" @click="scrollToSection('course-info')">
-          <span>課程資訊</span>
+          <span class="text-white">課程資訊</span>
         </n-tab>
         <n-tab name="chapters" @click="scrollToSection('chapter-content')">
-          <span>章節內容</span>
+          <span class="text-white">章節內容</span>
         </n-tab>
         <n-tab name="faq">
-          <span>常見問答</span>
+          <span class="text-white">常見問答</span>
         </n-tab>
         <n-tab name="questions" @click="scrollToSection('course-qa')">
-          <span>課程問答</span>
+          <span class="text-white">課程問答</span>
         </n-tab>
         <n-tab name="reviews">
-          <span>課程評價</span>
+          <span class="text-white">課程評價</span>
         </n-tab>
       </n-tabs>
 
-      <div class="page-container mt-15">
+      <div class="flex flex-col items-center mx-auto p-6 max-w-[1280px] w-full box-border mt-15">
         <notify v-if="showNotify" />
 
         <courseInfo :course-data="props.courseData" @purchase="handlePurchase" @toggle-bookmark="handleToggleBookmark" />
@@ -97,22 +97,6 @@ const handleToggleBookmark = () => {
 </script>
 
 <style scoped>
-.tabs-container {
-  @apply mt-15;
-  width: 100%;
-}
-
-.page-container {
-  @apply flex flex-col items-center mx-auto p-6;
-  max-width: 1280px;
-  width: 100%;
-  box-sizing: border-box;
-}
-
-.n-tab span {
-  @apply text-white;
-}
-
 :deep(.n-tabs-nav) {
   @apply max-w-114 mx-auto;
 }
@@ -130,9 +114,7 @@ const handleToggleBookmark = () => {
 }
 
 :deep(.n-tabs-tab) {
-  @apply h-10 py-2 px-0 text-white/60 text-4 font-400 transition-[color,background-color] m-0;
-  width: calc(456px / 5); /* 平均分配寬度 */
-  @apply flex items-center justify-center;
+  @apply h-10 py-2 px-0 text-white/60 text-4 font-400 transition-[color,background-color] m-0 flex items-center justify-center w-[calc(456px/5)];
 }
 
 :deep(.n-tabs-tab:hover) {

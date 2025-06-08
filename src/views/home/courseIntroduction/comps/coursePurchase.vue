@@ -1,24 +1,24 @@
 <template>
   <!-- 購買課程區塊 -->
-  <div class="course-purchase-container">
-    <div class="course-price-section">
+  <div class="flex flex-col gap-6 w-full bg-black mb-6 box-border border border-white/20 p-6 rounded-[0.125rem] p-3 w-full md:w-[411px]">
+    <div>
       <typography variant="h6" font-type="title" class="text-neutral-200">購買課程</typography>
-      <div class="price-display">
-        <typography variant="h3" font-type="title" class="current-price">NT$ {{ courseData?.price?.toLocaleString() || '4,200' }}</typography>
-        <div class="original-price">NT$ {{ courseData?.originPrice?.toLocaleString() || '9,800' }}</div>
+      <div class="flex items-baseline gap-4">
+        <typography variant="h3" font-type="title" class="text-white text-2xl font-bold">NT$ {{ courseData?.price?.toLocaleString() || '4,200' }}</typography>
+        <div class="text-white/60 line-through text-base">NT$ {{ courseData?.originPrice?.toLocaleString() || '9,800' }}</div>
       </div>
     </div>
 
-    <div class="action-buttons">
-      <n-button type="primary" size="large" class="purchase-button max-w-132px" @click="handlePurchase">
-        <div class="button-content">
+    <div class="flex gap-3">
+      <n-button type="primary" size="large" class="text-base font-semibold flex-1 p-6 max-h-12 max-w-132px bg-primaryDefault border-none hover:bg-primaryLight" @click="handlePurchase">
+        <div class="flex items-center justify-center gap-2">
           <typography variant="paragraph-regular" font-type="content" class="text-neutral-100">立即購課</typography>
           <div class="i-ion:arrow-forward-outline cursor-pointer w-5 h-5"></div>
         </div>
       </n-button>
 
-      <n-button size="large" class="cart-button max-w-146px" @click="handleAddToCart">
-        <div class="button-content">
+      <n-button size="large" class="text-base font-semibold flex-1 p-6 max-h-12 bg-transparent border border-white text-white max-w-146px" @click="handleAddToCart">
+        <div class="flex items-center justify-center gap-2">
           <typography variant="paragraph-regular" font-type="content" class="text-neutral-100">加入購物車</typography>
           <div class="i-ion:cart cursor-pointer w-5 h-5"></div>
         </div>
@@ -60,63 +60,5 @@ const handleAddToCart = () => {
 </script>
 
 <style scoped>
-.course-purchase-container {
-  @apply flex flex-col gap-6 w-full bg-black mb-6 box-border border border-white/20 p-6 rounded-[0.125rem];
-}
 
-@media (max-width: 768px) {
-  .course-purchase-container {
-    @apply p-3 w-full;
-  }
-}
-
-@media (min-width: 768px) {
-  .course-purchase-container {
-    @apply w-[411px];
-  }
-}
-
-.course-price-section {
-  @apply flex flex-col items-start;
-}
-
-.price-label {
-  @apply text-white text-xl font-semibold mb-2;
-}
-
-.price-display {
-  @apply flex items-baseline gap-4;
-}
-
-.current-price {
-  @apply text-white text-2xl font-bold;
-}
-
-.original-price {
-  @apply text-white/60 line-through text-base;
-}
-
-.action-buttons {
-  @apply flex gap-3;
-}
-
-.purchase-button, .cart-button {
-  @apply text-base font-semibold flex-1 p-6 max-h-12;
-}
-
-.purchase-button {
-  @apply bg-primaryDefault border-none;
-}
-
-.purchase-button:hover {
-  @apply bg-primaryLight;
-}
-
-.cart-button {
-  @apply bg-transparent border border-white text-white;
-}
-
-.button-content {
-  @apply flex items-center justify-center gap-2;
-}
 </style>

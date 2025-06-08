@@ -67,23 +67,5 @@ const handleTabChange = (tabName: string) => {
 </script>
 
 <style scoped>
-.section {
-  padding: 40px 0;
-  max-width: 1200px;
-  margin: 0 auto;
-}
 
-.tab-content {
-  padding: 40px 24px;
-  max-width: 1200px;
-  margin: 0 auto;
-  min-height: 300px; /* 確保內容有足夠高度 */
-}
-
-h2 {
-  color: #333;
-  margin-bottom: 20px;
-  font-size: 24px;
-  font-weight: 600;
-}
 </style>
