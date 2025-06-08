@@ -16,6 +16,7 @@
 
 ## 技術架構
 
+- node.js版本:v22.14.0
 - Vue3 + Vite
 - Pinia狀態管理
 - UnoCSS + Naive
