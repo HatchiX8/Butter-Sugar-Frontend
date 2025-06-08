@@ -2,37 +2,39 @@
 <template>
   <div class="text-white">
     <div class="max-w-6xl mx-auto px-4 py-8">
-      <div class="flex justify-between text-white p-4">
+      <div class="flex flex-col md:flex-row justify-between text-white p-4 gap-4">
         <!-- 訂單資訊 -->
-        <div class="grid grid-cols-2 gap-x-10 gap-y-2">
+        <div class="grid grid-cols-1 sm:grid-cols-2 gap-x-6 gap-y-2 flex-1">
           <div v-for="(item, index) in orderInfo" :key="index"
-            class="border rounded text-base">
+            class="border rounded text-base p-2">
             <span>{{ item.label }}：</span>
             <span>{{ item.value }}</span>
           </div>
         </div>
         <!-- 訂單狀態 -->
-        <div class="flex items-end text-5">
+        <div class="flex items-center md:items-end md:justify-center md:justify-end text-5">
           <span class="inline-block w-5 h-5 i-ion:checkmark-circle mx-1 text-green-600"></span>
           <span>{{ orderStatus }}</span>
         </div>
       </div>
+      <!-- 訂單明細 -->
       <div class="flex-1 bg-neutral_600 border-1 border-solid border-white/10% p-4 rounded-0.5">
         <div class="p-4 mb-4">
           <div>
             <h2 class="font-bold text-6">訂單明細</h2>
-            <div class="mt-4 w-14 h-0.1 bg-primaryDefault"></div>
+            <div class="mt-4 w-14 h-0.5 bg-primaryDefault"></div>
           </div>
           <div class="font-['Noto Sans TC'] text-primaryDefault text-4 text-right">總共 {{ itemCount }} 件</div>
         </div>
+        <!-- 商品清單 -->
         <div v-for="(item, index) in visibleItems" :key="item.course_id" class="p-4">
-          <div class="flex items-start gap-4 pb-4"
+          <div class="flex flex-col md:flex-row items-start gap-4 pb-4"
             :class="{ 'custom-border-bottom': index !== visibleItems.length - 1 }">
             <router-link :to="`/home/course/${item.course_id}`"
-              class="flex flex-1 items-start gap-4 cursor-pointer no-underline group">
+              class="flex flex-1 flex-col md:flex-row items-start gap-4 no-underline group">
               <!-- 課程圖片 -->
               <div
-                class="shrink-0 w-36 h-24 overflow-hidden rounded-md transition-shadow duration-300 group-hover:shadow-lg">
+              class="w-full md:w-36 h-40 md:h-24 overflow-hidden rounded-md transition-shadow duration-300 group-hover:shadow-lg">
                 <img :src="item.course_smallimage" alt="課程小圖"
                   class="w-full h-full object-cover transition-transform duration-300 group-hover:scale-105" />
               </div>
@@ -41,13 +43,15 @@
                 {{ item.course_name }}
               </div>
             </router-link>
-            <div class="w-21 min-w-28 text-right">
+            <!-- 價格 -->
+            <div class="w-full md:w-21 md:min-w-28 text-right md:text-right mt-2 md:mt-0">
               <div class="text-white font-bold text-lg mb-3">
                 {{ formatCurrency(item.price) }}
               </div>
             </div>
           </div>
         </div>
+        <!-- 展開按鈕 -->
         <div v-if="cartItems.length > 2" class="flex justify-center mt-4 cursor-pointer" @click="toggleExpanded">
           <span>{{ expanded ? '收合內容' : '查看更多' }}</span>
           <span class="inline-block align-middle w-3.5 h-3.5 px-1" :class="[expanded ? 'i-ion:chevron-up' : 'i-ion:chevron-down']"></span>
@@ -55,12 +59,14 @@
       </div>
     </div>
   </div>
+<welcomeSection/>
 </template>
 
 <script setup lang="ts">
 import { ref, computed } from 'vue';
 import { useCartStore } from '@/stores/models/cart/store';
 import { storeToRefs } from 'pinia';
+import welcomeSection from '@/views/home/cart/comps/welcomeSection.vue';
 
 const formatCurrency = (value: number, currency = 'NT$'): string => `${currency} ${value.toLocaleString('en-US')}`;
 

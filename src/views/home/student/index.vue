@@ -3,38 +3,16 @@
     <h2>學生資料</h2>
     <n-button v-if="!isEdit" @click="isEdit = true">編輯</n-button>
   </div>
-
-  <n-form v-if="isEdit" :model="formData" class="personal-form" ref="formRef" :rules="rules">
-    <n-form-item label="姓名">
-      <n-input v-model:value="formData.name" />
-    </n-form-item>
-    <n-form-item label="生日">
-      <n-date-picker
-        v-model:value="formData.birthday"
-        type="date"
-        :is-date-disabled="(ts: number) => ts > Date.now()"
-        placeholder="選擇生日"
-      />
-    </n-form-item>
-    <n-form-item label="暱稱">
-      <n-input v-model:value="formData.nickname" />
-    </n-form-item>
-    <n-form-item label="Email">
-      <n-input v-model:value="formData.email" disabled />
-    </n-form-item>
-    <n-form-item label="電話" path="phone">
-      <n-input v-model:value="formData.phone" />
-    </n-form-item>
-    <n-form-item label="地址">
-      <n-input v-model:value="formData.address" />
-    </n-form-item>
-
-    <n-space>
-      <n-button type="primary" @click="handleSubmit">儲存</n-button>
-      <n-button @click="handleCancel">取消</n-button>
-    </n-space>
-  </n-form>
-
+  <baseForm v-if="isEdit" class="personal-form" ref="formRef"
+    :model="formData"
+    :fields="fields"
+    :rules="rules"
+    submit-label="儲存"
+    cancel-label="取消"
+    :show-cancel="true"
+    @submit="handleSubmit"
+    @cancel="handleCancel"
+  />
   <!-- Removed duplicate v-else block -->
 
   <div v-else class="personal-info space-y-2 text-white">
@@ -60,7 +38,9 @@ import type { FormRules, FormItemRule } from 'naive-ui';
 import { ref, onMounted, reactive, computed } from 'vue';
 import axios from 'axios';
 import { useUserStore } from '@/stores/models/index';
-import { NButton, NForm, NFormItem, NInput, NSpace, NDatePicker } from 'naive-ui';
+import baseForm from '@/components/layout/baseForm.vue';
+import type { FormField } from '@/components/layout/baseForm.vue';
+
 interface StudentData {
   name: string;
   birthday: number | null; // 使用 timestamp，n-date-picker 綁定必須用 timestamp
@@ -69,7 +49,7 @@ interface StudentData {
   phone: string;
   address: string;
   profile_image_url: string;
-}
+};
 
 const userStore = useUserStore();
 const isEdit = ref(false);
@@ -182,6 +162,15 @@ const rules: FormRules = {
   },
 };
 
+const fields: FormField[] = [
+  { label: '姓名', key: 'name', type: 'input', placeholder: '請輸入姓名' },
+  { label: '生日', key: 'birthday', type: 'date', placeholder: '請輸入生日' },
+  { label: '暱稱', key: 'nickname', type: 'input', placeholder: '請輸入暱稱' },
+  { label: '電子郵件', key: 'email', type: 'input', disabled: true },
+  { label: '電話號碼', key: 'phone', type: 'input', placeholder: '請輸入電話號碼' },
+  { label: '地址', key: 'address', type: 'input', placeholder: '請輸入地址' },
+];
+
 const formRef = ref();
 </script>
 <style>
@@ -189,12 +178,9 @@ const formRef = ref();
 .personal-form {
   width: 80%;
   max-width: 800px;
-  margin: 0 auto;
+  margin: 80px auto;
 }
 .personal-info p {
   margin-bottom: 10px;
-}
-.n-form-item .n-form-item-label {
-  color: white;
 }
 </style>

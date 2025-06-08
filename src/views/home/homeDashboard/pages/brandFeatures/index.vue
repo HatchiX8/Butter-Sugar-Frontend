@@ -18,7 +18,7 @@
 
 <script setup lang="ts">
 import { ref } from 'vue';
-import carouselHeroItem from '@/views/home/homeComps/comps/carouselHeroItem.vue';
+import carouselHeroItem from '@/views/home/homeDashboard/comps/carouselHeroItem.vue';
 import { themeColors } from '@/utils';
 
 const colors = themeColors.colors;

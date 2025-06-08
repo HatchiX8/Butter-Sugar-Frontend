@@ -1,6 +1,6 @@
 <!-- 購物流程共用的 layout -->
 <template>
-  <div class="pt-20 min-h-screen px-6 md:px-8 lg:px-16 bg-neutral_600">
+  <div class="pt-20 min-h-screen bg-neutral_600">
     <stepIndicator />
     <router-view />
   </div>

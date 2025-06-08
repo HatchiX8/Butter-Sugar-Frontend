@@ -24,7 +24,7 @@
 <script setup lang="ts">
 import { ref, computed, onMounted, onBeforeUnmount } from 'vue';
 import type { Ref } from 'vue';
-import learnerCardItem from '@/views/home/homeComps/comps/learnerCardItem.vue';
+import learnerCardItem from '@/views/home/homeDashboard/comps/learnerCardItem.vue';
 import typography from '@/components/layout/typography.vue';
 
 interface Learner {

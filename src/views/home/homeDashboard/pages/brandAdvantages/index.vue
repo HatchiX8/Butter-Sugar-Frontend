@@ -37,7 +37,7 @@
 
 <script setup lang="ts">
 import { ref } from 'vue';
-import carouselTextItem from '@/views/home/homeComps/comps/carouselTextItem.vue';
+import carouselTextItem from '@/views/home/homeDashboard/comps/carouselTextItem.vue';
 
 const bannerBgImgUrl = new URL('@/assets/images/home/bg-baking-desktop.png', import.meta.url).href;
 
