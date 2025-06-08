@@ -47,7 +47,7 @@
 
 <script setup lang="ts">
 import { ref, onMounted, h } from 'vue'
-import type { MenuOption, ThemeOverrides} from 'naive-ui'
+import type { MenuOption, GlobalThemeOverrides} from 'naive-ui'
 import typography from '@/components/layout/typography.vue';
 
 interface VideoItem {
@@ -171,7 +171,7 @@ onMounted(() => {
           vid.label
         )
     }))
-  }))
+  })) as MenuOption[]
 
   // 3. 再做「預設第一支影片與 label」
   if (chapters.value.length > 0 && chapters.value[0].videos.length > 0) {
@@ -205,7 +205,7 @@ onMounted(() => {
   }
 })
 
-const menuThemeOverrides = ref<ThemeOverrides>({
+const menuThemeOverrides = ref<GlobalThemeOverrides>({
   Menu: {
     /* 一般項目 (item) 旁的箭頭 */
     arrowColor: '#ffffff',               // 預設，也就是「沒 hover/active 時」
