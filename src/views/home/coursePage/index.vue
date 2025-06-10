@@ -1,7 +1,7 @@
 <template>
   <div class="w-full max-w-[1280px] mx-auto px-4 flex flex-col items-start box-border text-white">
     <breadcrumbComps
-      class="mt-30"
+      class="mt-20"
       :items="[
         { label: '首頁', to: '/' },
         { label: '我的課程', to: '/explore' },
