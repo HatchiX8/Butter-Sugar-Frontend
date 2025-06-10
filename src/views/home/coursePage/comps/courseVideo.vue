@@ -48,7 +48,7 @@
 
 <script setup lang="ts">
 import { ref, onMounted, h } from 'vue'
-import type { MenuOption, GlobalThemeOverrides} from 'naive-ui'
+import type { MenuOption} from 'naive-ui'
 import typography from '@/components/layout/typography.vue';
 
 interface VideoItem {
