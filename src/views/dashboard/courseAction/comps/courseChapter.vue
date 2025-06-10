@@ -1,3 +1,37 @@
 <template>
-  <div>課程章節</div>
+  <div>
+    <div class="mb-5">
+      <p>「幫助學生循序漸進地學習！」</p>
+      <p>
+        清楚的課程架構能讓學生更容易學習。請先規劃好章節與單元，每個章節可以包含多個影片、講義或測驗內容。
+      </p>
+      <ul>
+        <li>
+          <p>每個章節應該有清楚的學習目標</p>
+        </li>
+        <li>
+          <p>盡量將影片單元控制在 10-20 分鐘 內，避免學生疲勞</p>
+        </li>
+        <li>
+          <p>您可以加入 PDF 配方表、食譜，幫助學生更好地學習</p>
+        </li>
+        <li>
+          <p>確保影片畫質至少 1080p，聲音清晰，沒有雜音</p>
+        </li>
+        <li>
+          <p>可以使用手機或相機錄製，但請確保燈光充足，畫面穩定</p>
+        </li>
+        <li>
+          <p>影片格式請使用MP4 格式檔案</p>
+        </li>
+      </ul>
+    </div>
+    <div>
+      <div class="w-40% mb-5">
+        <p>章節名稱</p>
+        <n-input type="text" placeholder="請輸入課程名稱" class="bg-black focus:outline-none" />
+      </div>
+      <div>上傳影片元件</div>
+    </div>
+  </div>
 </template>
