@@ -1,5 +1,5 @@
 <template>
-  <div class="border-b border-white/20">
+  <div id="course-info" class="border-b border-white/20">
     <typography variant="h2" font-type="title" class="text-white" underline>課程資訊</typography>
   </div>
   <!-- 課程資訊內容 -->

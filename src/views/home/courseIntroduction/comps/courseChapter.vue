@@ -1,5 +1,5 @@
 <template>
-  <div class="flex flex-col gap-6 w-full">
+  <div id="chapter-content" class="flex flex-col gap-6 w-full">
     <typography variant="h2" font-type="title" class="text-white" underline>章節內容</typography>
 
       <n-collapse arrow-placement="right">

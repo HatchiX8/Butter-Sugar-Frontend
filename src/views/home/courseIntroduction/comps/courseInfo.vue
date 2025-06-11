@@ -6,7 +6,6 @@
       <courseIntro />
       <courseChapter />
       <faq />
-      <courseFaq />
     </div>
 
     <!-- 右欄內容：購買課程和講師介紹 -->
