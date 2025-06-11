@@ -13,7 +13,6 @@
         @toggle-bookmark="handleToggleBookmark"
       />
     </div>
-
   </div>
 </template>
 

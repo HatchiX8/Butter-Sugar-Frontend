@@ -41,9 +41,7 @@
                 {{ formatCurrency(item.price) }}
               </div>
               <div v-if="orderDetails === false" class="flex items-center justify-end gap-2">
-                <n-button text @click="showConfirmModal = true">
-                  <span class="text-neutral_300 hover:text-primaryDefault">移除</span>
-                </n-button>
+                <baseButton text label="移除" @click="openConfirmModal(item)" icon="i-ion:trash-outline" iconPosition="right" iconClass="w-4 h-4 text-neutral_200 hover:text-primaryDefault" labelClass="text-neutral_200 hover:text-primaryDefault" />
                 <n-button text @click="remove(item.course_id)">
                   <div
                     class="i-ion:trash-outline text-neutral_300 hover:text-primaryDefault h-4 w-4"
@@ -67,14 +65,25 @@
       </div>
     </div>
   </div>
-  <confirmModal v-model="showConfirmModal" />
+  <confirmModal
+    v-if="itemToDelete"
+    v-model:modelValue="showConfirmModal"
+    :item="itemToDelete"
+  />
 </template>
 
 <script setup lang="ts">
 import { ref, computed } from 'vue';
 import confirmModal from '@/views/home/cart/comps/confirmModal.vue';
+import baseButton from '@/components/layout/baseButton.vue';
 
-const showConfirmModal = ref(false); // 彈跳視窗開關
+// 移除課程彈窗
+const itemToDelete = ref<{ course_id: string; course_name: string } | null>(null);
+const showConfirmModal = ref(false);
+const openConfirmModal = (item: { course_id: string; course_name: string }) => {
+  itemToDelete.value = item
+  showConfirmModal.value = true
+};
 
 interface CartItem {
   course_id: string;
@@ -126,6 +135,7 @@ const visibleItems = computed(() => {
 const toggleExpanded = () => {
   expanded.value = !expanded.value;
 };
+
 </script>
 
 <style scoped>
