@@ -14,4 +14,5 @@
 body{
   background: #1D1810;
   font-family: Noto Serif TC;
+  box-sizing: border-box;
 }
