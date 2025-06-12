@@ -28,10 +28,11 @@
     </div>
     <div>
       <div class="w-40% mb-5">
-        <p>章節名稱</p>
-        <n-input type="text" placeholder="請輸入課程名稱" class="bg-black focus:outline-none" />
+        <button>新增章節</button>
       </div>
-      <div>上傳影片元件</div>
+      <div>
+        <p>第一章:準備工作</p>
+      </div>
     </div>
   </div>
 </template>
