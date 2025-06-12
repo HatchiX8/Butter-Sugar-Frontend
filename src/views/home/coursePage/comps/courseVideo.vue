@@ -30,7 +30,7 @@
 
       <!-- 右側：選單 。 縮排設定 :indent="12" -->
       <div class="video-menu w-full md:flex-[1] rounded-md shadow-sm overflow-y-auto h-auto">
-        <n-config-provider :theme-overrides="themeOverrides">
+        <n-config-provider>
           <n-menu
             :options="menuOptions"
             accordion
@@ -49,7 +49,7 @@
 <script setup lang="ts">
 import { ref, onMounted, h } from 'vue'
 import type { MenuOption} from 'naive-ui'
-import typography from '@/components/layout/typography.vue';
+import typography from '@/components/layout/typography.vue'
 
 interface VideoItem {
   label: string
