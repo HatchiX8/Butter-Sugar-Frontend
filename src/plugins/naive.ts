@@ -125,6 +125,12 @@ export function withNaiveProviders(App: Component) {
                 groupHeaderArrowColorActive: colors.primaryDefault,
                 groupHeaderArrowColorChildActive: colors.primaryDefault,
                 groupHeaderArrowColorChildActiveHover: colors.primaryDefault,
+                // 
+                itemColorHover: hexToRgba(colors.primaryDefault, 0.3),
+                itemColorActive: hexToRgba(colors.primaryDefault, 0.8),
+              },
+              Divider: {
+                color: hexToRgba(colors.primaryDefault, 1),
               },
             },
           },
