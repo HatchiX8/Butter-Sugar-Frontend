@@ -3,8 +3,8 @@
     <typography variant="h2" font-type="title" class="text-white" underline>課程問答</typography>
 
     <!-- 留言輸入區 (只有登入用戶才能看到) -->
-    <div v-if="isLoggedIn" class="border-1 border-solid border-white/20 p-6 bg-neutral_500 mb-6">
-      <div class="flex items-start gap-4 mb-4">
+    <div v-if="isLoggedIn" class="border-1 border-solid border-white/20 p-6 bg-neutral_500">
+      <div class="flex items-start gap-4">
         <div class="w-12 h-12 rounded-full overflow-hidden flex-shrink-0">
           <img
             class="w-full h-full"
@@ -125,6 +125,64 @@ const qaList = ref([
       date: '2025/06/09 10:29:45',
       content: '感謝您的回覆'
     }]
+  },
+  {
+    user: {
+      name: 'Seris',
+      date: '2025/05/14 00:23:36'
+    },
+    question: '請問我可以使用手持攪拌機來打麵糰嗎？',
+  },
+  {
+    user: {
+      name: 'Seris',
+      date: '2025/05/14 00:23:36'
+    },
+    question: '請問我可以使用手持攪拌機來打麵糰嗎？',
+    answer: {
+      name: '許燁堂',
+      date: '2025/06/09 10:29:45',
+      role: '授課講師',
+      content: '不建議使用手持攪拌機，課程中會提供手揉靜置的方式，讓沒有攪拌機的同學也能製作麵包。'
+    }
+  },
+  {
+    user: {
+      name: 'Seris',
+      date: '2025/05/14 00:23:36'
+    },
+    question: '請問我可以使用手持攪拌機來打麵糰嗎？',
+  },
+  {
+    user: {
+      name: 'Seris',
+      date: '2025/05/14 00:23:36'
+    },
+    question: '請問我可以使用手持攪拌機來打麵糰嗎？',
+    answer: [{
+      name: '許燁堂',
+      date: '2025/06/09 10:29:45',
+      role: '授課講師',
+      content: '不建議使用手持攪拌機，課程中會提供手揉靜置的方式，讓沒有攪拌機的同學也能製作麵包。'
+    },{
+      name: 'Seris',
+      date: '2025/06/09 10:29:45',
+      content: '感謝您的回覆'
+    }]
+  },
+  {
+    user: {
+      name: 'Seris',
+      date: '2025/05/14 00:23:36'
+    },
+    question: '請問我可以使用手持攪拌機來打麵糰嗎？',
+  },
+  {
+    user: {
+      name: 'Seris',
+      date: '2025/05/14 00:23:36'
+    },
+    question: '請問我可以使用手持攪拌機來打麵糰嗎？',
   },
   {
     user: {

@@ -42,13 +42,7 @@
 
             <courseFaq v-if="activeTab === 'questions'" />
 
-            <!-- 待抽成元件 -->
-            <div v-if="activeTab === 'reviews'">
-              <typography variant="h2" font-type="title" class="text-white" underline>課程評價</typography>
-              <div class="mt-6">
-                <typography variant="paragraph-medium" font-type="content" class="text-white">目前尚無評價</typography>
-              </div>
-            </div>
+            <courseReview v-if="activeTab === 'reviews'" />
           </div>
 
           <!-- 右欄內容：購買課程和講師介紹 -->
@@ -81,7 +75,7 @@ import courseChapter from './courseChapter.vue';
 import faq from './faq.vue';
 import coursePurchase from './coursePurchase.vue';
 import teacherIntro from './teacherIntro.vue';
-import typography from '@/components/layout/typography.vue';
+import courseReview from './courseReview.vue';
 
 const props = defineProps({
   courseData: {
@@ -104,7 +98,7 @@ const scrollToSection = (sectionId: string) => {
       // 计算滚动位置，考虑页面顶部可能的固定导航栏
       const scrollTop = window.pageYOffset || document.documentElement.scrollTop;
       const offsetTop = rect.top + scrollTop - 80; // 减去导航栏高度（假设为80px）
-      
+
       // 使用 window.scrollTo 实现平滑滚动，兼容性更好
       window.scrollTo({
         top: offsetTop,

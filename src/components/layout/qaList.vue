@@ -82,13 +82,13 @@
         </template>
         <div v-else></div> <!-- 當留言數量小於等於預設每頁顯示數量時，保持左側空白以維持佈局 -->
 
-        <!-- 分頁 - 只在總頁數大於1時才顯示 -->
+        <!-- 分頁 - 只在顯示所有問答且總頁數大於1時才顯示 -->
         <n-pagination
-          v-if="totalPages > 1"
+          v-if="showAllQa && totalPages > 1"
           class="custom-pagination"
           v-model:page="currentPage"
           :page-count="totalPages"
-          :page-size="pageSize"
+          :page-size="expandedPageSize"
           :item-count="qaList.length"
         />
         <div v-else></div> <!-- 當總頁數不超過1頁時，保持右側空白以維持佈局 -->
@@ -138,23 +138,37 @@ const showAllQa = ref(props.initialShowAll || false); // 控制顯示全部問�
 const currentPage = ref(1); // 目前頁碼
 const defaultPageSize = props.defaultPageSize || 5; // 預設每頁顯示 5 筆
 const expandedPageSize = props.expandedPageSize || 10; // 展開後每頁顯示 10 筆
-const pageSize = computed(() => showAllQa.value ? expandedPageSize : defaultPageSize);
+// 注意：我們不再需要 pageSize 變數，因為分頁元件直接使用 expandedPageSize
 
 // 計算屬性
-// 總頁數
-const totalPages = computed(() => Math.ceil(props.qaList.length / pageSize.value));
+// 總頁數 - 始終以 expandedPageSize 為基準計算，確保收合和展開時頁數一致
+const totalPages = computed(() => Math.ceil(props.qaList.length / expandedPageSize));
 
 // 當前頁面顯示的問答列表
 const displayedQaList = computed(() => {
-  const start = (currentPage.value - 1) * pageSize.value;
-  const end = start + pageSize.value;
-  return props.qaList.slice(start, end);
+  // 計算展開狀態下當前頁面的起始索引
+  const expandedStart = (currentPage.value - 1) * expandedPageSize;
+  
+  // 當前頁面的結束索引
+  const expandedEnd = Math.min(expandedStart + expandedPageSize, props.qaList.length);
+  
+  // 當前頁面的問答列表
+  const currentPageItems = props.qaList.slice(expandedStart, expandedEnd);
+  
+  // 根據顯示模式決定返回的內容
+  if (showAllQa.value) {
+    // 展開狀態：顯示全部當前頁面的內容
+    return currentPageItems;
+  } else {
+    // 收合狀態：只顯示當前頁面的前 defaultPageSize 個項目
+    return currentPageItems.slice(0, defaultPageSize);
+  }
 });
 
 // 切換顯示所有問答/收合問答
 const toggleShowAllQa = () => {
   showAllQa.value = !showAllQa.value;
-  currentPage.value = 1; // 重置頁碼
+  // 不再重置頁碼，保持當前頁面
   emit('update:showAll', showAllQa.value);
 };
 </script>
