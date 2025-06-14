@@ -1,44 +1,47 @@
 <template>
-  <div class="personal-info flex items-center text-white">
-    <h2>學生資料</h2>
-    <n-button v-if="!isEdit" @click="isEdit = true">編輯</n-button>
-  </div>
-  <baseForm v-if="isEdit" class="personal-form" ref="formRef"
-    :model="formData"
-    :fields="fields"
-    :rules="rules"
-    submit-label="儲存"
-    cancel-label="取消"
-    :show-cancel="true"
-    @submit="handleSubmit"
-    @cancel="handleCancel"
-  />
-  <!-- Removed duplicate v-else block -->
-
-  <div v-else class="personal-info space-y-2 text-white">
-    <p>姓名：{{ formData.name }}</p>
-    <p>
-      頭像：
-      <img
-        :src="formData.profile_image_url"
-        alt="avatar"
-        class="h-16 w-16 rounded-full object-cover"
+  <div class="w-80% max-w-200 mx-auto mb-20">
+    <breadcrumbComps
+      class="mt-30"
+      :items="[
+        { label: '學生會員中心', to: '/home/memberCenter/profile' },
+        { label: '學生資料管理' },
+      ]"
+    />
+    <div class="flex items-center justify-between text-white">
+      <typography variant="h2" font-type="title" underline class="mb-8">學生資料管理</typography>
+      <baseButton v-if="!isEdit"
+        label="編輯資料"
+        type="primary"
+        @click="isEdit = true"
       />
-    </p>
-    <p>暱稱：{{ formData.nickname }}</p>
-    <p>Email：{{ formData.email }}</p>
-    <p>生日：{{ birthdayDisplay }}</p>
-    <p>電話：{{ formData.phone || '未填' }}</p>
-    <p>地址：{{ formData.address || '未填' }}</p>
+    </div>
+    <!-- 編輯模式 -->
+    <baseForm v-if="isEdit" ref="formRef"
+      :model="formData"
+      :fields="fields"
+      submit-label="儲存"
+      cancel-label="取消"
+      :show-cancel="true"
+      @submit="handleSubmit"
+      @cancel="handleCancel"
+    />
+    <!-- 檢視模式 -->
+    <baseForm v-else
+      :model="formData"
+      :fields="fields"
+      read-only
+    />
   </div>
 </template>
 
 <script setup lang="ts">
-import type { FormRules, FormItemRule } from 'naive-ui';
-import { ref, onMounted, reactive, computed } from 'vue';
+import { ref, onMounted, reactive } from 'vue';
 import axios from 'axios';
 import { useUserStore } from '@/stores/models/index';
+import baseButton from '@/components/layout/baseButton.vue';
 import baseForm from '@/components/layout/baseForm.vue';
+import breadcrumbComps from '@/components/layout/breadcrumbComps.vue';
+import typography from '@/components/layout/typography.vue';
 import type { FormField } from '@/components/layout/baseForm.vue';
 
 interface StudentData {
@@ -64,14 +67,6 @@ const formData = reactive<StudentData>({
 });
 
 const originalData = reactive({ ...formData });
-
-// ✅ computed 格式化生日顯示
-const birthdayDisplay = computed(() => {
-  if (formData.birthday) {
-    return new Date(formData.birthday).toLocaleDateString('sv-SE');
-  }
-  return '未填';
-});
 
 // 讀取學生資料
 const fetchData = async () => {
@@ -141,46 +136,19 @@ onMounted(() => {
   fetchData();
 });
 
-// 驗證
-const rules: FormRules = {
-  birthday: {
-    validator(_: FormItemRule, value: number) {
-      if (!value) return new Error('請選擇生日');
-      const today = new Date().setHours(0, 0, 0, 0);
-      if (value > today) return new Error('生日不可設定未來日期');
-      return true;
-    },
-    trigger: 'change',
-  },
-  phone: {
-    validator(_: FormItemRule, value: string) {
-      if (!value) return new Error('請輸入電話');
-      if (!/^09\d{8}$/.test(value)) return new Error('電話格式錯誤，需以09開頭，共10碼');
-      return true;
-    },
-    trigger: ['input', 'blur'],
-  },
-};
-
 const fields: FormField[] = [
-  { label: '姓名', key: 'name', type: 'input', placeholder: '請輸入姓名' },
-  { label: '生日', key: 'birthday', type: 'date', placeholder: '請輸入生日' },
-  { label: '暱稱', key: 'nickname', type: 'input', placeholder: '請輸入暱稱' },
-  { label: '電子郵件', key: 'email', type: 'input', disabled: true },
-  { label: '電話號碼', key: 'phone', type: 'input', placeholder: '請輸入電話號碼' },
-  { label: '地址', key: 'address', type: 'input', placeholder: '請輸入地址' },
+  { label: '', key: 'profile_image_url', type: 'image', span: 2 },
+  { label: '真實姓名', key: 'name', type: 'input', placeholder: '請輸入姓名', span: 1 },
+  { label: '暱稱', key: 'nickname', type: 'input', placeholder: '請輸入暱稱', span: 1 },
+  { label: '電子郵件', key: 'email', type: 'input', disabled: true, span: 1 },
+  { label: '電話號碼', key: 'phone', type: 'input', placeholder: '請輸入電話號碼', span: 1 },
+  { label: '生日', key: 'birthday', type: 'date', placeholder: '請輸入生日', span: 2 },
+  { label: '地址', key: 'address', type: 'input', placeholder: '請輸入地址', span: 2 },
 ];
 
 const formRef = ref();
 </script>
-<style>
-.personal-info,
-.personal-form {
-  width: 80%;
-  max-width: 800px;
-  margin: 80px auto;
-}
-.personal-info p {
-  margin-bottom: 10px;
-}
+
+<style scoped>
+
 </style>
