@@ -20,7 +20,7 @@
       />
     </div>
 
-    <courseCardList class="mb-15" :category-id="selectedCategoryId"/>
+    <courseCardList class="mb-15" :category-id="selectedCategoryId" :sort-type="currentSort"/>
     <paginationComps
       v-model="currentPage"
       :total-pages="totalPages"

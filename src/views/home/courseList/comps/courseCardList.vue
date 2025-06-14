@@ -19,7 +19,8 @@ import { NSpin } from 'naive-ui';
 
 // 定義屬性
 const props = defineProps<{
-  categoryId?: number | null
+  categoryId?: number | null,
+  sortType?: string
 }>();
 
 // 使用 Pinia store
@@ -28,30 +29,52 @@ const courseStore = useCourseStore();
 // 使用 storeToRefs 解構 store 中的響應式資料
 const { courseList, loading, error } = storeToRefs(courseStore);
 
-// 將 courseList 轉換為元件需要的格式並根據 categoryId 過濾
+// 將 courseList 轉換為元件需要的格式並根據 categoryId 過濾和 sortType 排序
+// TODO: 根據teacher_id 查講師名稱 & 撥課程評分
 const courses = computed(() => {
   // 先轉換格式
-  const formattedCourses = courseList.value.map(course => ({
-    link: `/home/course/${course.id}`,
-    id: course.id,
-    img: course.course_banner_imageUrl || '/src/assets/images/course/course1.jpg', // 使用 API 返回的圖片
-    title: course.course_name,
-    category_id: course.category_id,
-    teacher: '講師', // 這裡需要從 teacher_id 獲取講師名稱，暫時使用預設值
-    rating: 5.0, // API 中沒有評分欄位，使用預設值
-    students: parseInt(course.total_users || '0', 10),
-    hours: parseInt(course.course_hours || '0', 10),
-    price: parseInt(course.sell_price || '0', 10),
-    originPrice: parseInt(course.origin_price || '0', 10)
-  }));
-
-  // 如果沒有選擇類別，顯示所有課程
-  if (!props.categoryId) {
-    return formattedCourses;
-  }
+  const formattedCourses = courseList.value.map(course => {
+    // 將字串轉換為數字，以便排序
+    const studentsCount = parseInt(course.total_users || '0', 10);
+    
+    return {
+      link: `/home/course/${course.id}`,
+      id: course.id,
+      img: course.course_banner_imageUrl || '/src/assets/images/course/course1.jpg', // 使用 API 返回的圖片
+      title: course.course_name,
+      category_id: course.category_id,
+      teacher: '講師', // 這裡需要從 teacher_id 獲取講師名稱，暫時使用預設值
+      rating: 5.0, // API 中沒有評分欄位，使用預設值
+      students: studentsCount.toLocaleString('zh-TW'), // 加上千分位顯示
+      studentsCount, // 保存原始數字以便排序
+      hours: parseInt(course.course_hours || '0', 10),
+      price: parseInt(course.sell_price || '0', 10),
+      originPrice: parseInt(course.origin_price || '0', 10),
+      createdAt: course.created_at || '' // 保存創建時間以便排序
+    };
+  });
 
   // 根據選擇的類別過濾課程
-  return formattedCourses.filter(course => course.category_id === props.categoryId);
+  let filteredCourses = formattedCourses;
+  if (props.categoryId) {
+    filteredCourses = formattedCourses.filter(course => course.category_id === props.categoryId);
+  }
+
+  // 根據 sortType 排序
+  if (props.sortType === 'hot') {
+    // 最熱門：依學生人數降序排列
+    return filteredCourses.sort((a, b) => b.studentsCount - a.studentsCount);
+  } else if (props.sortType === 'time') {
+    // 依時間：依 created_at 降序排列（最新的在前）
+    return filteredCourses.sort((a, b) => {
+      const dateA = new Date(a.createdAt).getTime();
+      const dateB = new Date(b.createdAt).getTime();
+      return dateB - dateA;
+    });
+  }
+
+  // 預設返回無排序的列表
+  return filteredCourses;
 });
 
 // 元件掛載時獲取課程列表
