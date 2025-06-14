@@ -31,7 +31,7 @@
     <div class="w-40%">
       <div class="mb-5">
         <p>課程名稱</p>
-        <n-input type="text" placeholder="請輸入課程名稱" class="bg-black focus:outline-none" />
+        <baseInput type="text" placeholder="請輸入課程名稱" v-model="courseTitle" />
       </div>
       <div class="mb-5">
         <p>課程描述</p>
@@ -115,17 +115,54 @@
       </div>
     </div>
   </div>
+  <titleModal
+    :modelValue="modelValue"
+    v-model:inputValue="courseTitle"
+    @update:modelValue="(val) => emit('update:modelValue', val)"
+    title="請輸入課程標題"
+    :showFooter="true"
+    :onConfirm="handleConfirm"
+    @update:title="modalTitle = $event"
+  />
 </template>
 
 <script setup lang="ts">
-import { ref } from 'vue';
-
+import { ref, computed, onMounted } from 'vue';
+import { useRoute } from 'vue-router';
+import titleModal from './titleModal.vue';
+import { baseInput } from '@/components/index';
 const options = [
   { label: '麵包', value: 'bank01' },
   { label: '蛋糕', value: 'bank02' },
   { label: '餅乾', value: 'bank03' },
 ];
 const value = ref(options[0].value);
+const route = useRoute();
+
+// -----------彈跳視窗-----------
+const isEditMode = computed(() => Boolean(route.query.id)); // 有 id 就代表是編輯
+const modelValue = ref(false);
+const courseTitle = ref<string>('');
+const modalTitle = ref('');
+
+onMounted(() => {
+  console.log('檢視路由ID', isEditMode.value);
+  if (!isEditMode.value && courseTitle.value === '') {
+    modelValue.value = true;
+  }
+});
+
+const handleConfirm = () => {
+  console.log('觸發新增標題', modalTitle.value);
+  courseTitle.value = modalTitle.value;
+  console.log('成功寫入', courseTitle.value);
+  // 這邊請求寫入titleAPI
+};
+
+const emit = defineEmits<{
+  (e: 'update:modelValue', value: boolean): void;
+}>();
+// -----------------------------
 
 // -----------影片上傳-----------
 const videoUploadRef = ref();
@@ -173,5 +210,8 @@ const handleFileRemove = () => {
   console.log('使用者移除檔案');
   isFile.value = false;
 };
+// -----------------------------
+
+// -----------區塊-----------
 // -----------------------------
 </script>
