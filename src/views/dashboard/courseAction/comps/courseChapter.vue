@@ -35,4 +35,23 @@
       </div>
     </div>
   </div>
+
+  <n-collapse-item v-for="chapter in chapters" :key="chapter.id" :title="chapter.title">
+    <Container
+      :group-name="'chapter-group'"
+      :get-child-payload="(index) => chapter.sections[index]"
+      @drop="handleDrop($event, chapter.id)"
+    >
+      <Draggable v-for="section in chapter.sections" :key="section.id">
+        <li class="section-item">
+          {{ section.title }}
+        </li>
+      </Draggable>
+    </Container>
+  </n-collapse-item>
 </template>
+
+<script setup lang="ts">
+// 在 setup script 中引入
+import { Container, Draggable } from 'vue-smooth-dnd';
+</script>
