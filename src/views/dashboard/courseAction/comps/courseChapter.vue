@@ -26,32 +26,90 @@
         </li>
       </ul>
     </div>
+    <!-- 章節列表 -->
+    <n-collapse class="mb-3">
+      <n-collapse-item v-for="chapter in chapters" :key="chapter.id">
+        <template #header>
+          <div class="flex w-full items-center justify-around">
+            <div class="font-bold text-white">
+              {{ chapter.title }}
+            </div>
+            <div class="ml-auto"><button @click.stop="editChapter(chapter.id)">編輯</button></div>
+          </div>
+        </template>
+
+        <draggable
+          v-model="chapter.sections"
+          item-key="id"
+          :group="{ name: 'sections' }"
+          animation="200"
+        >
+          <template #item="{ element }">
+            <li class="mb-2 rounded border bg-gray-700 p-2 text-white">
+              {{ element.title }}
+            </li>
+          </template>
+        </draggable>
+      </n-collapse-item>
+    </n-collapse>
     <div>
       <div class="w-40% mb-5">
         <button>新增章節</button>
       </div>
-      <div>
-        <p>第一章:準備工作</p>
-      </div>
     </div>
   </div>
-
-  <n-collapse-item v-for="chapter in chapters" :key="chapter.id" :title="chapter.title">
-    <Container
-      :group-name="'chapter-group'"
-      :get-child-payload="(index) => chapter.sections[index]"
-      @drop="handleDrop($event, chapter.id)"
-    >
-      <Draggable v-for="section in chapter.sections" :key="section.id">
-        <li class="section-item">
-          {{ section.title }}
-        </li>
-      </Draggable>
-    </Container>
-  </n-collapse-item>
 </template>
 
 <script setup lang="ts">
+import { ref, watch } from 'vue';
 // 在 setup script 中引入
-import { Container, Draggable } from 'vue-smooth-dnd';
+import draggable from 'vuedraggable';
+
+// 模擬章節資料
+
+const chapters = ref([
+  {
+    id: 'chapter-1',
+    title: '第一章：準備工作',
+    sections: [
+      { id: 's1', title: '介紹' },
+      { id: 's2', title: '設備準備' },
+    ],
+  },
+  {
+    id: 'chapter-2',
+    title: '第二章：基礎實作',
+    sections: [
+      { id: 's3', title: '材料準備' },
+      { id: 's4', title: '流程講解' },
+    ],
+  },
+  {
+    id: 'chapter-3',
+    title: '第三章：進階挑戰',
+    sections: [
+      { id: 's5', title: '常見錯誤' },
+      { id: 's6', title: '補充資料' },
+    ],
+  },
+]);
+
+watch(
+  chapters,
+  (newVal) => {
+    console.log('小節順序發生變化', newVal);
+    // 呼叫 API 傳送最新資料
+    apiFn(newVal);
+  },
+  { deep: true }
+);
+
+const editChapter = (courseId: string) => {
+  console.log('觸發編輯按扭', courseId);
+};
+
+// 這邊之後要設定參數的interface
+const apiFn = (val) => {
+  console.log('觸發更新api', val);
+};
 </script>
