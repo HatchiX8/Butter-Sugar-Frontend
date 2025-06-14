@@ -46,6 +46,7 @@
 import { ref, computed, defineComponent, h } from 'vue';
 import baseButton from '@/components/layout/baseButton.vue';
 import baseInput from '@/components/layout/baseInput.vue';
+import baseUpload from '@/components/layout/baseUpload.vue';
 import type { FormRules, FormItemRule } from 'naive-ui';
 
 // 預設驗證規則
@@ -69,6 +70,12 @@ const defaultRules: FormRules = {
   },
 };
 
+// defaultRules 合併 props 傳入的 rules
+const rules = computed<FormRules>(() => ({
+  ...defaultRules,
+  ...(props.rules ?? {})
+}));
+
 type FieldType = 'input' | 'textarea' | 'select' | 'date' | 'image';
 
 interface FieldOption {
@@ -84,6 +91,68 @@ export interface FormField {
   disabled?: boolean
   options?: FieldOption[] // 下拉的選項
   span?: number // 用來控制 row 佔幾欄
+};
+
+export interface BaseFormProps {
+  model: Record<string, unknown>;
+  rules?: FormRules;
+  fields: FormField[];
+  fieldProps?: Record<string, Record<string, unknown>>;
+  submitLabel?: string;
+  cancelLabel?: string;
+  showCancel?: boolean;
+  readOnly?: boolean;
+};
+
+const props = defineProps<BaseFormProps>();
+
+const generateProps = (field: FormField): Record<string, unknown> => {
+  if (props.readOnly) return {} // 直接交給 ReadOnlyField
+
+  const baseProps: Record<string, unknown> = {
+    placeholder: field.placeholder ?? '',
+    disabled: field.disabled ?? false
+  }
+
+  if (field.type === 'select') {
+    baseProps.options = field.options ?? [];
+  }
+
+  if (field.type === 'textarea') {
+    baseProps.type = 'textarea';
+  }
+
+  if (field.type === 'date') {
+    baseProps.type = 'date';
+    baseProps.isDateDisabled = (ts: number) => ts > Date.now();
+  }
+
+  //  最後合併父層傳入的客製 props，讓外部可覆寫
+  return {
+    ...baseProps,
+    ...(props.fieldProps?.[field.key] ?? {}),
+  };
+};
+
+const emit = defineEmits<{
+  (e: 'update:modelValue', value: Record<string, unknown>): void
+  (e: 'submit', model: Record<string, unknown>): void
+  (e: 'cancel'): void
+}>();
+
+// 用 computed 包一層代理，允許更新
+const model = computed({
+  get: () => props.model,
+  set: (val) => emit('update:modelValue', val)
+});
+
+const formRef = ref();
+
+const onSubmit = () => {
+  if (!formRef.value) return
+  formRef.value.validate((errors: object | undefined) => {
+    if (!errors) emit('submit', props.model)
+  })
 };
 
 // 唯讀欄位元件
@@ -123,42 +192,6 @@ const ReadOnlyField  = defineComponent({
   },
 });
 
-const props = defineProps<{
-  model: Record<string, unknown>
-  rules?: FormRules
-  fields: FormField[]
-  submitLabel?: string
-  cancelLabel?: string
-  showCancel?: boolean
-  readOnly?: boolean
-}>();
-// defaultRules 合併 props 傳入的 rules
-const rules = computed<FormRules>(() => ({
-  ...defaultRules,
-  ...(props.rules ?? {})
-}));
-
-const emit = defineEmits<{
-  (e: 'update:modelValue', value: Record<string, unknown>): void
-  (e: 'submit', model: Record<string, unknown>): void
-  (e: 'cancel'): void
-}>();
-
-// 用 computed 包一層代理，允許更新
-const model = computed({
-  get: () => props.model,
-  set: (val) => emit('update:modelValue', val)
-});
-
-const formRef = ref();
-
-const onSubmit = () => {
-  if (!formRef.value) return
-  formRef.value.validate((errors: object | undefined) => {
-    if (!errors) emit('submit', props.model)
-  })
-};
-
 const resolveComponent = (type: FieldType, readOnly = false) => {
   if (readOnly) return ReadOnlyField;
   switch (type) {
@@ -170,34 +203,10 @@ const resolveComponent = (type: FieldType, readOnly = false) => {
     case 'date':
       return 'n-date-picker';
     case 'image':
-      return 'n-upload';
+      return baseUpload;
     default:
       return baseInput;
   }
-};
-
-const generateProps = (field: FormField): Record<string, unknown> => {
-  if (props.readOnly) return {} // 直接交給 ReadOnlyField
-
-  const baseProps: Record<string, unknown> = {
-    placeholder: field.placeholder ?? '',
-    disabled: field.disabled ?? false
-  }
-
-  if (field.type === 'select') {
-    baseProps.options = field.options ?? []
-  }
-
-  if (field.type === 'textarea') {
-    baseProps.type = 'textarea'
-  }
-
-  if (field.type === 'date') {
-    baseProps.type = 'date'
-    baseProps.isDateDisabled = (ts: number) => ts > Date.now()
-  }
-
-  return baseProps;
 };
 
 const getColSpanClass = (field: FormField) => {
