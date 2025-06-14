@@ -14,13 +14,20 @@
 import courseCard from './courseCard.vue';
 import { useCourseStore } from '@/stores/models/course/store';
 import { storeToRefs } from 'pinia';
-import { onMounted, computed, defineProps } from 'vue';
+import { onMounted, computed, defineProps, defineEmits, watch } from 'vue';
 import { NSpin } from 'naive-ui';
 
 // 定義屬性
 const props = defineProps<{
   categoryId?: number | null,
-  sortType?: string
+  sortType?: string,
+  page?: number,
+  pageSize?: number
+}>();
+
+// 定義事件
+const emit = defineEmits<{
+  'update-total-items': [total: number]
 }>();
 
 // 使用 Pinia store
@@ -29,9 +36,9 @@ const courseStore = useCourseStore();
 // 使用 storeToRefs 解構 store 中的響應式資料
 const { courseList, loading, error } = storeToRefs(courseStore);
 
-// 將 courseList 轉換為元件需要的格式並根據 categoryId 過濾和 sortType 排序
+// 將 courseList 轉換為元件需要的格式並根據 categoryId 過濾、sortType 排序及分頁
 // TODO: 根據teacher_id 查講師名稱 & 撥課程評分
-const courses = computed(() => {
+const allCourses = computed(() => {
   // 先轉換格式
   const formattedCourses = courseList.value.map(course => {
     // 將字串轉換為數字，以便排序
@@ -77,8 +84,35 @@ const courses = computed(() => {
   return filteredCourses;
 });
 
+// 當前頁的課程
+const courses = computed(() => {
+  // 如果沒有指定頁碼或每頁數量，則返回全部課程
+  if (!props.page || !props.pageSize) {
+    return allCourses.value;
+  }
+  
+  // 計算當前頁的課程
+  const startIndex = (props.page - 1) * props.pageSize;
+  const endIndex = startIndex + props.pageSize;
+  return allCourses.value.slice(startIndex, endIndex);
+});
+
+// 監聽 allCourses 變化，更新總課程數
+watch(() => allCourses.value.length, (newLength) => {
+  emit('update-total-items', newLength);
+});
+
 // 元件掛載時獲取課程列表
 onMounted(() => {
-  courseStore.fetchCourses();
+  courseStore.fetchCourses().then(() => {
+    // 課程資料加載完成後立即發送總課程數
+    emit('update-total-items', allCourses.value.length);
+  });
+});
+
+// 監聽 categoryId 變化，更新總課程數
+watch([() => props.categoryId, () => courseList.value], () => {
+  // 類別或課程列表變化時更新總課程數
+  emit('update-total-items', allCourses.value.length);
 });
 </script>
