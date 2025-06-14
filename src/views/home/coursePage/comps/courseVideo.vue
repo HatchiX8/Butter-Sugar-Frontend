@@ -30,7 +30,6 @@
 
       <!-- 右側：選單 。 縮排設定 :indent="12" -->
       <div class="video-menu w-full md:flex-[1] rounded-md shadow-sm overflow-y-auto h-auto">
-        <n-config-provider>
           <n-menu
             :options="menuOptions"
             accordion
@@ -40,7 +39,6 @@
             :indent="12"
             class="h-full bg-transparent"
           />
-        </n-config-provider>
       </div>
     </div>
   </div>
