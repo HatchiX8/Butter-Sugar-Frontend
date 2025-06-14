@@ -12,7 +12,7 @@
     <typography class="text-white mt-10" variant="h2" font-type="title" underline>所有課程</typography>
 
     <div class="mt-10 pr-8 flex flex-col md:flex-row items-center justify-between self-stretch">
-      <selectComps class="w-full md:w-50 h-12 px-3 py-4" />
+      <selectComps class="w-full md:w-50 h-12 px-3 py-4" @change="handleCategoryChange" />
       <sort-tab
         :items="sortItems"
         v-model:active="currentSort"
@@ -20,7 +20,7 @@
       />
     </div>
 
-    <courseCardList class="mb-15"/>
+    <courseCardList class="mb-15" :category-id="selectedCategoryId"/>
     <paginationComps
       v-model="currentPage"
       :total-pages="totalPages"
@@ -46,6 +46,7 @@ import { ref } from 'vue';
 const currentSort = ref('hot');
 const currentPage = ref(1);
 const totalPages = ref(10);
+const selectedCategoryId = ref<number | null>(null);
 
 const sortItems = [
   { label: '最熱門', value: 'hot' },
@@ -58,5 +59,9 @@ const handlePageChange = (page: number) => {
 
 const handleSortChange = (value: string) => {
   currentSort.value = value;
+};
+
+const handleCategoryChange = (categoryId: number | null) => {
+  selectedCategoryId.value = categoryId;
 };
 </script>
