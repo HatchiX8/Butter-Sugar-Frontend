@@ -5,7 +5,7 @@
     title="確定移除此課程嗎？"
     :detail="item.course_name"
     :showFooter="true"
-    :onConfirm="handleConfirm"
+    @confirm="handleConfirm"
     >
   </baseModal>
 </template>
@@ -13,6 +13,9 @@
 <script setup lang="ts">
 import baseModal from '@/components/layout/baseModal.vue';
 import { useCartStore } from '@/stores/models/cart/store';
+import { useMessage } from 'naive-ui';
+
+const message = useMessage();
 
 const props = defineProps<{
   modelValue: boolean
@@ -28,7 +31,8 @@ const emit = defineEmits<{
 
 const cartStore = useCartStore();
 
-const handleConfirm = () => {
-  cartStore.removeItem(props.item.course_id)
+const handleConfirm = async () => {
+  const res = await cartStore.removeItem(props.item.course_id);
+  message[res.success ? 'success' : 'error'](res.message);
 };
 </script>

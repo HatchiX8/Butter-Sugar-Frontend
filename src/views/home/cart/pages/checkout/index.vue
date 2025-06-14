@@ -14,7 +14,6 @@
           :cartItems="cartItems"
           :itemCount="itemCount"
           :orderDetails="true"
-          @removeItem="cartStore.removeItem"
         />
         <!-- 訂單資訊 -->
         <div class="bg-black px-4 py-8 rounded text-4 md:w-1/3 flex-shrink-0 flex flex-col h-1/4 sticky top-24">

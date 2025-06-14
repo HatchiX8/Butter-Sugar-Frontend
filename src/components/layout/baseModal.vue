@@ -43,7 +43,6 @@ interface Props {
   confirmText?: string
   cancelText?: string
   closable?: boolean
-  onConfirm?: () => void
 };
 
 const props = withDefaults(defineProps<Props>(), {
@@ -53,7 +52,6 @@ const props = withDefaults(defineProps<Props>(), {
   confirmText: '確定',
   cancelText: '取消',
   closable: true,
-  onConfirm: undefined
 });
 
 const emit = defineEmits<{
@@ -68,7 +66,6 @@ watch(() => props.modelValue, (val) => (show.value = val)); // 外部傳進來�
 watch(show, (val) => emit('update:modelValue', val)); // 內部操作時 → 通知外部更新
 
 const onConfirm = () => {
-  props.onConfirm?.()
   emit('confirm')
   show.value = false
 };

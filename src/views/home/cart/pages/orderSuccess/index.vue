@@ -21,7 +21,6 @@
         :cartItems="cartItems"
         :itemCount="itemCount"
         :orderDetails="true"
-        @removeItem="cartStore.removeItem"
       />
     </div>
   </div>
