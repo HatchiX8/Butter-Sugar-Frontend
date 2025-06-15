@@ -1,6 +1,6 @@
 <template>
   <n-config-provider :theme-overrides="themeOverrides">
-    <n-modal v-model:show="show" :mask-closable="true" class="max-h-80vh">
+    <n-modal v-model:show="show" :mask-closable="false" class="max-h-80vh">
       <n-card
         :title="title"
         :bordered="false"
