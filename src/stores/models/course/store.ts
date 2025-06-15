@@ -16,14 +16,9 @@ export const useCourseStore = defineStore('courseStore', () => {
 
     try {
       const response = await getCourseList();
-      if (response.status) {
-        courseList.value = response.data.courses;
-      } else {
-        error.value = response.message || '查詢課程列表失敗';
-      }
+      courseList.value = response.data.courses;
     } catch (err) {
       error.value = err instanceof Error ? err.message : '查詢課程列表時發生錯誤';
-      // 移除 console.error
     } finally {
       loading.value = false;
     }
