@@ -27,6 +27,14 @@ export default defineComponent({
       type: Number,
       required: true,
       default: 1
+    },
+    pageSize: {
+      type: Number,
+      default: 12
+    },
+    totalItems: {
+      type: Number,
+      default: 0
     }
   },
 

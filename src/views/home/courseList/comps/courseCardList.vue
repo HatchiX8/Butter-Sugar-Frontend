@@ -1,118 +1,118 @@
 <template>
-  <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4 sm:gap-6 md:gap-8 justify-items-center w-full">
+  <div v-if="loading" class="w-full flex justify-center items-center py-10">
+    <n-spin size="large" />
+  </div>
+  <div v-else-if="error" class="w-full flex justify-center items-center py-10 text-red-500">
+    {{ error }}
+  </div>
+  <div v-else class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4 sm:gap-6 md:gap-8 justify-items-center w-full">
     <courseCard v-for="course in courses" :key="course.id" v-bind="course" />
   </div>
 </template>
 
 <script setup lang="ts">
 import courseCard from './courseCard.vue';
+import { useCourseStore } from '@/stores/models/course/store';
+import { storeToRefs } from 'pinia';
+import { onMounted, computed, defineProps, defineEmits, watch } from 'vue';
+import { NSpin } from 'naive-ui';
 
-const courses = [
-  {
-    link: '/home/course/1',
-    id: 1,
-    img: '/src/assets/images/course/course1.jpg',
-    title: '零基礎也能成功｜手揉麵包入門全攻略',
-    teacher: '張文龍',
-    rating: 5.0,
-    students: 1238,
-    hours: 11,
-    price: 5800,
-    originPrice: 9800,
-  },
-  {
-    link: '/home/course/2',
-    id: 2,
-    img: '/src/assets/images/course/course1.jpg',
-    title: '一次學會五款基礎麵包，打好烘焙基本功！',
-    teacher: '陳柏烘',
-    rating: 5.0,
-    students: 1238,
-    hours: 11,
-    price: 3600,
-    originPrice: 9800,
-  },
-  {
-    link: '/home/course/3',
-    id: 3,
-    img: '/src/assets/images/course/course1.jpg',
-    title: '法式經典｜酥脆外皮、柔軟內裡的完美法國麵包',
-    teacher: '王昕發',
-    rating: 5.0,
-    students: 1238,
-    hours: 11,
-    price: 4500,
-  },
-  {
-    link: '/home/course/4',
-    id: 4,
-    img: '/src/assets/images/course/course1.jpg',
-    title: '職人級！一次掌握歐式麵包的高水量與發酵秘訣',
-    teacher: '許燁堂',
-    rating: 5.0,
-    students: 1238,
-    hours: 11,
-    price: 4200,
-    originPrice: 9800,
-  },
-  {
-    link: '/home/course/5',
-    id: 5,
-    img: '/src/assets/images/course/course1.jpg',
-    title: '香濃奶油香氣四溢！手作日式生吐司！',
-    teacher: '李芷甄',
-    rating: 5.0,
-    students: 1238,
-    hours: 11,
-    price: 3600,
-    originPrice: 9800,
-  },
-  {
-    link: '/home/course/6',
-    id: 6,
-    img: '/src/assets/images/course/course1.jpg',
-    title: '秒殺人氣商品！學會製作超鬆軟爆漿奶油捲',
-    teacher: '林語芯',
-    rating: 5.0,
-    students: 1238,
-    hours: 11,
-    price: 4800,
-  },
-  {
-    link: '/home/course/7',
-    id: 7,
-    img: '/src/assets/images/course/course1.jpg',
-    title: '健康新選擇！無麩質天然酵母麵包',
-    teacher: '周宥蓉',
-    rating: 5.0,
-    students: 1238,
-    hours: 11,
-    price: 5800,
-    originPrice: 9800,
-  },
-  {
-    link: '/home/course/8',
-    id: 8,
-    img: '/src/assets/images/course/course1.jpg',
-    title: '亞洲風味大集合！港式、台式、日式麵包全掌握',
-    teacher: '鄭皓雲',
-    rating: 5.0,
-    students: 1238,
-    hours: 11,
-    price: 5800,
-    originPrice: 9800,
-  },
-  {
-    link: '/home/course/9',
-    id: 9,
-    img: '/src/assets/images/course/course1.jpg',
-    title: '手作麵包輕體驗｜零失敗入門免費課',
-    teacher: '李芷甄',
-    rating: 5.0,
-    students: 1238,
-    hours: 11,
-    price: 0,
-  },
-  // ... 其他課程
-]
+// 定義屬性
+const props = defineProps<{
+  categoryId?: number | null,
+  sortType?: string,
+  page?: number,
+  pageSize?: number
+}>();
+
+// 定義事件
+const emit = defineEmits<{
+  'update-total-items': [total: number]
+}>();
+
+// 使用 Pinia store
+const courseStore = useCourseStore();
+
+// 使用 storeToRefs 解構 store 中的響應式資料
+const { courseList, loading, error } = storeToRefs(courseStore);
+
+// 將 courseList 轉換為元件需要的格式並根據 categoryId 過濾、sortType 排序及分頁
+// TODO: 根據teacher_id 查講師名稱 & 撥課程評分
+const allCourses = computed(() => {
+  // 先轉換格式
+  const formattedCourses = courseList.value.map(course => {
+    // 將字串轉換為數字，以便排序
+    const studentsCount = parseInt(course.total_users || '0', 10);
+    
+    return {
+      link: `/home/course/${course.id}`,
+      id: course.id,
+      img: course.course_banner_imageUrl || '/src/assets/images/course/course1.jpg', // 使用 API 返回的圖片
+      title: course.course_name,
+      category_id: course.category_id,
+      teacher: '講師', // 這裡需要從 teacher_id 獲取講師名稱，暫時使用預設值
+      rating: 5.0, // API 中沒有評分欄位，使用預設值
+      students: studentsCount.toLocaleString('zh-TW'), // 加上千分位顯示
+      studentsCount, // 保存原始數字以便排序
+      hours: parseInt(course.course_hours || '0', 10),
+      price: parseInt(course.sell_price || '0', 10),
+      originPrice: parseInt(course.origin_price || '0', 10),
+      createdAt: course.created_at || '' // 保存創建時間以便排序
+    };
+  });
+
+  // 根據選擇的類別過濾課程
+  let filteredCourses = formattedCourses;
+  if (props.categoryId) {
+    filteredCourses = formattedCourses.filter(course => course.category_id === props.categoryId);
+  }
+
+  // 根據 sortType 排序
+  if (props.sortType === 'hot') {
+    // 最熱門：依學生人數降序排列
+    return filteredCourses.sort((a, b) => b.studentsCount - a.studentsCount);
+  } else if (props.sortType === 'time') {
+    // 依時間：依 created_at 降序排列（最新的在前）
+    return filteredCourses.sort((a, b) => {
+      const dateA = new Date(a.createdAt).getTime();
+      const dateB = new Date(b.createdAt).getTime();
+      return dateB - dateA;
+    });
+  }
+
+  // 預設返回無排序的列表
+  return filteredCourses;
+});
+
+// 當前頁的課程
+const courses = computed(() => {
+  // 如果沒有指定頁碼或每頁數量，則返回全部課程
+  if (!props.page || !props.pageSize) {
+    return allCourses.value;
+  }
+  
+  // 計算當前頁的課程
+  const startIndex = (props.page - 1) * props.pageSize;
+  const endIndex = startIndex + props.pageSize;
+  return allCourses.value.slice(startIndex, endIndex);
+});
+
+// 監聽 allCourses 變化，更新總課程數
+watch(() => allCourses.value.length, (newLength) => {
+  emit('update-total-items', newLength);
+});
+
+// 元件掛載時獲取課程列表
+onMounted(() => {
+  courseStore.fetchCourses().then(() => {
+    // 課程資料加載完成後立即發送總課程數
+    emit('update-total-items', allCourses.value.length);
+  });
+});
+
+// 監聽 categoryId 變化，更新總課程數
+watch([() => props.categoryId, () => courseList.value], () => {
+  // 類別或課程列表變化時更新總課程數
+  emit('update-total-items', allCourses.value.length);
+});
 </script>

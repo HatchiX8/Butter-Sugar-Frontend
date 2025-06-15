@@ -99,7 +99,7 @@ watch(
   (newVal) => {
     console.log('小節順序發生變化', newVal);
     // 呼叫 API 傳送最新資料
-    apiFn(newVal);
+    apiFn();
   },
   { deep: true }
 );
