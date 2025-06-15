@@ -7,7 +7,7 @@
         { label: '教師資料管理', to: '/teacher/memberCenter/profile' },
       ]"
     />
-    <div class="personal-info flex items-center justify-between text-white">
+    <div class="flex items-center justify-between">
       <typography variant="h2" font-type="title" underline class="mb-8">老師資料管理</typography>
       <baseButton v-if="!isEdit"
         label="編輯資料"
@@ -16,7 +16,7 @@
       />
     </div>
     <!-- 編輯模式 -->
-    <baseForm v-if="isEdit" class="personal-form" ref="formRef"
+    <baseForm v-if="isEdit" ref="formRef"
       :model="formData"
       :fields="fields"
       submit-label="儲存"
@@ -24,9 +24,10 @@
       :show-cancel="true"
       @submit="handleSubmit"
       @cancel="handleCancel"
+      :fieldProps="fieldProps"
     />
     <!-- 檢視模式 -->
-    <baseForm v-else class="personal-form space-y-2 text-white"
+    <baseForm v-else
       :model="formData"
       :fields="fields"
       read-only
@@ -43,6 +44,14 @@ import baseForm from '@/components/layout/baseForm.vue';
 import typography from '@/components/layout/typography.vue';
 import breadcrumbComps from '@/components/layout/breadcrumbComps.vue';
 import type { FormField } from '@/components/layout/baseForm.vue';
+
+const fieldProps = {
+  profile_image_url: {
+    uploadButtonText: '上傳頭像',
+    previewAlt: '頭像預覽',
+    previewClass: 'mt-2 h-16 w-16 rounded-full object-cover',
+  },
+};
 
 const options = [
   { label: '玉山銀行', value: 'bank01' },

@@ -7,7 +7,7 @@
         { label: '學生資料管理' },
       ]"
     />
-    <div class="flex items-center justify-between text-white">
+    <div class="flex items-center justify-between">
       <typography variant="h2" font-type="title" underline class="mb-8">學生資料管理</typography>
       <baseButton v-if="!isEdit"
         label="編輯資料"

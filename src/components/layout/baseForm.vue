@@ -1,45 +1,47 @@
 <template>
-  <n-form
-    ref="formRef"
-    :model="model"
-    :rules="rules"
-    class="grid gap-4"
-  >
-    <!-- 表單上方 -->
-    <slot name="header" />
-
-    <!-- 動態渲染欄位 -->
-    <n-form-item
-      v-for="field in fields"
-      :key="field.key"
-      :label="field.label"
-      :path="field.key"
-      :class="getColSpanClass(field)"
+  <n-config-provider :theme-overrides="themeOverrides">
+    <n-form
+      ref="formRef"
+      :model="model"
+      :rules="rules"
+      class="grid gap-4"
     >
-      <component
-        :is="resolveComponent(field.type, props.readOnly)"
-        v-model:value="model[field.key]"
-        :field-type="field.type"
-        v-bind="generateProps(field)"
-      />
-    </n-form-item>
+      <!-- 表單上方 -->
+      <slot name="header" />
 
-    <!-- 表單下方 唯讀模式省略 -->
-    <slot name="footer" v-if="!props.readOnly">
-      <n-space>
-        <baseButton
-          :label="submitLabel"
-          type="primary"
-          @click="onSubmit"
+      <!-- 動態渲染欄位 -->
+      <n-form-item
+        v-for="field in fields"
+        :key="field.key"
+        :label="field.label"
+        :path="field.key"
+        :class="getColSpanClass(field)"
+      >
+        <component
+          :is="resolveComponent(field.type, props.readOnly)"
+          v-model:value="model[field.key]"
+          :field-type="field.type"
+          v-bind="generateProps(field)"
         />
-        <baseButton
-          v-if="showCancel"
-          :label="cancelLabel"
-          @click="$emit('cancel')"
-        />
-      </n-space>
-    </slot>
-  </n-form>
+      </n-form-item>
+
+      <!-- 表單下方 唯讀模式省略 -->
+      <slot name="footer" v-if="!props.readOnly">
+        <n-space>
+          <baseButton
+            :label="submitLabel"
+            type="primary"
+            @click="onSubmit"
+          />
+          <baseButton
+            v-if="showCancel"
+            :label="cancelLabel"
+            @click="$emit('cancel')"
+          />
+        </n-space>
+      </slot>
+    </n-form>
+  </n-config-provider>
 </template>
 
 <script setup lang="ts">
@@ -48,6 +50,7 @@ import baseButton from '@/components/layout/baseButton.vue';
 import baseInput from '@/components/layout/baseInput.vue';
 import baseUpload from '@/components/layout/baseUpload.vue';
 import type { FormRules, FormItemRule } from 'naive-ui';
+import { themeColors } from '@/utils';
 
 // 預設驗證規則
 const defaultRules: FormRules = {
@@ -222,6 +225,13 @@ const getColSpanClass = (field: FormField) => {
       return `col-span-4`;
     default:
       return `col-span-1`;
+  }
+};
+
+const colors = themeColors.colors;
+const themeOverrides = {
+  Form: {
+    labelTextColor: colors.white,
   }
 };
 </script>
