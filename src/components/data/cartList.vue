@@ -1,12 +1,9 @@
 <!-- 結帳資訊頁面 -->
 <template>
-  <div class="flex gap-6">
+  <div v-if="itemCount !== 0" class="flex gap-6">
     <div class="bg-neutral_600 border-1 border-white/10% rounded-0.5 flex-1 border-solid p-4">
-      <div v-if="orderDetails === true" class="mb-4 flex items-center justify-between p-4">
-        <div>
-          <h2 class="text-6 font-bold">訂單明細</h2>
-          <div class="h-0.1 bg-primaryDefault mt-4 w-14"></div>
-        </div>
+      <div class="mb-4 flex items-center justify-between px-4">
+        <typography variant="h4" font-type="title" underline>{{ headerTitle }}</typography>
         <div class="font-['Noto Sans TC'] text-primaryDefault text-4 text-right">
           總共 {{ itemCount }} 件
         </div>
@@ -42,11 +39,6 @@
               </div>
               <div v-if="orderDetails === false" class="flex items-center justify-end gap-2">
                 <baseButton text label="移除" @click="openConfirmModal(item)" icon="i-ion:trash-outline" iconPosition="right" iconClass="w-4 h-4 text-neutral_200 hover:text-primaryDefault" labelClass="text-neutral_200 hover:text-primaryDefault" />
-                <n-button text @click="remove(item.course_id)">
-                  <div
-                    class="i-ion:trash-outline text-neutral_300 hover:text-primaryDefault h-4 w-4"
-                  ></div>
-                </n-button>
               </div>
             </div>
           </div>
@@ -76,6 +68,7 @@
 import { ref, computed } from 'vue';
 import confirmModal from '@/views/home/cart/comps/confirmModal.vue';
 import baseButton from '@/components/layout/baseButton.vue';
+import typography from '@/components/layout/typography.vue';
 
 // 移除課程彈窗
 const itemToDelete = ref<{ course_id: string; course_name: string } | null>(null);
@@ -84,6 +77,11 @@ const openConfirmModal = (item: { course_id: string; course_name: string }) => {
   itemToDelete.value = item
   showConfirmModal.value = true
 };
+
+// 標題顯示
+const headerTitle = computed(() =>
+  props.orderDetails ? '訂單明細' : '購物車',
+);
 
 interface CartItem {
   course_id: string;
@@ -105,18 +103,6 @@ const props = withDefaults(
     orderDetails: false,
   }
 );
-
-const emit = defineEmits<{
-  (e: 'removeItem', id: string): void;
-}>();
-
-// 傳遞emit預刪除ID至父元件
-const remove = (id: string) => {
-  console.log('回傳刪除ID給父元件', id);
-
-  emit('removeItem', id);
-};
-// -----------------------------
 
 const formatCurrency = (value: number, currency = 'NT$'): string =>
   `${currency} ${value.toLocaleString('en-US')}`;

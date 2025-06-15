@@ -1,12 +1,12 @@
 export interface ApiResponse<T> {
   status: boolean;
   message: string;
-  data: T;
+  data?: T | null;
 };
 
 export interface Cart{
   cart_id: string,
-  cart_items: CartItem[],
+  items: CartItem[],
   item_count: number,
   total_price: number,
 };
@@ -18,3 +18,8 @@ export interface CartItem {
   course_smallimage: string
 };
 
+export interface MergeCartData {
+  item_count: number;
+  total_price: number;
+  errors: string | null;
+};
