@@ -132,7 +132,7 @@ import { ref, computed, onMounted, watch } from 'vue';
 import { useRoute } from 'vue-router';
 import titleModal from './titleModal.vue';
 import { baseInput } from '@/components/index';
-
+import type { AddChildRequestPayload } from '@/views/dashboard/type';
 const route = useRoute();
 
 // -----------彈跳視窗-----------
@@ -163,15 +163,15 @@ const handleConfirm = () => {
 // -----------emit&props-----------
 const emit = defineEmits<{
   (e: 'update:modelValue', value: boolean): void;
-  (e: 'request', payload: { type: string; payload: string }): void;
+  (e: 'request', payload: AddChildRequestPayload): void;
 }>();
 // -----------------------------
 
 // -----------下拉選單-----------
 const options = [
-  { label: '麵包', value: 'bank01' },
-  { label: '蛋糕', value: 'bank02' },
-  { label: '餅乾', value: 'bank03' },
+  { label: '麵包', value: 1 },
+  { label: '蛋糕', value: 2 },
+  { label: '餅乾', value: 3 },
 ];
 const optionsValue = ref();
 

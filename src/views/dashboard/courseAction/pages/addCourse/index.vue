@@ -28,6 +28,8 @@ import {
   courseStepIndicator,
   courseSubmit,
 } from '../../comps/index';
+import type { AddChildRequestPayload } from '@/views/dashboard/type';
+import { useDashboardStore } from '@/stores/models/index';
 
 // 從表格頁面跳轉進來
 const route = useRoute();
@@ -41,6 +43,10 @@ const courseInfoData = ref({
 });
 
 onMounted(() => {});
+
+// ----------Store----------
+const dashboardStore = useDashboardStore();
+// -------------------------
 
 // -----------上下頁切換-----------
 const nextToggle = () => {
@@ -75,7 +81,7 @@ const courseChapterData = ref({
 // ----------------------------------
 
 // -----------API請求-----------
-const addChildRequest = ({ type, payload }: { type: string; payload: string }) => {
+const addChildRequest = ({ type, payload }: AddChildRequestPayload) => {
   // 觸發標題API
   if (type === 'addTitle') {
     // 呼叫新增課程標題 API
@@ -83,6 +89,7 @@ const addChildRequest = ({ type, payload }: { type: string; payload: string }) =
       course_name: payload,
     };
     console.log('觸發標題API', postData);
+    dashboardStore.addTitle(postData);
   }
   // 觸發類別API
   else if (type === 'addCategory') {
