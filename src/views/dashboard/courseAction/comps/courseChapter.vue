@@ -99,7 +99,7 @@ watch(
   (newVal) => {
     console.log('小節順序發生變化', newVal);
     // 呼叫 API 傳送最新資料
-    apiFn(newVal);
+    apiFn();
   },
   { deep: true }
 );
@@ -109,7 +109,7 @@ const editChapter = (courseId: string) => {
 };
 
 // 這邊之後要設定參數的interface
-const apiFn = (val) => {
-  console.log('觸發更新api', val);
+const apiFn = () => {
+  console.log('觸發更新api');
 };
 </script>
