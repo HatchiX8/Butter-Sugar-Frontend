@@ -26,7 +26,7 @@ const router = createRouter({
               name: 'CourseVideo',
               component: () => import('@/views/home/coursePage/index.vue'), // 課程影片
             },
-          ]
+          ],
         },
         {
           path: 'course-info',
@@ -82,6 +82,7 @@ const router = createRouter({
     {
       path: '/Teacher',
       name: 'TeacherBackend',
+      redirect: '/Teacher/basicInfo',
       component: () => import('@/views/dashboard/index.vue'),
       children: [
         {

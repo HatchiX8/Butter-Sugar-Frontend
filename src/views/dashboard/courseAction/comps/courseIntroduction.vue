@@ -24,25 +24,29 @@
         </li>
       </ul>
     </div>
-    <div class="mb-5">
-      <p>課程圖片</p>
-      <div class="h-50 w-50 bg-yellow-900">圖片內容</div>
-    </div>
-    <div class="w-40%">
+    <div class="w-40% mb-5">
       <div class="mb-5">
         <p>課程名稱</p>
-        <n-input type="text" placeholder="請輸入課程名稱" class="bg-black focus:outline-none" />
-      </div>
-      <div class="mb-5">
-        <p>課程描述</p>
-        <n-input type="text" placeholder="請輸入課程描述" class="bg-black focus:outline-none" />
+        <baseInput type="text" placeholder="請輸入課程名稱" v-model="courseTitle" />
       </div>
       <div class="w-40% mb-5">
         <p>課程類別</p>
         <n-space vertical>
-          <n-select v-model:value="value" :options="options" placeholder="請選擇類別" />
+          <n-select v-model:value="optionsValue" :options="options" placeholder="請選擇類別" />
         </n-space>
       </div>
+    </div>
+
+    <div v-show="courseTitle && optionsValue" class="w-40%">
+      <div class="mb-5">
+        <p>課程描述</p>
+        <n-input type="text" placeholder="請輸入課程描述" class="bg-black focus:outline-none" />
+      </div>
+      <div class="mb-5">
+        <p>課程圖片</p>
+        <div class="h-50 w-50 bg-yellow-900">圖片內容</div>
+      </div>
+
       <div class="mb-5">
         <p>課程簡介</p>
         <n-input type="text" placeholder="請輸入課程簡介" class="bg-black focus:outline-none" />
@@ -54,13 +58,11 @@
           <div class="w-50 h-40 bg-yellow-900">圖片內容</div>
         </div>
       </div>
-    </div>
 
-    <div class="mb-5">
-      <p>課前準備</p>
       <div class="mb-5">
+        <p>課前準備</p>
         <p>預告片</p>
-        <div class="w-40% flex items-center justify-between">
+        <div class="flex items-center justify-between">
           <!-- 左邊：已上傳影片 (這邊你之後可以放影片預覽 或 file name 等) -->
           <div v-show="isVideo" class="mr-4 flex-1">
             <n-upload
@@ -80,9 +82,10 @@
           </div>
         </div>
       </div>
+
       <div class="mb-5">
         <p>課程講義</p>
-        <div class="w-40% flex items-center justify-between">
+        <div class="flex items-center justify-between">
           <!-- 左邊：已上傳影片 (這邊你之後可以放影片預覽 或 file name 等) -->
           <div v-show="isFile" class="mr-4 flex-1">
             <n-upload
@@ -102,9 +105,7 @@
           </div>
         </div>
       </div>
-    </div>
 
-    <div class="w-40%">
       <div class="mb-5">
         <p>適合對象</p>
         <n-input type="text" placeholder="請輸入適合對象" class="bg-black focus:outline-none" />
@@ -115,17 +116,77 @@
       </div>
     </div>
   </div>
+  <titleModal
+    :modelValue="modelValue"
+    v-model:inputValue="courseTitle"
+    @update:modelValue="(val) => emit('update:modelValue', val)"
+    title="請輸入課程標題"
+    :showFooter="true"
+    :onConfirm="handleConfirm"
+    @update:title="modalTitle = $event"
+  />
 </template>
 
 <script setup lang="ts">
-import { ref } from 'vue';
+import { ref, computed, onMounted, watch } from 'vue';
+import { useRoute } from 'vue-router';
+import titleModal from './titleModal.vue';
+import { baseInput } from '@/components/index';
+import type { AddChildRequestPayload } from '@/views/dashboard/type';
+const route = useRoute();
 
+// -----------彈跳視窗-----------
+const isEditMode = computed(() => Boolean(route.query.id)); // 有 id 就代表是編輯
+const modelValue = ref(false);
+const courseTitle = ref<string>('');
+const modalTitle = ref('');
+
+onMounted(() => {
+  console.log('檢視路由ID', isEditMode.value);
+  if (!isEditMode.value && courseTitle.value === '') {
+    modelValue.value = true;
+  }
+});
+
+const handleConfirm = () => {
+  console.log('觸發新增標題', modalTitle.value);
+  courseTitle.value = modalTitle.value;
+  console.log('成功寫入', courseTitle.value);
+  // 這邊請求寫入titleAPI
+  emit('request', {
+    type: 'addTitle',
+    payload: courseTitle.value,
+  });
+};
+// -----------------------------
+
+// -----------emit&props-----------
+const emit = defineEmits<{
+  (e: 'update:modelValue', value: boolean): void;
+  (e: 'request', payload: AddChildRequestPayload): void;
+}>();
+// -----------------------------
+
+// -----------下拉選單-----------
 const options = [
-  { label: '麵包', value: 'bank01' },
-  { label: '蛋糕', value: 'bank02' },
-  { label: '餅乾', value: 'bank03' },
+  { label: '麵包', value: 1 },
+  { label: '蛋糕', value: 2 },
+  { label: '餅乾', value: 3 },
 ];
-const value = ref(options[0].value);
+const optionsValue = ref();
+
+watch(optionsValue, (newVal, oldVal) => {
+  if (newVal && newVal !== oldVal) {
+    console.log('觸發存檔請求API', newVal);
+    emit('request', {
+      type: 'addCategory',
+      payload: newVal,
+    });
+  } else {
+    return;
+  }
+});
+// -----------------------------
 
 // -----------影片上傳-----------
 const videoUploadRef = ref();
@@ -173,5 +234,8 @@ const handleFileRemove = () => {
   console.log('使用者移除檔案');
   isFile.value = false;
 };
+// -----------------------------
+
+// -----------區塊-----------
 // -----------------------------
 </script>

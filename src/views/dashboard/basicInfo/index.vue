@@ -1,11 +1,11 @@
 <template>
-  <div class="px-5 text-white line-height-normal">
-    <div class="mb-10 pb-10 border-b border-solid border-primaryDefault/30%">
-      <typography variant="h4" font-type="title" class="text-white -mt-10 mb-5" no-underline>
+  <div class="line-height-normal px-5 text-white">
+    <div class="border-primaryDefault/30% mb-10 border-b border-solid pb-10">
+      <typography variant="h4" font-type="title" class="-mt-10 mb-5 text-white" no-underline>
         基本資訊
       </typography>
       <p class="text-primaryDefault fw-bold">
-        <span class="i-ion:bookmarks inline-block w-4.5 h-4.5 text-primaryDefault mr-2"></span>
+        <span class="i-ion:bookmarks w-4.5 h-4.5 text-primaryDefault mr-2 inline-block"></span>
         講師身分審核須知
       </p>
       <p>
@@ -19,42 +19,52 @@
         <img
           src="/src/assets/images/avatar.png"
           alt="avatar"
-          class="h-16 w-16 rounded-full object-cover mr-5"
+          class="mr-5 h-16 w-16 rounded-full object-cover"
         />
         <div class="mt-auto">
           <p>圖片要求:</p>
           <p>大頭貼（正面清晰照，建議尺寸 500x500px）</p>
         </div>
       </div>
-      <div class="w-full grid grid-cols-2 gap-4">
+      <div class="grid w-full grid-cols-2 gap-4">
         <div>
           <p>真實姓名</p>
-          <n-input type="text" placeholder="請輸入姓名" class="bg-black focus:outline-none mt-1" />
+          <n-input type="text" placeholder="請輸入姓名" class="mt-1 bg-black focus:outline-none" />
         </div>
         <div>
           <p>暱稱</p>
-          <n-input type="text" placeholder="請輸入暱稱" class="bg-black focus:outline-none mt-1" />
+          <n-input type="text" placeholder="請輸入暱稱" class="mt-1 bg-black focus:outline-none" />
         </div>
         <div>
           <p>電子郵件</p>
-          <n-input type="text" placeholder="請輸入電子郵件" class="bg-black focus:outline-none mt-1" />
+          <n-input
+            type="text"
+            placeholder="請輸入電子郵件"
+            class="mt-1 bg-black focus:outline-none"
+          />
         </div>
         <div>
           <p>電話號碼</p>
-          <n-input type="text" placeholder="請輸入電話號碼" class="bg-black focus:outline-none mt-1" />
+          <n-input
+            type="text"
+            placeholder="請輸入電話號碼"
+            class="mt-1 bg-black focus:outline-none"
+          />
         </div>
       </div>
     </div>
-    <div class=""><n-config-provider><n-divider /></n-config-provider></div>
+    <div class="">
+      <n-config-provider><n-divider /></n-config-provider>
+    </div>
     <div>
-      <div class="mb-5 pb-10 border-b border-solid border-primaryDefault/30%">
+      <div class="border-primaryDefault/30% mb-5 border-b border-solid pb-10">
         <p>
-          <span class="i-ion:bookmarks inline-block w-4.5 h-4.5 text-primaryDefault mr-2"></span>
+          <span class="i-ion:bookmarks w-4.5 h-4.5 text-primaryDefault mr-2 inline-block"></span>
           為了確認您的講師身份，請提供以下身份證明文件。我們將確保您的個人資料安全，不會對外公開。
         </p>
         <br />
         <p>
-          <span class="i-ion:bookmarks inline-block w-4.5 h-4.5 text-primaryDefault mr-2"></span>
+          <span class="i-ion:bookmarks w-4.5 h-4.5 text-primaryDefault mr-2 inline-block"></span>
           「確保您的收益順利入帳！」
         </p>
         <p>
@@ -63,7 +73,7 @@
       </div>
 
       <div class="mb-5">
-        <div class="mb-5 w-30%">
+        <div class="w-30% mb-5">
           <p>銀行名稱</p>
           <n-space vertical class="mt-1">
             <n-select v-model:value="value" :options="options" placeholder="請選擇類別" />
@@ -72,18 +82,30 @@
 
         <div class="mb-5">
           <p>銀行帳號</p>
-          <n-input type="text" placeholder="請輸入銀行帳號" class="bg-black focus:outline-none mt-1" />
+          <n-input
+            type="text"
+            placeholder="請輸入銀行帳號"
+            class="mt-1 bg-black focus:outline-none"
+          />
         </div>
 
         <div class="mb-5">
-          <typography variant="h5" font-type="title" class="text-white mt-5 mb-2" no-underline>
+          <typography variant="h5" font-type="title" class="mb-2 mt-5 text-white" no-underline>
             關於我
           </typography>
-          <div class="flex items-center justify-between mb-2">
+          <div class="mb-2 flex items-center justify-between">
             <p>slogan</p>
-            <n-input type="text" placeholder="請輸入slogan" class="bg-black focus:outline-none mt-1 ml-2" />
+            <n-input
+              type="text"
+              placeholder="請輸入slogan"
+              class="ml-2 mt-1 bg-black focus:outline-none"
+            />
           </div>
-          <n-input type="text" placeholder="請輸入自我介紹" class="bg-black focus:outline-none mt-1" />
+          <n-input
+            type="text"
+            placeholder="請輸入自我介紹"
+            class="mt-1 bg-black focus:outline-none"
+          />
         </div>
 
         <div>
@@ -91,7 +113,7 @@
           <n-input
             type="text"
             placeholder="請輸入您擅長的領域或技術"
-            class="bg-black focus:outline-none mt-1"
+            class="mt-1 bg-black focus:outline-none"
           />
         </div>
       </div>
@@ -116,5 +138,4 @@ const options = [
 ];
 const value = ref(options[0].value);
 </script>
-<style scoped>
-</style>
+<style scoped></style>

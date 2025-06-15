@@ -1,13 +1,26 @@
 <template>
   <div>
-    <courseStepIndicator :current="currentStep" />
-    <component :is="currentFormComponent" />
+    <courseStepIndicator :current="currentStep" :is-edit="isEditMode" />
+    <!-- <component :is="currentFormComponent" /> -->
+    <div v-show="currentStep === 1">
+      <courseIntroduction
+        :course-data="courseInfoData"
+        :is-edit="isEditMode"
+        @request="addChildRequest"
+      />
+    </div>
+    <div v-show="currentStep === 2">
+      <courseChapter :course-data="courseChapterData" />
+    </div>
+    <div v-show="currentStep === 3">
+      <courseSubmit :course-data="courseSubmitData" />
+    </div>
   </div>
   <button @click="preToggle">上一步</button>
   <button @click="nextToggle">下一步</button>
 </template>
 <script setup lang="ts">
-import { ref, computed } from 'vue';
+import { ref, onMounted, computed } from 'vue';
 import { useRoute } from 'vue-router';
 import {
   courseChapter,
@@ -15,24 +28,27 @@ import {
   courseStepIndicator,
   courseSubmit,
 } from '../../comps/index';
+import type { AddChildRequestPayload } from '@/views/dashboard/type';
+import { useDashboardStore } from '@/stores/models/index';
 
 // 從表格頁面跳轉進來
 const route = useRoute();
+const isEditMode = computed(() => typeof route.query.id === 'string' && route.query.id !== ''); // 有 id 就代表是編輯
 const currentStep = ref(Number(route.query.step) || 1);
 
-const currentFormComponent = computed(() => {
-  switch (currentStep.value) {
-    case 1:
-      return courseIntroduction;
-    case 2:
-      return courseChapter;
-    case 3:
-      return courseSubmit;
-    default:
-      return courseIntroduction;
-  }
+const courseInfoData = ref({
+  description: '',
+  id: '',
+  title: '',
 });
 
+onMounted(() => {});
+
+// ----------Store----------
+const dashboardStore = useDashboardStore();
+// -------------------------
+
+// -----------上下頁切換-----------
 const nextToggle = () => {
   if (currentStep.value >= 3) {
     return;
@@ -46,4 +62,42 @@ const preToggle = () => {
   }
   currentStep.value--;
 };
+
+const courseSubmitData = ref({
+  description: '',
+  id: '',
+  title: '',
+});
+
+const courseChapterData = ref({
+  description: '',
+  id: '',
+  title: '',
+});
+// ----------------------------------
+
+// -----------判定新增/編輯-----------
+// const isEditMode = computed(() => Boolean(route.query.id)); // 有 id 就代表是編輯
+// ----------------------------------
+
+// -----------API請求-----------
+const addChildRequest = ({ type, payload }: AddChildRequestPayload) => {
+  // 觸發標題API
+  if (type === 'addTitle') {
+    // 呼叫新增課程標題 API
+    const postData = {
+      course_name: payload,
+    };
+    console.log('觸發標題API', postData);
+    dashboardStore.addTitle(postData);
+  }
+  // 觸發類別API
+  else if (type === 'addCategory') {
+    const postData = {
+      category_id: payload,
+    };
+    console.log('觸發類別API', postData);
+  }
+};
+// -----------------------------
 </script>
