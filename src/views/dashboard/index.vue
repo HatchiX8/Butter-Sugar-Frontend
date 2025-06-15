@@ -55,8 +55,6 @@ const handleMenuSelect = (key: string) => {
 };
 </script>
 <style scoped>
-<<<<<<< HEAD
-=======
 /* 確保 Flex 項目不因內容限制寬度 */
 .min-width-0 {
   min-width: 0;
@@ -85,23 +83,18 @@ const handleMenuSelect = (key: string) => {
   }
 }
 
->>>>>>> origin/dev
 :deep(.n-menu .n-menu-item-content.n-menu-item-content--selected .n-menu-item-content-header) {
   color: #fff !important;
 }
 :deep(.n-menu .n-menu-item-content .n-menu-item-content-header) {
   color: rgba(255, 255, 255, 0.7) !important;
 }
-<<<<<<< HEAD
 :deep(
   .n-menu
     .n-menu-item-content:not(
       .n-menu-item-content--disabled
     ).n-menu-item-content--selected:hover::before
 ) {
-=======
-:deep(.n-menu .n-menu-item-content:not(.n-menu-item-content--disabled).n-menu-item-content--selected:hover::before) {
->>>>>>> origin/dev
   background-color: rgba(214, 142, 57, 0.7) !important;
 }
 </style>
