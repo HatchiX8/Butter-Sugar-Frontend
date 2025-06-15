@@ -104,7 +104,6 @@
 import { ref, computed, onMounted } from 'vue'
 import type { Ref } from 'vue'
 import { NSelect, NInput, NButton, NTag } from 'naive-ui'
-import axios from 'axios'
 
 /* ---------- 型別 ---------- */
 interface Reply {
@@ -203,11 +202,6 @@ const submitReply = (idx: number): void => {
 /* ---------- 儲存 ---------- */
 const syncStorageAndBackend = async (): Promise<void> => {
   localStorage.setItem('qaList', JSON.stringify(qaList.value))
-  try {
-    await axios.post('/api/saveQa', qaList.value)
-  } catch (err) {
-    console.error(err)
-  }
 }
 
 /* ---------- 其他 ---------- */

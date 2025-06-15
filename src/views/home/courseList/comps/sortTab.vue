@@ -1,5 +1,5 @@
 <template>
-  <n-breadcrumb separator="|">
+  <n-breadcrumb separator="|" class="mb-10 md:mb-0">
     <n-breadcrumb-item
       v-for="item in props.items"
       :key="item.value"

@@ -1,25 +1,21 @@
 <template>
-  <div>
-    <component
-      :is="computedTag"
-      class="mt-10"
-      :class="[
-        fontClass,
-        sizeClass,
-        weightClass,
-        lineHeightClass,
-        'text-white'
-      ]"
-    >
-      <slot></slot>
-    </component>
+  <component
+    :is="computedTag"
+    :class="[
+      fontClass,
+      sizeClass,
+      weightClass,
+      lineHeightClass,
+    ]"
+  >
+    <slot></slot>
 
     <!-- 底線元素 -->
     <span
       v-if="underline"
       class="w-18 h-0.25 bg-primaryDefault mt-19px block"
     ></span>
-  </div>
+  </component>
 </template>
 
 <script lang="ts">

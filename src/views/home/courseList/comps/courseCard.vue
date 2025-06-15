@@ -24,14 +24,14 @@
     </div>
     <!-- 卡片下半部資訊 -->
     <div class="p-4 pt-3">
-      <div class="flex items-center text-white text-sm gap-4">
+      <div class="flex items-center text-neutral_200 text-sm gap-4">
         <span class="flex items-center gap-1"><starIcon /> {{ Number(rating).toFixed(1) }}</span>
         <span class="flex items-center gap-1"><groupIcon />{{ students }}人</span>
         <span class="flex items-center gap-1"><timeIcon />{{ hours }}小時</span>
       </div>
       <div class="flex items-end gap-2 mt-2">
         <span class="text-white text-base font-bold">NT$ {{ price.toLocaleString() }}</span>
-        <span v-if="originPrice" class="text-[#B6A089] text-sm line-through">NT$ {{ originPrice.toLocaleString() }}</span>
+        <span v-if="originPrice" class="text-neutral_200 text-sm line-through">NT$ {{ originPrice.toLocaleString() }}</span>
       </div>
     </div>
     </n-card>
@@ -56,9 +56,9 @@ a:hover {
 </style>
 
 <script setup lang="ts">
-import starIcon from './starIcon.vue'
-import groupIcon from './groupIcon.vue'
-import timeIcon from './timeIcon.vue'
+import starIcon from '@/components/layout/starIcon.vue'
+import groupIcon from '@/components/layout/groupIcon.vue'
+import timeIcon from '@/components/layout/timeIcon.vue'
 
 defineProps<{
   link?: string
