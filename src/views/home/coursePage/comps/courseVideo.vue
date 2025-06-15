@@ -15,7 +15,7 @@
           </video>
         </div>
 
-        <typography variant="h2" font-type="title" no-underline>
+        <typography variant="h3" font-type="title" no-underline>
           {{ currentVideoLabel }}
         </typography>
         <div class="video-title mt-5">
@@ -30,16 +30,15 @@
 
       <!-- 右側：選單 。 縮排設定 :indent="12" -->
       <div class="video-menu w-full md:flex-[1] rounded-md shadow-sm overflow-y-auto h-auto">
-        <n-menu
-          :options="menuOptions"
-          accordion
-          v-model:expanded-keys="expandedKeys"
-          v-model:value="selectedKey"
-          @update:value="switchVideo"
-          :theme-overrides="menuThemeOverrides"
-          :indent="12"
-          class="h-full bg-transparent"
-        />
+          <n-menu
+            :options="menuOptions"
+            accordion
+            v-model:expanded-keys="expandedKeys"
+            v-model:value="selectedKey"
+            @update:value="switchVideo"
+            :indent="12"
+            class="h-full bg-transparent"
+          />
       </div>
     </div>
   </div>
@@ -47,8 +46,8 @@
 
 <script setup lang="ts">
 import { ref, onMounted, h } from 'vue'
-import type { MenuOption, GlobalThemeOverrides} from 'naive-ui'
-import typography from '@/components/layout/typography.vue';
+import type { MenuOption} from 'naive-ui'
+import typography from '@/components/layout/typography.vue'
 
 interface VideoItem {
   label: string
@@ -202,23 +201,6 @@ onMounted(() => {
     videoEl.addEventListener('ended', () => { // 播放結束，清除紀錄
       localStorage.removeItem(STORAGE_KEY)
     })
-  }
-})
-
-const menuThemeOverrides = ref<GlobalThemeOverrides>({
-  Menu: {
-    /* 一般項目 (item) 旁的箭頭 */
-    arrowColor: '#ffffff',               // 預設，也就是「沒 hover/active 時」
-    arrowColorHover: '#D68E39',          // 當滑鼠懸停在有箭頭的項目上
-    arrowColorActive: '#D68E39',         // 當該項目被選中 (active) 時
-    arrowColorChildActive: '#D68E39',    // 如果是「子層」被選中
-    arrowColorChildActiveHover: '#D68E39',// 當滑鼠 hover 在「已被選中子層」情況下
-    /* 章節標題 (groupHeader) 旁的箭頭 */
-    groupHeaderArrowColor: '#ffffff',
-    groupHeaderArrowColorHover: '#D68E39',
-    groupHeaderArrowColorActive: '#D68E39',
-    groupHeaderArrowColorChildActive: '#D68E39',
-    groupHeaderArrowColorChildActiveHover: '#D68E39',
   }
 })
 

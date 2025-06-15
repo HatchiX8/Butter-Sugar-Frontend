@@ -112,6 +112,26 @@ export function withNaiveProviders(App: Component) {
                   },
                 },
               },
+              Menu: {
+                /* 一般項目 (item) 旁的箭頭 */
+                arrowColor: colors.white,               // 預設，也就是「沒 hover/active 時」
+                arrowColorHover: colors.primaryDefault,          // 當滑鼠懸停在有箭頭的項目上
+                arrowColorActive: colors.primaryDefault,         // 當該項目被選中 (active) 時
+                arrowColorChildActive: colors.primaryDefault,    // 如果是「子層」被選中
+                arrowColorChildActiveHover: colors.primaryDefault,// 當滑鼠 hover 在「已被選中子層」情況下
+                /* 章節標題 (groupHeader) 旁的箭頭 */
+                groupHeaderArrowColor: colors.white,
+                groupHeaderArrowColorHover: colors.primaryDefault,
+                groupHeaderArrowColorActive: colors.primaryDefault,
+                groupHeaderArrowColorChildActive: colors.primaryDefault,
+                groupHeaderArrowColorChildActiveHover: colors.primaryDefault,
+                // 
+                itemColorHover: hexToRgba(colors.primaryDefault, 0.3),
+                itemColorActive: hexToRgba(colors.primaryDefault, 0.8),
+              },
+              Divider: {
+                color: hexToRgba(colors.primaryDefault, 1),
+              },
             },
           },
           {

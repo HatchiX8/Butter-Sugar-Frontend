@@ -4,7 +4,7 @@
       <img
         :src="teacherImgUrl"
         :alt="teacherImgAlt"
-        class="w-full h-full object-cover transition-transform duration-300 group-hover:scale-105"
+        :class="['w-full h-full transition-transform duration-300 group-hover:scale-105', imgClass]"
       />
       <div class="absolute inset-0 bg-black/50 transition-opacity duration-300 group-hover:opacity-0 pointer-events-none"></div>
 
@@ -41,10 +41,24 @@ defineProps<{
   nickname: string
   teacherDesc: string
   courseTitle: string
+  imgClass?: string
 }>();
 </script>
 
 <style scoped>
+/* 後備樣式，確保 object-fit 生效 */
+img {
+  object-fit: cover; /* 後備，當 UnoCSS 解析失敗時生效 */
+  width: 100%;
+  height: 100%;
+}
+
+/* 自定義 class 確保一致性 */
+.instructor-img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
 .clamped-text-3 {
   overflow: hidden;
   display: -webkit-box;

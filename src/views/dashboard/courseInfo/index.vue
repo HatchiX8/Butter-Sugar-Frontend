@@ -1,12 +1,15 @@
 <template>
-  <div class="p-5 text-white">
+  <div class="px-5 text-white mb-15">
     <div class="flex justify-between">
-      <p class="text-8">所有課程</p>
-      <button>建立新課程</button>
+      <typography variant="h4" font-type="title" class="text-white -mt-10 mb-5">
+        所有課程
+      </typography>
+      <p class="text-8"></p>
+      <button class="bg-primaryDefault text-white border-none rounded-md px-4">建立新課程</button>
     </div>
-    <div class=""><n-divider /></div>
-    <div>
-      <n-data-table :columns="columns" :data="data" :pagination :bordered="false" />
+    <n-divider />
+    <div class="w-full">
+      <n-data-table :columns="columns" :data="data" :pagination :bordered="false"/>
     </div>
   </div>
 </template>
@@ -16,6 +19,7 @@ import type { DataTableColumns } from 'naive-ui';
 import { NButton, useMessage } from 'naive-ui';
 import { h } from 'vue';
 import { ref } from 'vue';
+import typography from '@/components/layout/typography.vue';
 
 interface Song {
   no: number;
@@ -110,3 +114,17 @@ const data = ref<Song[]>([
 const columns = ref(createColumns());
 const pagination = false;
 </script>
+<style scoped>
+:deep(.n-data-table) {
+  width: 100% !important;
+  min-width: 0 !important;
+}
+:deep(.n-data-table th, .n-data-table td) {
+  min-width: 0 !important;
+  white-space: normal;
+  word-break: break-all;
+}
+:deep(.n-data-table-wrapper) {
+  width: 100% !important; /* 確保 wrapper 也填滿 */
+}
+</style>
