@@ -55,18 +55,53 @@ const handleMenuSelect = (key: string) => {
 };
 </script>
 <style scoped>
+<<<<<<< HEAD
+=======
+/* 確保 Flex 項目不因內容限制寬度 */
+.min-width-0 {
+  min-width: 0;
+}
+
+/* 手機版樣式：強制單欄並調整佈局 */
+@media (max-width: 767px) {
+  .mobile-menu {
+    width: 100% !important;
+    order: 1;
+    margin-top: 20px !important;
+    position: static !important;
+    max-height: none !important;
+  }
+  .mobile-content {
+    width: 100% !important;
+    order: 2 !important;
+  }
+  /* 強制父容器為單欄 */
+  .flex {
+    flex-direction: column !important;
+  }
+  /* 調整手機版 typography 的 margin-top */
+  .typography-title {
+    margin-top: 10px !important; /* 將 margin-top 從預設的 20px (mt-5) 改為 10px */
+  }
+}
+
+>>>>>>> origin/dev
 :deep(.n-menu .n-menu-item-content.n-menu-item-content--selected .n-menu-item-content-header) {
   color: #fff !important;
 }
 :deep(.n-menu .n-menu-item-content .n-menu-item-content-header) {
   color: rgba(255, 255, 255, 0.7) !important;
 }
+<<<<<<< HEAD
 :deep(
   .n-menu
     .n-menu-item-content:not(
       .n-menu-item-content--disabled
     ).n-menu-item-content--selected:hover::before
 ) {
+=======
+:deep(.n-menu .n-menu-item-content:not(.n-menu-item-content--disabled).n-menu-item-content--selected:hover::before) {
+>>>>>>> origin/dev
   background-color: rgba(214, 142, 57, 0.7) !important;
 }
 </style>

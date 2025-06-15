@@ -1,9 +1,14 @@
 import { defineStore } from 'pinia';
 import { ref, computed } from 'vue';
 
+export type UserRole = 'student' | 'teacher' | null;
+
 export const useUserStore = defineStore('userStore', () => {
   const userToken = ref<string | null>(localStorage.getItem('access_token'));
   const isLoggedIn = computed(() => !!userToken.value);
+
+  // 使用者角色（預設 student）
+  const role = ref<UserRole>('student');
 
   // ----------寫入token----------
   const setToken = (token: string) => {
@@ -20,6 +25,7 @@ export const useUserStore = defineStore('userStore', () => {
   return {
     userToken,
     isLoggedIn,
+    role,
     setToken,
     logout,
   };

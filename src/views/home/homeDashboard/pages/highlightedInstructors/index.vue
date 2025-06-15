@@ -44,7 +44,7 @@ interface Instructor {
   courseTitle: string
 };
 
-// 原始資料（不含 teacherImgAlt
+// 原始資料（不含 teacherImgAlt)s
 const rawInstructors: Omit<Instructor, 'teacherImgAlt'>[] = [
   {
     teacherImgUrl: "https://i.postimg.cc/0ygH2LNg/professional-baker-woman.jpg",
@@ -53,6 +53,7 @@ const rawInstructors: Omit<Instructor, 'teacherImgAlt'>[] = [
     teacherDesc:
       '擅長各式麵糰配方與手感技法，帶你從基礎揉捏到口感升級，掌握鬆軟與酥脆的黃金比例。',
     courseTitle: '打造鬆軟可口的手工麵包',
+    imgClass: 'instructor-img rounded-t-lg object-cover',
   },
   {
     teacherImgUrl: "https://i.postimg.cc/MHTgVRCh/grandpa-chef.jpg",

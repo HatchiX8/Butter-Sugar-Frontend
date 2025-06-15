@@ -17,56 +17,21 @@
           <span>{{ orderStatus }}</span>
         </div>
       </div>
-      <!-- 訂單明細 -->
-      <div class="flex-1 bg-neutral_600 border-1 border-solid border-white/10% p-4 rounded-0.5">
-        <div class="p-4 mb-4">
-          <div>
-            <h2 class="font-bold text-6">訂單明細</h2>
-            <div class="mt-4 w-14 h-0.5 bg-primaryDefault"></div>
-          </div>
-          <div class="font-['Noto Sans TC'] text-primaryDefault text-4 text-right">總共 {{ itemCount }} 件</div>
-        </div>
-        <!-- 商品清單 -->
-        <div v-for="(item, index) in visibleItems" :key="item.course_id" class="p-4">
-          <div class="flex flex-col md:flex-row items-start gap-4 pb-4"
-            :class="{ 'custom-border-bottom': index !== visibleItems.length - 1 }">
-            <router-link :to="`/home/course/${item.course_id}`"
-              class="flex flex-1 flex-col md:flex-row items-start gap-4 no-underline group">
-              <!-- 課程圖片 -->
-              <div
-              class="w-full md:w-36 h-40 md:h-24 overflow-hidden rounded-md transition-shadow duration-300 group-hover:shadow-lg">
-                <img :src="item.course_smallimage" alt="課程小圖"
-                  class="w-full h-full object-cover transition-transform duration-300 group-hover:scale-105" />
-              </div>
-              <!-- 課程名稱 -->
-              <div class="font-bold text-white text-base leading-snug clamped-text">
-                {{ item.course_name }}
-              </div>
-            </router-link>
-            <!-- 價格 -->
-            <div class="w-full md:w-21 md:min-w-28 text-right md:text-right mt-2 md:mt-0">
-              <div class="text-white font-bold text-lg mb-3">
-                {{ formatCurrency(item.price) }}
-              </div>
-            </div>
-          </div>
-        </div>
-        <!-- 展開按鈕 -->
-        <div v-if="cartItems.length > 2" class="flex justify-center mt-4 cursor-pointer" @click="toggleExpanded">
-          <span>{{ expanded ? '收合內容' : '查看更多' }}</span>
-          <span class="inline-block align-middle w-3.5 h-3.5 px-1" :class="[expanded ? 'i-ion:chevron-up' : 'i-ion:chevron-down']"></span>
-        </div>
-      </div>
+      <cartList
+        :cartItems="cartItems"
+        :itemCount="itemCount"
+        :orderDetails="true"
+      />
     </div>
   </div>
 <welcomeSection/>
 </template>
 
 <script setup lang="ts">
-import { ref, computed } from 'vue';
 import { useCartStore } from '@/stores/models/cart/store';
 import { storeToRefs } from 'pinia';
 import welcomeSection from '@/views/home/cart/comps/welcomeSection.vue';
+import cartList from '@/components/data/cartList.vue';
 
 const formatCurrency = (value: number, currency = 'NT$'): string => `${currency} ${value.toLocaleString('en-US')}`;
 
@@ -82,15 +47,6 @@ const orderStatus = '完成付款';
 // 暫時用購物車資料測試，實際應該從訂單資料中獲取
 const cartStore = useCartStore();
 const { cartItems, itemCount } = storeToRefs(cartStore);
-
-// 控制展開明細
-const expanded = ref(false);
-const visibleItems = computed(() =>
-  expanded.value ? cartItems.value : cartItems.value.slice(0, 2)
-);
-const toggleExpanded = () => {
-  expanded.value = !expanded.value
-};
 
 </script>
 

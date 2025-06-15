@@ -34,9 +34,21 @@ const router = createRouter({
           component: () => import('@/views/home/courseList/index.vue'), // 所有課程資訊
         },
         {
-          path: 'student',
-          name: 'Student',
-          component: () => import('@/views/home/student/index.vue'), // 學生個人資訊
+          path: 'memberCenter',
+          name: 'StudentMemberCenter',
+          component: () => import('@/views/home/memberCenter/index.vue'), // 學生個人資訊
+          children: [
+            {
+              path: 'profile',
+              name: 'StudentProfile',
+              component: () => import('@/views/home/memberCenter/profile/index.vue'),
+            },
+            {
+              path: 'orders',
+              name: 'Orders',
+              component: () => import('@/views/home/memberCenter/orders/index.vue'),
+            },
+          ],
         },
         {
           path: 'cart-flow',
@@ -58,6 +70,11 @@ const router = createRouter({
               component: () => import('@/views/home/cart/pages/orderSuccess/index.vue'),
             },
           ],
+        },
+        {
+          path: 'highlighted-instructor',
+          name: 'highlightedInstructor',
+          component: () => import('@/views/home/highlightedInstructor/index.vue'), // 精選講師
         },
       ],
     },
@@ -92,6 +109,23 @@ const router = createRouter({
               path: 'editCourse',
               name: 'EditCourse',
               component: () => import('@/views/dashboard/courseAction/pages/editCourse/index.vue'),
+            },
+          ],
+        },
+        {
+          path: 'memberCenter',
+          name: 'TeacherMemberCenter',
+          component: () => import('@/views/dashboard/memberCenter/index.vue'),
+          children: [
+            {
+              path: 'revenue',
+              name: 'Revenue',
+              component: () => import('@/views/dashboard/memberCenter/revenue/index.vue'),
+            },
+            {
+              path: 'profile',
+              name: 'TeacherProfile',
+              component: () => import('@/views/dashboard/memberCenter/profile/index.vue'),
             },
           ],
         },

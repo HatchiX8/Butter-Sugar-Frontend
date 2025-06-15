@@ -1,7 +1,8 @@
 <template>
-  <div class="relative h-54vh md:h-64vh">
-    <!-- 背景圖片 -->
-    <img class="w-full h-full" :src="bannerBgImgUrl" alt="Baking Class Background Image"/>
+  <div class="relative h-[500px] md:h-64vh bg-cover bg-center"
+    :class="{ 'bg-left-500': isMobile }"
+    :style="{ backgroundImage: `url(${bannerBgImgUrl})` }">
+    <!-- 背景圖片寫在 div -->
     <!-- 內容 -->
     <div class="absolute inset-0 flex flex-col items-center justify-end text-white py-20">
       <h2 class="text-center font-bold mb-12 text-6 md:text-8">
@@ -36,12 +37,14 @@
 </template>
 
 <script setup lang="ts">
-import { ref } from 'vue';
+import { ref, computed } from 'vue';
 import carouselTextItem from '@/views/home/homeDashboard/comps/carouselTextItem.vue';
 
 const bannerBgImgUrl = new URL('@/assets/images/home/bg-baking-desktop.png', import.meta.url).href;
 
 const carouselRef = ref();
+
+const isMobile = computed(() => window.innerWidth <= 767);
 
 const slides = ref([
     {
@@ -84,5 +87,9 @@ const next = () => {
 .carousel-arrow {
     @apply absolute top-1/2 -translate-y-1/2 rounded-full b-1 b-solid b-white/25% w-12 h-12 cursor-pointer bg-transparent transition-all duration-300
     hover:(bg-white/10% b-white/50% scale-105);
+}
+/* 背景圖偏移 */
+.bg-left-500 {
+    background-position-x: -500px;
 }
 </style>

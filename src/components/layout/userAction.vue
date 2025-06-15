@@ -2,13 +2,13 @@
   <div v-if="userStore.isLoggedIn === false">
     <a href="#" class="cursor-pointer text-white no-underline" @click="onGoogleLogin">登入/註冊</a>
   </div>
-  <n-dropdown v-else :options="options" @select="handleSelect">
+  <n-dropdown v-else :options="userOptions" @select="handleSelect">
     <n-avatar round :size="40" class="cursor-pointer" :src="userImage" />
   </n-dropdown>
 </template>
 
 <script setup lang="ts">
-import { onMounted, ref } from 'vue';
+import { onMounted, ref, computed } from 'vue';
 import { useUserStore } from '@/stores/models/index';
 import { useRouter } from 'vue-router';
 
@@ -24,23 +24,49 @@ const onGoogleLogin = () => {
 };
 
 // ----------登入後選單----------
-const options = [
+interface MenuOption {
+  label: string;
+  key: string;
+};
+const studentOptions: MenuOption[] = [
   { label: '我的課程', key: 'course' },
-  { label: '個人資料', key: 'student' },
-  { label: '訂單記錄', key: 'order' },
+  { label: '學生資料管理', key: 'studentProfile'  },
+  { label: '訂單紀錄', key: 'orders',  },
   { label: '登出', key: 'logout' },
 ];
+const teacherOptions: MenuOption[] = [
+  { label: '教師儀表板', key: 'revenue' },
+  { label: '課程管理', key: 'dashboard'  },
+  { label: '教師資料管理', key: 'teacherProfile'  },
+  { label: '登出', key: 'logout' },
+];
+
+// 根據角色取得選單
+const userOptions = computed<MenuOption[]>(() =>
+  userStore.role === 'teacher' ? teacherOptions : studentOptions
+);
 
 const handleSelect = (key: string) => {
   switch (key) {
     case 'course':
       router.push('/home/course');
       break;
-    case 'student':
-      router.push('/home/student');
+    case 'studentProfile':
+      router.push('/home/memberCenter/profile');
+      break;
+    case 'orders':
+      router.push('/home/memberCenter/orders');
+      break;
+    case 'revenue':
+      router.push('/teacher/memberCenter/revenue');
+      break;
+    case 'dashboard':
+      router.push('/teacher/courseInfo');
+      break;
+    case 'teacherProfile':
+      router.push('/teacher/memberCenter/profile');
       break;
     case 'logout':
-      // 登出邏輯（清除 token / 跳轉登入頁）
       userStore.logout();
       router.push('/home');
       break;
