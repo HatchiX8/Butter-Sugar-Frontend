@@ -3,7 +3,11 @@
     <courseStepIndicator :current="currentStep" :is-edit="isEditMode" />
     <!-- <component :is="currentFormComponent" /> -->
     <div v-show="currentStep === 1">
-      <courseIntroduction :course-data="courseInfoData" :is-edit="isEditMode" />
+      <courseIntroduction
+        :course-data="courseInfoData"
+        :is-edit="isEditMode"
+        @request="addChildRequest"
+      />
     </div>
     <div v-show="currentStep === 2">
       <courseChapter :course-data="courseChapterData" />
@@ -16,7 +20,7 @@
   <button @click="nextToggle">下一步</button>
 </template>
 <script setup lang="ts">
-import { ref, watch, onMounted, computed } from 'vue';
+import { ref, onMounted, computed } from 'vue';
 import { useRoute } from 'vue-router';
 import {
   courseChapter,
@@ -29,7 +33,6 @@ import {
 const route = useRoute();
 const isEditMode = computed(() => typeof route.query.id === 'string' && route.query.id !== ''); // 有 id 就代表是編輯
 const currentStep = ref(Number(route.query.step) || 1);
-const showTitleModal = ref(false);
 
 const courseInfoData = ref({
   description: '',
@@ -37,13 +40,9 @@ const courseInfoData = ref({
   title: '',
 });
 
-onMounted(() => {
-  console.log('檢視路由ID', isEditMode.value);
-  if (!isEditMode.value) {
-    showTitleModal.value = true;
-  }
-});
+onMounted(() => {});
 
+// -----------上下頁切換-----------
 const nextToggle = () => {
   if (currentStep.value >= 3) {
     return;
@@ -69,10 +68,29 @@ const courseChapterData = ref({
   id: '',
   title: '',
 });
+// ----------------------------------
+
 // -----------判定新增/編輯-----------
 // const isEditMode = computed(() => Boolean(route.query.id)); // 有 id 就代表是編輯
 // ----------------------------------
-watch(currentStep, (val) => {
-  console.log('切換步驟為：', val);
-});
+
+// -----------API請求-----------
+const addChildRequest = ({ type, payload }: { type: string; payload: string }) => {
+  // 觸發標題API
+  if (type === 'addTitle') {
+    // 呼叫新增課程標題 API
+    const postData = {
+      course_name: payload,
+    };
+    console.log('觸發標題API', postData);
+  }
+  // 觸發類別API
+  else if (type === 'addCategory') {
+    const postData = {
+      category_id: payload,
+    };
+    console.log('觸發類別API', postData);
+  }
+};
+// -----------------------------
 </script>
