@@ -109,7 +109,7 @@ const editChapter = (courseId: string) => {
 };
 
 // 這邊之後要設定參數的interface
-const apiFn = (val) => {
-  console.log('觸發更新api', val);
+const apiFn = () => {
+  console.log('觸發更新api');
 };
 </script>
