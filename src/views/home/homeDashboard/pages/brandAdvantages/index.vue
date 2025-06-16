@@ -1,5 +1,5 @@
 <template>
-  <div class="relative h-[500px] md:h-64vh bg-cover bg-center"
+  <div class="relative h-[500px] md:h-64vh bg-cover bg-center word-spacing-widest"
     :class="{ 'bg-left-500': isMobile }"
     :style="{ backgroundImage: `url(${bannerBgImgUrl})` }">
     <!-- 背景圖片寫在 div -->
