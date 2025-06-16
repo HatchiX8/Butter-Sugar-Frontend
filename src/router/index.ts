@@ -26,17 +26,29 @@ const router = createRouter({
               name: 'CourseVideo',
               component: () => import('@/views/home/coursePage/index.vue'), // 課程影片
             },
-          ]
+          ],
         },
         {
           path: 'course-info',
-          name: 'CourseInfo',
+          name: 'TeacherCourseInfo',
           component: () => import('@/views/home/courseList/index.vue'), // 所有課程資訊
         },
         {
-          path: 'student',
-          name: 'Student',
-          component: () => import('@/views/home/student/index.vue'), // 學生個人資訊
+          path: 'memberCenter',
+          name: 'StudentMemberCenter',
+          component: () => import('@/views/home/memberCenter/index.vue'), // 學生個人資訊
+          children: [
+            {
+              path: 'profile',
+              name: 'StudentProfile',
+              component: () => import('@/views/home/memberCenter/profile/index.vue'),
+            },
+            {
+              path: 'orders',
+              name: 'Orders',
+              component: () => import('@/views/home/memberCenter/orders/index.vue'),
+            },
+          ],
         },
         {
           path: 'cart-flow',
@@ -59,12 +71,18 @@ const router = createRouter({
             },
           ],
         },
+        {
+          path: 'highlighted-instructor',
+          name: 'highlightedInstructor',
+          component: () => import('@/views/home/highlightedInstructor/index.vue'), // 精選講師
+        },
       ],
     },
     // 其他路由（如講師後台）可放在外層
     {
       path: '/Teacher',
       name: 'TeacherBackend',
+      redirect: '/Teacher/basicInfo',
       component: () => import('@/views/dashboard/index.vue'),
       children: [
         {
@@ -94,6 +112,23 @@ const router = createRouter({
             },
           ],
         },
+        {
+          path: 'memberCenter',
+          name: 'TeacherMemberCenter',
+          component: () => import('@/views/dashboard/memberCenter/index.vue'),
+          children: [
+            {
+              path: 'revenue',
+              name: 'Revenue',
+              component: () => import('@/views/dashboard/memberCenter/revenue/index.vue'),
+            },
+            {
+              path: 'profile',
+              name: 'TeacherProfile',
+              component: () => import('@/views/dashboard/memberCenter/profile/index.vue'),
+            },
+          ],
+        },
       ], // 講師後台
     },
     {
@@ -110,7 +145,7 @@ const router = createRouter({
 });
 
 router.beforeEach((to) => {
-  const publicPages = ['login', 'loginSuccess', 'HomeDashboard', 'Cart', 'CompTest']; // 不用驗證的 route name
+  const publicPages = ['login', 'loginSuccess', 'HomeDashboard', 'Cart', 'CompTest', 'Course', 'CourseInfo']; // 不用驗證的 route name
   const token = localStorage.getItem('access_token');
 
   if (!token && !publicPages.includes(to.name as string)) {

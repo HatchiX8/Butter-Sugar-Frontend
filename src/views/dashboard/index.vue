@@ -1,5 +1,5 @@
 <template>
-  <div class="flex min-h-screen flex-col flex-1" :style="{ backgroundImage: `url(${bgImgUrl})` }">
+  <div class="flex min-h-screen flex-1 flex-col" :style="{ backgroundImage: `url(${bgImgUrl})` }">
     <headerComps />
     <div class="w-full max-w-[1280px] mx-auto px-4 flex flex-col md:flex-row items-start box-border text-white">
       <div class="flex flex-1 w-full mt-20">
@@ -95,7 +95,12 @@ const handleMenuSelect = (key: string) => {
 :deep(.n-menu .n-menu-item-content .n-menu-item-content-header) {
   color: rgba(255, 255, 255, 0.7) !important;
 }
-:deep(.n-menu .n-menu-item-content:not(.n-menu-item-content--disabled).n-menu-item-content--selected:hover::before) {
+:deep(
+  .n-menu
+    .n-menu-item-content:not(
+      .n-menu-item-content--disabled
+    ).n-menu-item-content--selected:hover::before
+) {
   background-color: rgba(214, 142, 57, 0.7) !important;
 }
 </style>

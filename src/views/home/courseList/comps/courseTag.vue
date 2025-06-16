@@ -4,7 +4,7 @@
       <router-link
         v-for="tag in tags"
         :key="tag.value"
-        :to="`/courseList?tag=${tag.value}`"
+        :to="`../home/course-info?category_id=${tag.value}`"
         class="no-underline"
       >
         <n-tag
@@ -32,8 +32,9 @@ export default defineComponent({
     const currentTag = ref<string | null>(null)
 
     const tags = [
-      { label: '蛋糕', value: 'cake' },
-      { label: '餅乾', value: 'cookie' },
+      { label: '麵包', value: '2' },
+      { label: '蛋糕', value: '3' },
+      { label: '餅乾', value: '4' },
     ]
 
     // 從路由參數中獲取當前選中的標籤

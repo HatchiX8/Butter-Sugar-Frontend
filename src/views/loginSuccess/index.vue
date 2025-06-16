@@ -6,10 +6,16 @@
 import { onMounted } from 'vue';
 import { useRouter, useRoute } from 'vue-router';
 import { useUserStore } from '@/stores/models/index';
+import { useCartStore } from '@/stores/models/cart/store';
 
+const cartStore = useCartStore();
 const userStore = useUserStore();
 const router = useRouter();
 const route = useRoute();
+
+const handleMergeCart = async () => {
+  await cartStore.mergeCart();
+};
 
 onMounted(async () => {
   // 從網址取得 JWT token
@@ -22,5 +28,8 @@ onMounted(async () => {
 
   userStore.setToken(token);
   router.replace('/Home');
+
+  // 登入後整合購物車
+  handleMergeCart();
 });
 </script>

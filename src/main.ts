@@ -14,6 +14,6 @@ const app = createApp(withNaiveProviders(App));
 app.use(naive); // 一次註冊所有 Naive 元件
 app.use(createPinia());
 app.use(router);
-app.component('qaModule', qaModule)
+app.component('qaModule', qaModule);
 
 app.mount('#app');

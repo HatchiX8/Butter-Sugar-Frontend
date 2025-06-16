@@ -1,51 +1,85 @@
 <template>
-  <n-form
-    ref="formRef"
-    :model="model"
-    :rules="rules"
-    class="grid gap-4"
-  >
-    <!-- 表單上方 -->
-    <slot name="header" />
-
-    <!-- 動態渲染欄位 -->
-    <n-form-item
-      v-for="field in fields"
-      :key="field.key"
-      :label="field.label"
-      :path="field.key"
+  <n-config-provider :theme-overrides="themeOverrides">
+    <n-form
+      ref="formRef"
+      :model="model"
+      :rules="rules"
+      class="grid gap-4"
     >
-      <component
-        :is="resolveComponent(field.type)"
-        v-model:value="model[field.key]"
-        v-bind="generateProps(field)"
-      />
-    </n-form-item>
+      <!-- 表單上方 -->
+      <slot name="header" />
 
-    <!-- 表單下方 -->
-    <slot name="footer">
-      <n-space>
-        <baseButton
-          :label="submitLabel"
-          type="primary"
-          @click="onSubmit"
+      <!-- 動態渲染欄位 -->
+      <n-form-item
+        v-for="field in fields"
+        :key="field.key"
+        :label="field.label"
+        :path="field.key"
+        :class="getColSpanClass(field)"
+      >
+        <component
+          :is="resolveComponent(field.type, props.readOnly)"
+          v-model:value="model[field.key]"
+          :field-type="field.type"
+          v-bind="generateProps(field)"
         />
-        <baseButton
-          v-if="showCancel"
-          :label="cancelLabel"
-          @click="$emit('cancel')"
-        />
-      </n-space>
-    </slot>
-  </n-form>
+      </n-form-item>
+
+      <!-- 表單下方 唯讀模式省略 -->
+      <slot name="footer" v-if="!props.readOnly">
+        <n-space>
+          <baseButton
+            :label="submitLabel"
+            type="primary"
+            @click="onSubmit"
+          />
+          <baseButton
+            v-if="showCancel"
+            :label="cancelLabel"
+            @click="$emit('cancel')"
+          />
+        </n-space>
+      </slot>
+    </n-form>
+  </n-config-provider>
 </template>
 
 <script setup lang="ts">
-import { ref, computed } from 'vue';
+import { ref, computed, defineComponent, h } from 'vue';
 import baseButton from '@/components/layout/baseButton.vue';
 import baseInput from '@/components/layout/baseInput.vue';
+import baseUpload from '@/components/layout/baseUpload.vue';
+import type { FormRules, FormItemRule } from 'naive-ui';
+import { themeColors } from '@/utils';
 
-type FieldType = 'input' | 'textarea' | 'select' | 'date';
+// 預設驗證規則
+const defaultRules: FormRules = {
+  birthday: {
+    validator: (_: FormItemRule, value: number) => {
+      if (!value) return new Error('請選擇生日');
+      const today = new Date().setHours(0, 0, 0, 0);
+      if (value > today) return new Error('生日不可設定未來日期');
+      return true;
+    },
+    trigger: 'change',
+  },
+  phone: {
+    validator: (_: FormItemRule, value: string) => {
+      if (!value) return new Error('請輸入電話');
+      if (!/^09\d{8}$/.test(value)) return new Error('電話格式錯誤，需以09開頭，共10碼');
+      return true;
+    },
+    trigger: ['input', 'blur'],
+  },
+};
+
+// defaultRules 合併 props 傳入的 rules
+const rules = computed<FormRules>(() => ({
+  ...defaultRules,
+  ...(props.rules ?? {})
+}));
+
+type FieldType = 'input' | 'textarea' | 'select' | 'date' | 'image';
 
 interface FieldOption {
   label: string
@@ -58,17 +92,50 @@ export interface FormField {
   type: FieldType
   placeholder?: string
   disabled?: boolean
-  options?: FieldOption[]
+  options?: FieldOption[] // 下拉的選項
+  span?: number // 用來控制 row 佔幾欄
 };
 
-const props = defineProps<{
-  model: Record<string, unknown>
-  rules?: Record<string, unknown>
-  fields: FormField[]
-  submitLabel?: string
-  cancelLabel?: string
-  showCancel?: boolean
-}>();
+export interface BaseFormProps {
+  model: Record<string, unknown>;
+  rules?: FormRules;
+  fields: FormField[];
+  fieldProps?: Record<string, Record<string, unknown>>;
+  submitLabel?: string;
+  cancelLabel?: string;
+  showCancel?: boolean;
+  readOnly?: boolean;
+};
+
+const props = defineProps<BaseFormProps>();
+
+const generateProps = (field: FormField): Record<string, unknown> => {
+  if (props.readOnly) return {} // 直接交給 ReadOnlyField
+
+  const baseProps: Record<string, unknown> = {
+    placeholder: field.placeholder ?? '',
+    disabled: field.disabled ?? false
+  }
+
+  if (field.type === 'select') {
+    baseProps.options = field.options ?? [];
+  }
+
+  if (field.type === 'textarea') {
+    baseProps.type = 'textarea';
+  }
+
+  if (field.type === 'date') {
+    baseProps.type = 'date';
+    baseProps.isDateDisabled = (ts: number) => ts > Date.now();
+  }
+
+  //  最後合併父層傳入的客製 props，讓外部可覆寫
+  return {
+    ...baseProps,
+    ...(props.fieldProps?.[field.key] ?? {}),
+  };
+};
 
 const emit = defineEmits<{
   (e: 'update:modelValue', value: Record<string, unknown>): void
@@ -91,7 +158,45 @@ const onSubmit = () => {
   })
 };
 
-const resolveComponent = (type: FieldType) => {
+// 唯讀欄位元件
+const ReadOnlyField  = defineComponent({
+  name: 'ReadOnlyField',
+  props: {
+    value: [String, Number, Boolean, Date],
+    fieldType: {
+      type: String as () => FieldType,
+      default: 'input'
+    },
+  },
+  setup(props) {
+    // 先把可能的值轉成可以渲染的字串
+    const toDisplayString = (val: unknown) => {
+      if (val === null || val === '') return '未填';
+      if (val instanceof Date) return val.toLocaleDateString();
+      return String(val);
+    };
+
+    return () => {
+      const val = props.value;
+
+      if (props.fieldType === 'image') {
+        return h('img', {
+          src: typeof val === 'string' ? val : '',
+          alt: 'avatar',
+          class: 'h-16 w-16 rounded-full object-cover',
+        });
+      }
+
+      return h(baseInput, {
+        value: toDisplayString(val),
+        disabled: true,
+      });
+    };
+  },
+});
+
+const resolveComponent = (type: FieldType, readOnly = false) => {
+  if (readOnly) return ReadOnlyField;
   switch (type) {
     case 'input':
     case 'textarea':
@@ -100,35 +205,38 @@ const resolveComponent = (type: FieldType) => {
       return 'n-select';
     case 'date':
       return 'n-date-picker';
+    case 'image':
+      return baseUpload;
     default:
       return baseInput;
   }
 };
 
-const generateProps = (field: FormField): Record<string, unknown> => {
-  const baseProps: Record<string, unknown> = {
-    placeholder: field.placeholder ?? '',
-    disabled: field.disabled ?? false
+const getColSpanClass = (field: FormField) => {
+  const span = field.span ?? 1; // 預設佔 1 欄
+  switch (span) {
+    case 1:
+      return `col-span-1`;
+    case 2:
+      return `col-span-2`;
+    case 3:
+      return `col-span-3`;
+    case 4:
+      return `col-span-4`;
+    default:
+      return `col-span-1`;
   }
+};
 
-  if (field.type === 'select') {
-    baseProps.options = field.options ?? []
+const colors = themeColors.colors;
+const themeOverrides = {
+  Form: {
+    labelTextColor: colors.white,
   }
-
-  if (field.type === 'textarea') {
-    baseProps.type = 'textarea'
-  }
-
-  if (field.type === 'date') {
-    baseProps.type = 'date'
-    baseProps.isDateDisabled = (ts: number) => ts > Date.now()
-  }
-
-  return baseProps;
 };
 </script>
 
-<style>
+<style scoped>
 .n-form-item .n-form-item-label {
   color: white;
 }

@@ -1,6 +1,7 @@
 <template>
   <div>
-    <h2>建立新課程</h2>
+    <h2 v-if="!isEdit">建立新課程</h2>
+    <h2 v-else>編輯課程</h2>
     <n-config-provider :theme-overrides="themeOverrides">
       <div class="md:w-168 w-60 py-4 pl-4 md:py-6 md:pl-16">
         <n-steps :current="props.current" size="medium">
@@ -12,12 +13,16 @@
 </template>
 
 <script setup lang="ts">
+import { computed } from 'vue';
 import { hexToRgba, themeColors } from '@/utils';
 
-const steps = ['新增課程簡介', '新增課程章節', '定價&提交審核'];
+const steps = computed(() => (props.isEdit ? editSteps : addSteps));
+const addSteps = ['新增課程簡介', '新增課程章節', '定價&提交審核'];
+const editSteps = ['編輯課程簡介', '編輯課程章節', '定價&提交審核'];
 
 const props = defineProps<{
   current: number;
+  isEdit: boolean;
 }>();
 
 const colors = themeColors.colors;

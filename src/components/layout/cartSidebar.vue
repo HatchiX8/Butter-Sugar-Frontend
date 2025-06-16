@@ -45,7 +45,7 @@
               <div class="font-bold line-height-5 text-white clamped-text">{{ item.course_name }}</div>
               <div class="text-3.5 text-neutral_200 mt-2">{{ formatCurrency(item.price) }}</div>
             </div>
-            <baseButton text @click="cartStore.removeItem(item.course_id)" icon="i-ion:trash-outline" iconClass="w-4 h-4 text-neutral_200 hover:text-primaryDefault" />
+            <baseButton text @click="handleRemoveFromCart(item.course_id)" icon="i-ion:trash-outline" iconClass="w-4 h-4 text-neutral_200 hover:text-primaryDefault" />
           </div>
         </div>
 
@@ -67,6 +67,9 @@ import { useCartStore } from '@/stores/models/cart/store';
 import { useCartUIStore } from '@/stores/models/cart/uiStore';
 import { useRouter } from 'vue-router';
 import baseButton from '@/components/layout/baseButton.vue';
+import { useMessage } from 'naive-ui';
+
+const message = useMessage();
 
 const cartStore = useCartStore();
 const uiCartStore = useCartUIStore();
@@ -78,6 +81,11 @@ const goToCart = () => {
 };
 
 const formatCurrency = (value: number, currency = 'NT$'): string => `${currency} ${value.toLocaleString('en-US')}`;
+
+const handleRemoveFromCart = async (courseId: string) => {
+  const res = await cartStore.removeItem(courseId);
+  message[res.success ? 'success' : 'error'](res.message);
+};
 </script>
 
 <style scoped>

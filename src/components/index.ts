@@ -8,3 +8,7 @@ export { default as cartList } from './data/cartList.vue';
 
 // ---------- 問答模組 ----------
 export { default as qaModule } from './layout/qaModule.vue';
+
+// ---------- base元件 ----------
+export { default as baseButton } from './layout/baseButton.vue';
+export { default as baseInput } from './layout/baseInput.vue';

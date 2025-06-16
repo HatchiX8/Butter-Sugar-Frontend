@@ -1,15 +1,17 @@
 <template>
-  <div class="video-container w-full flex flex-col mt-10 px-2">
-    <div class="flex flex-col md:flex-row justify-between gap-6">
+  <div class="video-container mt-10 flex w-full flex-col px-2">
+    <div class="flex flex-col justify-between gap-6 md:flex-row">
       <!-- 左側：撥放器 -->
       <div class="w-full md:flex-[2]">
         <!-- 16:9 外層容器（ UnoCSS 的 aspect-video ） -->
-        <div class="relative w-full aspect-video rounded-md overflow-hidden bg-black shadow-md h-auto">
+        <div
+          class="relative aspect-video h-auto w-full overflow-hidden rounded-md bg-black shadow-md"
+        >
           <video
             ref="videoRef"
             :src="currentVideoSrc"
             controls
-            class="absolute inset-0 w-full h-full object-contain"
+            class="absolute inset-0 h-full w-full object-contain"
           >
             您的瀏覽器不支援 HTML5 影片標籤。
           </video>
@@ -21,42 +23,40 @@
         <div class="video-title mt-5">
           <p>職人級！一次掌握歐式麵包的高水量與發酵秘訣</p>
         </div>
-        <div class="w-full md:flex-[2] text-center mt-5">
-          <n-button type="warning">
-            完成課程
-          </n-button>
+        <div class="mt-5 w-full text-center md:flex-[2]">
+          <n-button type="warning"> 完成課程 </n-button>
         </div>
       </div>
 
       <!-- 右側：選單 。 縮排設定 :indent="12" -->
-      <div class="video-menu w-full md:flex-[1] rounded-md shadow-sm overflow-y-auto h-auto">
-          <n-menu
-            :options="menuOptions"
-            accordion
-            v-model:expanded-keys="expandedKeys"
-            v-model:value="selectedKey"
-            @update:value="switchVideo"
-            :indent="12"
-            class="h-full bg-transparent"
-          />
+      <div class="video-menu h-auto w-full overflow-y-auto rounded-md shadow-sm md:flex-[1]">
+        <n-menu
+          :options="menuOptions"
+          accordion
+          v-model:expanded-keys="expandedKeys"
+          v-model:value="selectedKey"
+          @update:value="switchVideo"
+          :indent="12"
+          class="h-full bg-transparent"
+        />
       </div>
     </div>
   </div>
 </template>
 
 <script setup lang="ts">
-import { ref, onMounted, h } from 'vue'
-import type { MenuOption} from 'naive-ui'
-import typography from '@/components/layout/typography.vue'
+import { ref, onMounted, h } from 'vue';
+import type { MenuOption } from 'naive-ui';
+import typography from '@/components/layout/typography.vue';
 
 interface VideoItem {
-  label: string
-  url: string
+  label: string;
+  url: string;
 }
 interface Chapter {
-  name: string
-  title: string
-  videos: VideoItem[]
+  name: string;
+  title: string;
+  videos: VideoItem[];
 }
 
 const chapters = ref<Chapter[]>([
@@ -66,17 +66,17 @@ const chapters = ref<Chapter[]>([
     videos: [
       {
         label: '1-1| 歐式麵包風格概論：從長棍到拖鞋麵包',
-        url: 'https://butter-sugar-teacher-video.s3.ap-northeast-1.amazonaws.com/videos/cdefe418-56be-4c98-9a3d-a9e4016b532f.mp4'
+        url: 'https://butter-sugar-teacher-video.s3.ap-northeast-1.amazonaws.com/videos/cdefe418-56be-4c98-9a3d-a9e4016b532f.mp4',
       },
       {
         label: '1-2| 何謂高水量麵糰？水量比例與操作差異解析',
-        url: 'https://butter-sugar-teacher-video.s3.ap-northeast-1.amazonaws.com/videos/44444444-dddd-eeee-ffff-111111111111.mp4'
+        url: 'https://butter-sugar-teacher-video.s3.ap-northeast-1.amazonaws.com/videos/44444444-dddd-eeee-ffff-111111111111.mp4',
       },
       {
         label: '1-3| 麵粉與酵母的選擇對最終麵包的影響',
-        url: 'https://butter-sugar-teacher-video.s3.ap-northeast-1.amazonaws.com/videos/22222222-bbbb-cccc-dddd-333333333333.mp4'
-      }
-    ]
+        url: 'https://butter-sugar-teacher-video.s3.ap-northeast-1.amazonaws.com/videos/22222222-bbbb-cccc-dddd-333333333333.mp4',
+      },
+    ],
   },
   {
     name: 'chapter2',
@@ -84,17 +84,17 @@ const chapters = ref<Chapter[]>([
     videos: [
       {
         label: '2-1| 高水量麵糰的操作技巧與工具應用',
-        url: 'https://butter-sugar-teacher-video.s3.ap-northeast-1.amazonaws.com/videos/44444444-dddd-eeee-ffff-666666666666.mp4'
+        url: 'https://butter-sugar-teacher-video.s3.ap-northeast-1.amazonaws.com/videos/44444444-dddd-eeee-ffff-666666666666.mp4',
       },
       {
         label: '2-2| 如何控制黏手不失控？使用水手法與刮板技巧',
-        url: 'https://butter-sugar-teacher-video.s3.ap-northeast-1.amazonaws.com/videos/44444444-dddd-eeee-ffff-444444444444.mp4'
+        url: 'https://butter-sugar-teacher-video.s3.ap-northeast-1.amazonaws.com/videos/44444444-dddd-eeee-ffff-444444444444.mp4',
       },
       {
         label: '2-3| 使用高吸水麵粉的操作調整要點',
-        url: 'https://butter-sugar-teacher-video.s3.ap-northeast-1.amazonaws.com/videos/55555555-eeee-ffff-gggg-555555555555.mp4'
-      }
-    ]
+        url: 'https://butter-sugar-teacher-video.s3.ap-northeast-1.amazonaws.com/videos/55555555-eeee-ffff-gggg-555555555555.mp4',
+      },
+    ],
   },
   {
     name: 'chapter3',
@@ -102,36 +102,36 @@ const chapters = ref<Chapter[]>([
     videos: [
       {
         label: '3-1| 直式發酵 vs. 冷藏長時發酵的差異與應用時機',
-        url: 'https://butter-sugar-teacher-video.s3.ap-northeast-1.amazonaws.com/videos/66666666-ffff-gggg-hhhh-666666666666.mp4'
+        url: 'https://butter-sugar-teacher-video.s3.ap-northeast-1.amazonaws.com/videos/66666666-ffff-gggg-hhhh-666666666666.mp4',
       },
       {
         label: '3-2| 階段性發酵觀察技巧 (初發 → 中間拉折 → 最終整形）',
-        url: 'https://butter-sugar-teacher-video.s3.ap-northeast-1.amazonaws.com/videos/77777777-gggg-hhhh-iiii-777777777777.mp4'
+        url: 'https://butter-sugar-teacher-video.s3.ap-northeast-1.amazonaws.com/videos/77777777-gggg-hhhh-iiii-777777777777.mp4',
       },
       {
         label: '3-3| 天然酵母與商用酵母的使用策略',
-        url: 'https://butter-sugar-teacher-video.s3.ap-northeast-1.amazonaws.com/videos/88888888-hhhh-iiii-jjjj-888888888888.mp4'
-      }
-    ]
-  }
-])
+        url: 'https://butter-sugar-teacher-video.s3.ap-northeast-1.amazonaws.com/videos/88888888-hhhh-iiii-jjjj-888888888888.mp4',
+      },
+    ],
+  },
+]);
 
-const menuOptions = ref<MenuOption[]>([])
-const selectedKey = ref<string>('') // 這裡綁定的是影片 URL
-const expandedKeys = ref<string[]>([]) // 預設要展開的章節 key
-const currentVideoSrc = ref<string>('') // 影片播放器的 src
-const currentVideoLabel = ref<string>('') // 影片的文字標題
+const menuOptions = ref<MenuOption[]>([]);
+const selectedKey = ref<string>(''); // 這裡綁定的是影片 URL
+const expandedKeys = ref<string[]>([]); // 預設要展開的章節 key
+const currentVideoSrc = ref<string>(''); // 影片播放器的 src
+const currentVideoLabel = ref<string>(''); // 影片的文字標題
 
-const urlToLabelMap = new Map<string, string>()
+const urlToLabelMap = new Map<string, string>();
 
-const videoRef = ref<HTMLVideoElement | null>(null)
-const STORAGE_KEY = 'myVideo-currentTime'
+const videoRef = ref<HTMLVideoElement | null>(null);
+const STORAGE_KEY = 'myVideo-currentTime';
 
 onMounted(() => {
   // 1. 先把所有影片的 URL→label 塞到 map 裡
   for (const chap of chapters.value) {
     for (const vid of chap.videos) {
-      urlToLabelMap.set(vid.url, vid.label)
+      urlToLabelMap.set(vid.url, vid.label);
     }
   }
   // 2. 接著轉換成 n-menu 的 options
@@ -139,14 +139,15 @@ onMounted(() => {
     type: 'submenu',
     key: chap.name,
 
-    label: () => 
+    label: () =>
       h(
         'div',
         {
-          class: [ // 章節標題色彩設定
+          class: [
+            // 章節標題色彩設定
             'px-2 py-2 rounded-sm text-15px font-semibold text-white',
             'hover:text-primaryDefault',
-          ]
+          ],
         },
         chap.title
       ),
@@ -161,62 +162,67 @@ onMounted(() => {
           {
             class: [
               'px-4 py-1 rounded-sm text-14px font-medium text-white',
-              'hover:text-neutral_500', 
+              'hover:text-neutral_500',
               selectedKey.value === vid.url
-              ? 'bg-primaryDefault text-black' /* active 状态 */
-              : 'text-primaryDefault hover:text-primaryDefault', /* 非 active 状态 */
-            ]
+                ? 'bg-primaryDefault text-black' /* active 状态 */
+                : 'text-primaryDefault hover:text-primaryDefault' /* 非 active 状态 */,
+            ],
           },
           vid.label
-        )
-    }))
-  })) as MenuOption[]
+        ),
+    })),
+  })) as MenuOption[];
 
   // 3. 再做「預設第一支影片與 label」
   if (chapters.value.length > 0 && chapters.value[0].videos.length > 0) {
-    const first = chapters.value[0].videos[0]
-    selectedKey.value = first.url
-    currentVideoSrc.value = first.url
-    expandedKeys.value = [chapters.value[0].name]
+    const first = chapters.value[0].videos[0];
+    selectedKey.value = first.url;
+    currentVideoSrc.value = first.url;
+    expandedKeys.value = [chapters.value[0].name];
     // 這時 map 已經有東西了，就能正確拿到 label
-    currentVideoLabel.value = urlToLabelMap.get(first.url) || ''
+    currentVideoLabel.value = urlToLabelMap.get(first.url) || '';
   }
 
   // 4. 續播邏輯
-  const videoEl = videoRef.value
+  const videoEl = videoRef.value;
   if (videoEl) {
     // 若 localStorage 有紀錄，就等 metadata 載入後設定回去
-    const savedTime = localStorage.getItem(STORAGE_KEY)
+    const savedTime = localStorage.getItem(STORAGE_KEY);
     if (savedTime !== null) {
       videoEl.addEventListener('loadedmetadata', () => {
-        const t = parseFloat(savedTime)
+        const t = parseFloat(savedTime);
         if (!isNaN(t) && t < videoEl.duration) {
-          videoEl.currentTime = t
+          videoEl.currentTime = t;
         }
-      })
+      });
     }
-    videoEl.addEventListener('timeupdate', () => { // 監聽播放進度，不斷更新 localStorage
-      localStorage.setItem(STORAGE_KEY, videoEl.currentTime.toString())
-    })
-    videoEl.addEventListener('ended', () => { // 播放結束，清除紀錄
-      localStorage.removeItem(STORAGE_KEY)
-    })
+    videoEl.addEventListener('timeupdate', () => {
+      // 監聽播放進度，不斷更新 localStorage
+      localStorage.setItem(STORAGE_KEY, videoEl.currentTime.toString());
+    });
+    videoEl.addEventListener('ended', () => {
+      // 播放結束，清除紀錄
+      localStorage.removeItem(STORAGE_KEY);
+    });
   }
-})
+});
 
 // 5. 點選影片後切換 src
 const switchVideo = (key: string): void => {
-  currentVideoSrc.value = key
-  currentVideoLabel.value = urlToLabelMap.get(key) || ''
-  const v = videoRef.value
+  currentVideoSrc.value = key;
+  currentVideoLabel.value = urlToLabelMap.get(key) || '';
+  const v = videoRef.value;
   if (v) {
-    v.load()
-    v.play().catch(() => {})
+    v.load();
+    v.play().catch(() => {});
   }
-}
-
+};
 </script>
 <style scoped>
-.video-menu :deep(.n-menu-item-content--selected)::before { background-color: transparent !important; }
-.video-menu :deep(.n-menu-item-content__arrow svg) { fill: yellow !important; }
+.video-menu :deep(.n-menu-item-content--selected)::before {
+  background-color: transparent !important;
+}
+.video-menu :deep(.n-menu-item-content__arrow svg) {
+  fill: yellow !important;
+}
 </style>
