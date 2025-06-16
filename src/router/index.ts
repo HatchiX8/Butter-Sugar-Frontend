@@ -30,7 +30,7 @@ const router = createRouter({
         },
         {
           path: 'course-info',
-          name: 'TeacherCourseInfo',
+          name: 'CourseInfoList',
           component: () => import('@/views/home/courseList/index.vue'), // 所有課程資訊
         },
         {
@@ -145,7 +145,7 @@ const router = createRouter({
 });
 
 router.beforeEach((to) => {
-  const publicPages = ['login', 'loginSuccess', 'HomeDashboard', 'Cart', 'CompTest', 'Course', 'CourseInfo']; // 不用驗證的 route name
+  const publicPages = ['login', 'loginSuccess', 'HomeDashboard', 'Cart', 'CompTest', 'Course', 'CourseInfoList']; // 不用驗證的 route name
   const token = localStorage.getItem('access_token');
 
   if (!token && !publicPages.includes(to.name as string)) {
