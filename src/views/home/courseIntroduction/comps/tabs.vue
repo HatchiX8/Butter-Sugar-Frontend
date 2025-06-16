@@ -76,6 +76,7 @@ import faq from './faq.vue';
 import coursePurchase from './coursePurchase.vue';
 import teacherIntro from './teacherIntro.vue';
 import courseReview from './courseReview.vue';
+import type { CartItem } from '@/api/cart/types';
 
 const props = defineProps({
   courseData: {
@@ -110,6 +111,13 @@ const scrollToSection = (sectionId: string) => {
 
 const emit = defineEmits(['tab-change', 'purchase', 'toggle-bookmark', 'add-to-cart']);
 
+const cartItem: CartItem = {
+  course_id: props.courseData?.id ?? "",
+  course_name: props.courseData?.title ?? "",
+  price: props.courseData?.price ?? 0,
+  course_smallimage: props.courseData?.course_smallimage ?? ""
+}
+
 const handleTabChange = (tabName: string) => {
   activeTab.value = tabName;
   // Emit event to parent component to handle tab content change for all tabs
@@ -117,7 +125,7 @@ const handleTabChange = (tabName: string) => {
 };
 
 const handlePurchase = () => {
-  emit('purchase');
+  emit('purchase', cartItem);
 };
 
 const handleToggleBookmark = () => {
@@ -125,7 +133,7 @@ const handleToggleBookmark = () => {
 };
 
 const handleAddToCart = () => {
-  emit('add-to-cart');
+  emit('add-to-cart', cartItem);
 };
 
 </script>

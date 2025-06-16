@@ -27,7 +27,7 @@ import bookmarkIcon from '@/components/layout/bookmarkIcon.vue'
 import arrowRightIcon from '@/components/layout/arrowRightIcon.vue'
 interface CourseData {
   link: string
-  id: number
+  id: string
   img: string
   title: string
   teacher: string

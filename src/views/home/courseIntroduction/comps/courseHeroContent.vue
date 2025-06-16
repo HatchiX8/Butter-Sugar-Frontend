@@ -38,7 +38,7 @@ import typography from '@/components/layout/typography.vue'
 import courseInfoStats from './courseInfoStats.vue'
 interface CourseData {
   link: string
-  id: number
+  id: string
   img: string
   title: string
   teacher: string

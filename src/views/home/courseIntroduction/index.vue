@@ -8,8 +8,10 @@
     <div class="page-container">
       <tabs
         :course-data="courseData"
+        :loading="cartStore.loading"
         @tab-change="handleTabChange"
         @purchase="handlePurchase"
+        @add-to-cart="handleAddToCart"
         @toggle-bookmark="handleToggleBookmark"
       />
     </div>
@@ -20,11 +22,18 @@
 import { ref } from 'vue'
 import heroSection from './comps/heroSection.vue'
 import tabs from './comps/tabs.vue'
+import { useCartStore } from '@/stores/models/cart/store'
+import { useMessage } from 'naive-ui'
+import { useRouter } from 'vue-router'
+import type { CartItem } from '@/api/cart/types';
+
+const message = useMessage()
+const router = useRouter()
 
 const course = ref([
   {
     link: '/home/course/4',
-    id: 4,
+    id: '27bfcdb3-a80d-44d1-889d-180aaa77e660',
     img: '/src/assets/images/course/course1.jpg',
     title: '職人級！一次掌握歐式麵包的高水量與發酵秘訣',
     teacher: '許燁堂',
@@ -35,7 +44,8 @@ const course = ref([
     price: 4200,
     originPrice: 9800,
     is_bookmark: false,
-    created_at: '2025-06-06T15:00:00.000Z'
+    created_at: '2025-06-06T15:00:00.000Z',
+    course_smallimage: 'https://d2s58zzou5c8mv.cloudfront.net/course-banner-images/beda94f5-a13b-4190-84eb-2d45684fba2e.jpg'
   },
 ])
 
@@ -45,8 +55,20 @@ const activeTab = ref('info')
 const courseData = course.value[0]
 
 // 處理購買事件
-const handlePurchase = () => {
-  // 加入購買邏輯
+const cartStore = useCartStore()
+const handlePurchase = async (item: CartItem) => {
+  if (!item) return;
+  const res = await cartStore.addItem(item);
+  message[res.success ? 'success' : 'error'](res.message);
+
+  if (res.success) {
+    router.push('/home/cart-flow/cart')
+  }
+}
+const handleAddToCart = async (item: CartItem) => {
+  if (!item) return;
+  const res = await cartStore.addItem(item);
+  message[res.success ? 'success' : 'error'](res.message);
 }
 
 // 處理收藏切換事件

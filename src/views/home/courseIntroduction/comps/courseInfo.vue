@@ -31,9 +31,10 @@ import courseIntro from './courseIntro.vue';
 import courseChapter from './courseChapter.vue';
 import faq from './faq.vue';
 import courseFaq from './courseFaq.vue';
+import type { CartItem } from '@/api/cart/types';
 
 interface CourseData {
-  id?: number;
+  id?: string;
   title?: string;
   teacher?: string;
   description?: string;
@@ -43,19 +44,27 @@ interface CourseData {
   originPrice?: number;
   is_bookmark?: boolean;
   created_at?: string;
+  course_smallimage?: string;
 }
-defineProps<{
+const props = defineProps<{
   courseData?: CourseData;
 }>();
 
-const emit = defineEmits(['purchase', 'addToCart']);
+const emit = defineEmits(['purchase', 'add-to-cart']);
+
+const cartItem: CartItem = {
+  course_id: props.courseData?.id ?? "",
+  course_name: props.courseData?.title ?? "",
+  price: props.courseData?.price ?? 0,
+  course_smallimage: props.courseData?.course_smallimage ?? ""
+}
 
 const handlePurchase = () => {
-  emit('purchase');
+  emit('purchase', cartItem);
 };
 
 const handleAddToCart = () => {
-  emit('addToCart');
+  emit('add-to-cart', cartItem);
 };
 </script>
 

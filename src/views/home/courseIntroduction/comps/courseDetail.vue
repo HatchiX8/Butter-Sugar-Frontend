@@ -48,7 +48,7 @@ const formatDate = (dateString?: string): string => {
 };
 
 interface CourseData {
-  id?: number;
+  id?: string;
   title?: string;
   teacher?: string;
   description?: string;

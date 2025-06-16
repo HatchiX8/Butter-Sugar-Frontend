@@ -1,6 +1,6 @@
 import { defineStore } from 'pinia';
 import { ref, computed } from 'vue';
-import type { ApiResponse, Cart, CartItem, MergeCartData } from '@/api/cart/types';
+import type { ApiResponse, Cart, CartItem } from '@/api/cart/types';
 import { getCartList, addCartItem, removeCartItem, mergeCartList } from '@/api/cart/index';
 import { useUserStore } from '@/stores/models/user/store';
 import axios from 'axios';
@@ -28,7 +28,7 @@ export const useCartStore = defineStore('cart', () => {
   const totalPrice = computed(() =>
     model.value === 'api'
       ? (serverTotalPrice.value ?? 0)
-      : cartItems.value.reduce((sum, item) => sum + item.price, 0)
+      : cartItems.value.reduce((sum, item) => sum + (item?.price ?? 0), 0)
   );
 
   const loading = ref(false);
@@ -39,7 +39,7 @@ export const useCartStore = defineStore('cart', () => {
     if (axios.isAxiosError(err)) {
       // 優先取後端回傳的 message
       const msg = err.response?.data?.message
-      if (typeof msg === 'string') return err.response?.data?.message;
+      if (typeof msg === 'string') return msg;
     }
     if (typeof err === 'string') return err;
     if (err instanceof Error) return err.message;
@@ -58,8 +58,7 @@ export const useCartStore = defineStore('cart', () => {
 
     try {
       if (model.value === 'api') {
-        const res : ApiResponse<Cart> = await getCartList();
-        if (!res.status) throw new Error(res.message);
+        const res: ApiResponse<Cart> = await getCartList();
         cartItems.value = res?.data?.items ?? [];
         serverItemCount.value = res?.data?.item_count ?? 0;
         serverTotalPrice.value = res?.data?.total_price ?? 0;
@@ -78,11 +77,9 @@ export const useCartStore = defineStore('cart', () => {
   const addItem = async (item: CartItem): Promise<ActionResult> => {
     loading.value = true;
     error.value = null;
-
     try {
       if (model.value === 'api') {
-        const res : ApiResponse<Cart> = await addCartItem(item.course_id);
-        if (!res.status) throw new Error(res.message);
+        const res: ApiResponse<Cart> = await addCartItem(item.course_id);
         await getCart(); // 新增後重新同步
         return { success: true, message: res.message };
       } else {
@@ -110,8 +107,7 @@ export const useCartStore = defineStore('cart', () => {
 
     try {
       if (model.value === 'api') {
-        const res : ApiResponse<Cart> = await removeCartItem(courseId);
-        if (!res.status) throw new Error(res.message);
+        const res: ApiResponse<Cart> = await removeCartItem(courseId);
         await getCart(); // 刪除後重新同步
         return { success: true, message: res.message };
       } else {
@@ -138,8 +134,7 @@ export const useCartStore = defineStore('cart', () => {
         const localCart = JSON.parse(localStorage.getItem('cart') || '[]');
         const courseIds = localCart.map((item: CartItem) => item.course_id);
 
-        const res : ApiResponse<MergeCartData> = await mergeCartList(courseIds);
-        if (!res.status) throw new Error(res.message);
+        await mergeCartList(courseIds);
         await getCart(); // 整合後重新同步
         localStorage.removeItem('cart');
       }

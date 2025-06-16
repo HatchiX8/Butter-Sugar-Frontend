@@ -22,9 +22,10 @@
 import courseHeroImage from '@/assets/images/course/courseHero.jpg'
 import desktopHeroLayout from './desktopHeroLayout.vue'
 import mobileHeroLayout from './mobileHeroLayout.vue'
+import type { CartItem } from '@/api/cart/types'
 interface CourseData {
   link: string
-  id: number
+  id: string
   img: string
   title: string
   teacher: string
@@ -35,22 +36,27 @@ interface CourseData {
   price: number
   originPrice: number
   is_bookmark: boolean
+  course_smallimage: string
 }
 
 const props = defineProps<{
   courseData: CourseData
 }>()
 
-const emit = defineEmits<{
-  purchase: []
-  toggleBookmark: []
-}>()
+const cartItem: CartItem = {
+  course_id: props.courseData?.id ?? "",
+  course_name: props.courseData?.title ?? "",
+  price: props.courseData?.price ?? 0,
+  course_smallimage: props.courseData?.course_smallimage ?? ""
+}
+
+const emit = defineEmits(['purchase', 'toggle-bookmark'])
 
 const handlePurchase = () => {
-  emit('purchase')
+  emit('purchase', cartItem);
 }
 
 const handleToggleBookmark = () => {
-  emit('toggleBookmark')
+  emit('toggle-bookmark');
 }
 </script>

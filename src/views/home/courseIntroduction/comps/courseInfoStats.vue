@@ -22,7 +22,7 @@ import groupIcon from '@/components/layout/groupIcon.vue'
 import timeIcon from '@/components/layout/timeIcon.vue'
 interface CourseData {
   link: string
-  id: number
+  id: string
   img: string
   title: string
   teacher: string

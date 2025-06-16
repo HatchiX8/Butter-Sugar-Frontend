@@ -80,7 +80,7 @@ const goToCart = () => {
   router.push('/home/cart-flow/cart');
 };
 
-const formatCurrency = (value: number, currency = 'NT$'): string => `${currency} ${value.toLocaleString('en-US')}`;
+const formatCurrency = (value?: number, currency = 'NT$'): string => `${currency} ${value?.toLocaleString('en-US')}`;
 
 const handleRemoveFromCart = async (courseId: string) => {
   const res = await cartStore.removeItem(courseId);

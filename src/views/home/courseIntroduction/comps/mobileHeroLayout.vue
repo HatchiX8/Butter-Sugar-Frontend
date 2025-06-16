@@ -30,7 +30,7 @@ import courseHeroContent from './courseHeroContent.vue'
 import courseActionButtons from './courseActionButtons.vue'
 interface CourseData {
   link: string
-  id: number
+  id: string
   img: string
   title: string
   teacher: string
