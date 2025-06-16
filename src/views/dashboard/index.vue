@@ -4,7 +4,7 @@
     <div class="w-full max-w-[1280px] mx-auto px-4 flex flex-col md:flex-row items-start box-border text-white">
       <div class="flex flex-1 w-full mt-20">
         <!-- 左側選單 -->
-        <div class="w-full md:w-1/5 md:sticky md:max-h-[calc(100vh-6rem)] md:overflow-y-auto mobile-menu">
+        <div class="w-full md:w-1/5 md:sticky md:max-h-[calc(100vh-6rem)] md:overflow-y-auto mt-10 mobile-menu">
           <typography variant="h3" font-type="title" class="text-white mb-5 ml-5" no-underline>
             講師頁面
           </typography>
@@ -19,7 +19,7 @@
           </n-config-provider>
         </div>
         <!-- 右側內容 -->
-        <div class="w-full md:w-4/5 flex-1 mt-10 min-width-0 mobile-content">
+        <div class="w-full md:w-4/5 flex-1 mt-10 pt-10 min-width-0 mobile-content">
           <router-view />
         </div>
       </div>
