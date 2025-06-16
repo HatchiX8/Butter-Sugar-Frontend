@@ -19,7 +19,7 @@
           </n-config-provider>
         </div>
         <!-- 右側內容 -->
-        <div class="w-full md:w-4/5 flex-1 px-5 mt-10 min-width-0 mobile-content">
+        <div class="w-full md:w-4/5 flex-1 mt-10 min-width-0 mobile-content">
           <router-view />
         </div>
       </div>
