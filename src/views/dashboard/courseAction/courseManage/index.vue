@@ -27,7 +27,7 @@ import {
   courseIntroduction,
   courseStepIndicator,
   courseSubmit,
-} from '../../comps/index';
+} from '../comps/index';
 import type { AddChildRequestPayload } from '@/views/dashboard/type';
 import { useDashboardStore } from '@/stores/models/index';
 

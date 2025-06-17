@@ -101,14 +101,9 @@ const router = createRouter({
           component: () => import('@/views/dashboard/courseAction/index.vue'),
           children: [
             {
-              path: 'addCourse',
-              name: 'AddCourse',
-              component: () => import('@/views/dashboard/courseAction/pages/addCourse/index.vue'),
-            },
-            {
-              path: 'editCourse',
-              name: 'EditCourse',
-              component: () => import('@/views/dashboard/courseAction/pages/editCourse/index.vue'),
+              path: 'courseManage',
+              name: 'CourseManage',
+              component: () => import('@/views/dashboard/courseAction/courseManage/index.vue'),
             },
           ],
         },
@@ -145,7 +140,15 @@ const router = createRouter({
 });
 
 router.beforeEach((to) => {
-  const publicPages = ['login', 'loginSuccess', 'HomeDashboard', 'Cart', 'CompTest', 'Course', 'CourseInfo']; // 不用驗證的 route name
+  const publicPages = [
+    'login',
+    'loginSuccess',
+    'HomeDashboard',
+    'Cart',
+    'CompTest',
+    'Course',
+    'CourseInfo',
+  ]; // 不用驗證的 route name
   const token = localStorage.getItem('access_token');
 
   if (!token && !publicPages.includes(to.name as string)) {
