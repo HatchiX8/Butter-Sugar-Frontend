@@ -23,3 +23,12 @@ export interface MergeCartData {
   total_price: number;
   errors: string | null;
 };
+
+export interface CheckoutPayload {
+  coupon_id?: string;
+  coupon?: string;
+  discount_amount?: number;
+};
+
+/** 後端回傳的 HTML 字串（NewebPay 表單） */
+export type CheckoutResponse = string;

@@ -1,7 +1,7 @@
 import { defineStore } from 'pinia';
 import { ref, computed } from 'vue';
-import type { ApiResponse, Cart, CartItem } from '@/api/cart/types';
-import { getCartList, addCartItem, removeCartItem, mergeCartList } from '@/api/cart/index';
+import type { ApiResponse, Cart, CartItem, CheckoutPayload } from '@/api/cart/types';
+import { getCartList, addCartItem, removeCartItem, mergeCartList, checkoutCart } from '@/api/cart/index';
 import { useUserStore } from '@/stores/models/user/store';
 import axios from 'axios';
 
@@ -139,8 +139,39 @@ export const useCartStore = defineStore('cart', () => {
         localStorage.removeItem('cart');
       }
     } catch (err) {
-        const msg = getErrorMessage(err);
-        error.value = msg;
+        error.value = getErrorMessage(err);
+    } finally {
+      loading.value = false;
+    }
+  };
+
+  // 結帳：呼叫後端並自動送出藍新表單
+  const checkout = async (payload: CheckoutPayload): Promise<void> => {
+    loading.value = true;
+    error.value = null;
+
+    try {
+      // 1) 向後端拿 HTML
+      const html = await checkoutCart(payload);
+
+      // 2) 動態注入隱藏節點
+      const wrapperId = 'newebpay-wrapper';
+      let wrapper = document.getElementById(wrapperId);
+
+      // 若尚未存在就建立
+      if (!wrapper) {
+        wrapper = document.createElement('div');
+        wrapper.id = wrapperId;
+        wrapper.style.display = 'none'; // 隱藏
+        document.body.appendChild(wrapper);
+      }
+
+      // 3) 插入 HTML 並觸發 submit
+      wrapper.innerHTML = html;
+      (wrapper.querySelector('form') as HTMLFormElement | null)?.submit();
+    } catch (err) {
+      error.value = getErrorMessage(err);
+      console.error('結帳失敗：', error.value);
     } finally {
       loading.value = false;
     }
@@ -164,6 +195,7 @@ export const useCartStore = defineStore('cart', () => {
     getCart,
     addItem,
     removeItem,
-    mergeCart
+    mergeCart,
+    checkout,
   };
 });

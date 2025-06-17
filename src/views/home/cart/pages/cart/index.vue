@@ -52,6 +52,15 @@ const { cartItems, itemCount, totalPrice } = storeToRefs(cartStore);
 
 const router = useRouter();
 const goToCheckout = () => {
+  // 未登入 → 引導 Google 登入 → 導轉到結帳頁
+  if (!cartStore.isLoggedIn) {
+    // ----------第三方登入----------
+    const API_BASE = import.meta.env.VITE_API_URL;
+    window.location.href = `${API_BASE}/api/v1/users/auth/google`;
+    return;
+  }
+
+  // 已登入 → 直接導轉到結帳頁
   router.push('/home/cart-flow/checkout');
 };
 
