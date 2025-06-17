@@ -45,7 +45,7 @@ const allCourses = computed(() => {
     .map(course => {
       // 將字串轉換為數字，以便排序
       const studentsCount = parseInt(course.total_users || '0', 10);
-      
+
       return {
         link: `/home/course/${course.id}`,
         id: course.id,
@@ -92,7 +92,7 @@ const courses = computed(() => {
   if (!props.page || !props.pageSize) {
     return allCourses.value;
   }
-  
+
   // 計算當前頁的課程
   const startIndex = (props.page - 1) * props.pageSize;
   const endIndex = startIndex + props.pageSize;

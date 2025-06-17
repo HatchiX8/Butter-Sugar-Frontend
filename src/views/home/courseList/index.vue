@@ -96,6 +96,34 @@ watch(
 // 計算總頁數
 const totalPages = computed(() => Math.ceil(totalItems.value / pageSize.value) || 1);
 
+// 監聽總頁數和當前頁碼的變化，確保頁碼在有效範圍內
+watch(
+  [totalPages, currentPage],
+  ([newTotalPages, newCurrentPage]) => {
+    // 如果當前頁碼超出總頁數範圍，自動重定向到第一頁
+    if (newCurrentPage > newTotalPages) {
+      // 更新 URL 參數
+      const query = { ...route.query };
+      if (newTotalPages <= 1) {
+        // 如果只有一頁，移除頁碼參數
+        delete query.page;
+      } else {
+        // 否則設置為第一頁
+        query.page = '1';
+      }
+      
+      // 更新路由
+      router.replace({
+        path: route.path,
+        query
+      });
+      
+      // 更新當前頁碼
+      currentPage.value = 1;
+    }
+  }
+);
+
 const sortItems = [
   { label: '最熱門', value: 'hot' },
   { label: '依時間', value: 'time' }
