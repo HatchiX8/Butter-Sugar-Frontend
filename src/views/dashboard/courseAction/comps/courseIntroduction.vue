@@ -119,11 +119,12 @@
   <titleModal
     :modelValue="modelValue"
     v-model:inputValue="courseTitle"
-    @update:modelValue="(val) => emit('update:modelValue', val)"
     title="請輸入課程標題"
     :showFooter="true"
     :onConfirm="handleConfirm"
+    @update:modelValue="(val) => emit('update:modelValue', val)"
     @update:title="modalTitle = $event"
+    @update:type="(val) => (optionsValue = val)"
   />
 </template>
 
