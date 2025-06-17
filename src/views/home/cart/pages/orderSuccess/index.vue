@@ -17,37 +17,50 @@
           <span>{{ orderStatus }}</span>
         </div>
       </div>
-      <cartList
+      <!-- <cartList
         :cartItems="cartItems"
         :itemCount="itemCount"
         :orderDetails="true"
-      />
+      /> -->
     </div>
   </div>
 <welcomeSection/>
 </template>
 
 <script setup lang="ts">
-import { useCartStore } from '@/stores/models/cart/store';
-import { storeToRefs } from 'pinia';
+import { onMounted, computed } from 'vue';
+import { useOrderStore } from '@/stores/models/orders/store';
 import welcomeSection from '@/views/home/cart/comps/welcomeSection.vue';
-import cartList from '@/components/data/cartList.vue';
+// import cartList from '@/components/data/cartList.vue';
 
 const formatCurrency = (value: number, currency = 'NT$'): string => `${currency} ${value.toLocaleString('en-US')}`;
 
-// 模擬訂單資料
-const orderInfo = [
-  { label: '訂單編號', value: "ORD20250329182000001" },
-  { label: '訂單日期', value: "2025-03-29 18:20" },
-  { label: '付款方式', value: "信用卡" },
-  { label: '實付金額', value: formatCurrency(17560) }
-];
+// 取得訂單資料
+const orderStore = useOrderStore();
+onMounted(async () => {
+  await orderStore.fetchOrders();
+  await orderStore.fetchOrder();
+});
+
+const formatDatetime = (inputTime: string) => {
+  const date = new Date(inputTime)
+  const y = date.getFullYear()
+  const m = String(date.getMonth() + 1).padStart(2, '0')
+  const d = String(date.getDate()).padStart(2, '0')
+  const hh = String(date.getHours()).padStart(2, '0')
+  const mm = String(date.getMinutes()).padStart(2, '0')
+  return `${y}-${m}-${d} ${hh}:${mm}`
+};
+
+// 訂單資料
+const orderInfo = computed(() => [
+  { label: '訂單編號', value: orderStore.order?.order_number ?? "" },
+  { label: '訂單日期', value: formatDatetime(orderStore.order?.created_at ?? "") },
+  // { label: '付款方式', value: "信用卡" },
+  { label: '實付金額', value: formatCurrency(orderStore.order?.final_amount ?? 0) },
+  { label: '課程名稱', value: orderStore.order?.course_name?.join(', ') ?? "" },
+]);
 const orderStatus = '完成付款';
-
-// 暫時用購物車資料測試，實際應該從訂單資料中獲取
-const cartStore = useCartStore();
-const { cartItems, itemCount } = storeToRefs(cartStore);
-
 </script>
 
 <style scoped>
