@@ -34,6 +34,11 @@ const router = createRouter({
           component: () => import('@/views/home/courseList/index.vue'), // 所有課程資訊
         },
         {
+          path: 'my-course',
+          name: 'MyCourse',
+          component: () => import('@/views/home/myCourse/index.vue'), // 我的課程列表
+        },
+        {
           path: 'memberCenter',
           name: 'StudentMemberCenter',
           component: () => import('@/views/home/memberCenter/index.vue'), // 學生個人資訊
@@ -152,6 +157,7 @@ router.beforeEach((to) => {
     // 如果没有 token，又不是公開页，就重定向到 HomeDashboard
     return { name: 'HomeDashboard' };
   }
+  return true;
 });
 
 export default router;
