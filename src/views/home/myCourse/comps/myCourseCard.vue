@@ -26,27 +26,23 @@
     <div class="p-4 pt-3">
       <div class="flex items-center text-neutral_200 text-sm gap-4">
         <span class="flex items-center gap-1"><starIcon /> {{ Number(rating).toFixed(1) }}</span>
+        <span class="flex items-center gap-1"><groupIcon />{{ Number(totalUsers).toLocaleString() || 0 }}人</span>
         <span class="flex items-center gap-1"><timeIcon />{{ hours }}小時</span>
       </div>
 
       <!-- 進度條 -->
       <div class="mt-3">
-        <div class="flex justify-between text-xs text-neutral_200 mb-1">
-          <span class="font-medium">{{ progressStatus }}</span>
-          <span class="font-medium">{{ learningProgress }}%</span>
-        </div>
-        <div class="w-full h-3 bg-neutral_500/30 rounded-full overflow-hidden shadow-inner">
+        <div class="w-full h-2 bg-neutral_500/30 rounded-full overflow-hidden shadow-inner">
           <div
             class="h-full rounded-full transition-all duration-500 ease-out"
-            :style="`width: ${learningProgress}%; transition: width 0.8s ease-in-out; ${progressStyle}`"
+            :style="`width: ${learningProgress}%; ${progressStyle}`"
           ></div>
+        </div>
+        <div class="flex justify-between text-xs text-neutral_200 mt-2">
+          <span class="font-medium">{{ learningProgress > 0 ? learningProgress + "%" : '開始學習' }}</span>
         </div>
       </div>
 
-      <!-- 最後學習日期 -->
-      <div class="text-neutral_200 text-xs mt-2" v-if="lastStudyDate">
-        最後學習日期：{{ lastStudyDate }}
-      </div>
     </div>
     </n-card>
   </a>
@@ -74,6 +70,7 @@ a:hover {
 <script setup lang="ts">
 import starIcon from '@/components/layout/starIcon.vue'
 import timeIcon from '@/components/layout/timeIcon.vue'
+import groupIcon from '@/components/layout/groupIcon.vue'
 import { computed } from 'vue'
 
 const props = defineProps<{
@@ -83,23 +80,16 @@ const props = defineProps<{
   teacher: string
   rating: number | string
   hours: number | string
+  totalUsers: number | string
   learningProgress: number
   lastStudyDate?: string
 }>()
 
-// 根據學習進度顯示不同的狀態文字
-const progressStatus = computed(() => {
-  const progress = Number(props.learningProgress)
-  if (progress === 0) return '開始課程'
-  if (progress < 100) return '繼續學習'
-  return '已完成'
-})
-
 // 根據學習進度顯示不同的進度條顏色（使用內聯樣式而非類名）
 const progressStyle = computed(() => {
   const progress = Number(props.learningProgress)
-  if (progress === 0) return 'background-color: var(--un-preset-mini-colors-neutral_400);'
-  if (progress < 100) return 'background: linear-gradient(to right, var(--un-preset-mini-colors-green-200), var(--un-preset-mini-colors-green-300));'
-  return 'background: linear-gradient(to right, var(--un-preset-mini-colors-green-500), var(--un-preset-mini-colors-green-600));'
+  if (progress === 0) return 'background-color: #9CA3AF;' // neutral_400 的實際顏色值
+  if (progress < 100) return 'background: linear-gradient(to right, #86EFAC, #4ADE80);' // green-200 到 green-300
+  return 'background: linear-gradient(to right, #22C55E, #16A34A);' // green-500 到 green-600
 })
 </script>

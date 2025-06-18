@@ -51,15 +51,6 @@
       :search-keyword="searchKeyword"
       @update-total-items="updateTotalItems"
     />
-
-    <!-- 如果有分頁需求，可以加入分頁組件 -->
-    <!-- <paginationComps
-      v-model="currentPage"
-      :total-pages="totalPages"
-      :page-size="pageSize"
-      :total-items="totalItems"
-      @page-change="handlePageChange"
-    /> -->
   </div>
 </template>
 
