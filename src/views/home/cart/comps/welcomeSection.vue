@@ -17,7 +17,9 @@
       <p class="text-5 md:text-8 text-neutral-200 font-['ChenYuluoyan'] py-2">
         點擊下方按鈕，開始探索百變風味的烘焙世界，滿足你的甜點靈感！
       </p>
-      <baseButton label="前往我的課程" type="primary" @click="goToCourses" class="mt-4" />
+      <router-link :to="`/home/my-course?page=1`">
+        <baseButton label="前往我的課程" type="primary" @click="goToCourses" class="mt-4" />
+      </router-link>
     </div>
   </section>
 </template>

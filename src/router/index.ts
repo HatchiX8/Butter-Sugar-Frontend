@@ -17,7 +17,7 @@ const router = createRouter({
           component: () => import('@/views/home/homeDashboard/index.vue'), // 預設首頁內容
         },
         {
-          path: 'course',
+          path: 'course/:course_id',
           name: 'Course',
           component: () => import('@/views/home/courseIntroduction/index.vue'), // 課程介紹
           children: [
@@ -145,7 +145,7 @@ const router = createRouter({
 });
 
 router.beforeEach((to) => {
-  const publicPages = ['login', 'loginSuccess', 'HomeDashboard', 'Cart', 'CompTest', 'Course', 'CourseInfo']; // 不用驗證的 route name
+  const publicPages = ['login', 'loginSuccess', 'HomeDashboard', 'Cart', 'CompTest', 'Course', 'TeacherCourseInfo']; // 不用驗證的 route name
   const token = localStorage.getItem('access_token');
 
   if (!token && !publicPages.includes(to.name as string)) {

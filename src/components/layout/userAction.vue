@@ -49,7 +49,7 @@ const userOptions = computed<MenuOption[]>(() =>
 const handleSelect = (key: string) => {
   switch (key) {
     case 'course':
-      router.push('/home/course');
+      router.push('/home/my-course?page=1');
       break;
     case 'studentProfile':
       router.push('/home/memberCenter/profile');
