@@ -11,10 +11,10 @@
 
     <typography class="text-white mt-10" variant="h2" font-type="title" underline>我的課程</typography>
 
-    <div class="mt-10 pr-8 flex flex-col md:flex-row items-center justify-between self-stretch">
+    <div class="mt-10 flex flex-col md:flex-row items-center justify-between self-stretch w-full overflow-x-hidden">
       <!-- 篩選下拉選單 -->
       <n-select
-        class="w-full md:w-50 h-12 px-3 py-4"
+        class="w-full max-w-[350px] md:w-50 h-12 px-3 py-4"
         v-model:value="currentFilter"
         :options="filterOptions"
         placeholder="所有課程"
@@ -22,7 +22,7 @@
       />
 
       <!-- 搜尋框 -->
-      <div class="w-full md:w-80 mt-4 md:mt-0 relative">
+      <div class="w-full max-w-[350px] mb-6 md:w-80 md:my-0 relative">
         <n-input
           v-model:value="searchKeyword"
           placeholder="搜尋課程"

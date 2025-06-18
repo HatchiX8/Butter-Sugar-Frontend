@@ -27,7 +27,7 @@
       <div class="flex items-center text-neutral_200 text-sm gap-4">
         <span class="flex items-center gap-1"><starIcon /> {{ Number(rating).toFixed(1) }}</span>
         <span class="flex items-center gap-1"><groupIcon />{{ Number(totalUsers).toLocaleString() || 0 }}人</span>
-        <span class="flex items-center gap-1"><timeIcon />{{ hours }}小時</span>
+        <span class="flex items-center gap-1"><timeIcon />{{ Number(hours).toFixed(0) }}小時</span>
       </div>
 
       <!-- 進度條 -->
