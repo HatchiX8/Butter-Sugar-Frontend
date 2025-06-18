@@ -22,7 +22,7 @@
               class="h-24 w-36 shrink-0 overflow-hidden rounded-md transition-shadow duration-300 group-hover:shadow-lg"
             >
               <img
-                :src="item.course_smallimage"
+                :src="item.course_small_imageUrl"
                 alt="課程小圖"
                 class="h-full w-full object-cover transition-transform duration-300 group-hover:scale-105"
               />
@@ -86,7 +86,7 @@ const headerTitle = computed(() =>
 interface CartItem {
   course_id: string;
   course_name: string;
-  course_smallimage: string;
+  course_small_imageUrl: string;
   price: number;
 }
 

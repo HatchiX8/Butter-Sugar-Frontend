@@ -8,7 +8,24 @@
           <div v-for="(item, index) in orderInfo" :key="index"
             class="border rounded text-base p-2">
             <span>{{ item.label }}：</span>
-            <span>{{ item.value }}</span>
+            <!-- 顯示多筆課程（多行） -->
+            <ul
+              v-if="Array.isArray(item.value) && item.value.length > 1"
+              class="mt-1 pl-4"
+            >
+              <li v-for="(course, i) in item.value" :key="i"
+                class="relative pl-4 before:content-[''] before:block  before:absolute before:left-0 before:top-1.5 before:w-2 before:h-2 before:rounded-full before:bg-primaryDefault">
+                {{ course }}
+              </li>
+            </ul>
+            <!-- 顯示單筆課程 or 一般文字（同行） -->
+            <span v-else>
+              {{
+                Array.isArray(item.value)
+                  ? item.value[0] ?? '-'
+                  : item.value
+              }}
+            </span>
           </div>
         </div>
         <!-- 訂單狀態 -->
@@ -58,8 +75,9 @@ const orderInfo = computed(() => [
   { label: '訂單日期', value: formatDatetime(orderStore.order?.created_at ?? "") },
   // { label: '付款方式', value: "信用卡" },
   { label: '實付金額', value: formatCurrency(orderStore.order?.final_amount ?? 0) },
-  { label: '課程名稱', value: orderStore.order?.course_name?.join(', ') ?? "" },
+  { label: '課程名稱', value: orderStore.order?.course_name ?? []},
 ]);
+
 const orderStatus = '完成付款';
 </script>
 

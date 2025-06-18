@@ -40,7 +40,7 @@
             :key="item.course_id"
             class="flex items-start gap-3 border-b border-white p-4"
           >
-            <img :src="item.course_smallimage" class="w-25 h-18.5 object-cover rounded" />
+            <img :src="item.course_small_imageUrl" class="w-25 h-18.5 object-cover rounded" />
             <div class="flex-1">
               <div class="font-bold line-height-5 text-white clamped-text">{{ item.course_name }}</div>
               <div class="text-3.5 text-neutral_200 mt-2">{{ formatCurrency(item.price) }}</div>

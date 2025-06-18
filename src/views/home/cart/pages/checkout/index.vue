@@ -69,6 +69,7 @@ onMounted(() => {
 });
 
 const handleCheckout = () => {
+  // 暫時 折扣券
   cartStore.checkout({
     coupon_id: 'd8fdfcbe-7e78-48e9-9797-6788775c679e',
     coupon: 'buttersugar2025',

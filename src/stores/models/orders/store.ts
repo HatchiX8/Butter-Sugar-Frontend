@@ -39,8 +39,10 @@ export const useOrderStore = defineStore('orderStore', () => {
 
     try {
       // await getOrder();
-      // 暫時拿 orders 第一筆
-      order.value = orders.value[0];
+      // 暫時拿 orders 建立時間最新第一筆
+      order.value = [...orders.value].sort(
+        (a, b) => Number(b.created_at) - Number(a.created_at)
+      )[0];
     } catch (err) {
       error.value = getErrorMessage(err);
     }

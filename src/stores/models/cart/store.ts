@@ -59,7 +59,7 @@ export const useCartStore = defineStore('cart', () => {
     try {
       if (model.value === 'api') {
         const res: ApiResponse<Cart> = await getCartList();
-        cartItems.value = res?.data?.items ?? [];
+        cartItems.value = res?.data?.cart_items ?? [];
         serverItemCount.value = res?.data?.item_count ?? 0;
         serverTotalPrice.value = res?.data?.total_price ?? 0;
       } else {

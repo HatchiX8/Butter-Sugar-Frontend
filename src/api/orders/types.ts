@@ -9,13 +9,13 @@ export interface Orders {
   course_name: string[];
   final_amount: number;
   created_at: string;
-  payway?: string;
-  items?: OrderItem[];
+  // payway?: string;
+  // order_items?: OrderItem[];
 }
 
 export interface OrderItem {
   course_id: string;
   course_name: string;
   price: number;
-  course_smallimage: string;
+  course_small_imageUrl: string;
 };
