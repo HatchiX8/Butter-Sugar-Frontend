@@ -27,7 +27,7 @@
 
 <script setup lang="ts">
 import { ref, onMounted, computed } from 'vue';
-import { useOrderStore } from '@/stores/models/orders/store'
+import { useOrderStore } from '@/stores/models/orders/store';
 import breadcrumbComps from '@/components/layout/breadcrumbComps.vue';
 import typography from '@/components/layout/typography.vue';
 import type { Orders } from '@/api/orders/types';

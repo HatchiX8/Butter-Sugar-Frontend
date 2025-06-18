@@ -1,10 +1,10 @@
 <template>
   <div class="p-2 cursor-pointer flex flex-col b-1 b-solid b-white/60 bg-neutral-900 hover:shadow-lg transition-shadow">
-    <div class="group relative overflow-hidden aspect-[8/9] transition-shadow duration-300">
+    <div class="group relative overflow-hidden aspect-[8/9] transition-shadow duration-300" @click="goToTeacherPage">
       <img
         :src="teacherImgUrl"
         :alt="teacherImgAlt"
-        :class="['w-full h-full transition-transform duration-300 group-hover:scale-105', imgClass]"
+        :class="['w-full h-full transition-transform duration-300 group-hover:scale-105']"
       />
       <div class="absolute inset-0 bg-black/50 transition-opacity duration-300 group-hover:opacity-0 pointer-events-none"></div>
 
@@ -20,7 +20,7 @@
     </div>
 
     <!-- 課程區塊 -->
-    <div class="bg-white p-3">
+    <div class="bg-white p-3" @click="goToCoursePage">
       <div class="bg-primaryPestel text-primaryDefault px-2 py-1 text-3 inline-block mb-2 rounded">
         最新課程
       </div>
@@ -33,16 +33,28 @@
 
 <script setup lang="ts">
 import { defineProps } from 'vue';
+import { useRouter } from 'vue-router';
 
-defineProps<{
+const props = defineProps<{
   teacherImgUrl: string
   teacherImgAlt: string
   name: string
   nickname: string
   teacherDesc: string
   courseTitle: string
-  imgClass?: string
+  teacherId: string
+  courseId: string
 }>();
+
+const router = useRouter();
+
+const goToTeacherPage = () => {
+  router.push(`/home/highlighted-instructor/${props.teacherId}`);
+};
+
+const goToCoursePage = () => {
+  router.push(`/home/course/${props.courseId}`);
+};
 </script>
 
 <style scoped>

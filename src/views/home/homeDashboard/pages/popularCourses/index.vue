@@ -14,14 +14,15 @@
       <!-- 課程卡片 -->
       <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
         <courseCardItem
-          v-for="(item, index) in courses"
+          v-for="(item, index) in resCourses"
           :key="index"
-          :courseImgUrl="item.courseImgUrl"
+          :courseId="item.course_id"
+          :courseImgUrl="item.course_image_url"
           :courseImgAlt="item.courseImgAlt"
-          :courseTitle="item.courseTitle"
-          :courseSubtitle="item.courseSubtitle"
-          :courseRank="item.courseRank"
-          :courseStudentSum="item.courseStudentSum"
+          :courseTitle="item.course_name"
+          :courseSubtitle="item.course_description"
+          :courseRank="item.course_rating_score"
+          :courseStudentSum="item.course_total_users"
         />
       </div>
 
@@ -36,46 +37,29 @@
 </template>
 
 <script setup lang="ts">
-import { ref } from 'vue';
+import { ref, onMounted, computed } from 'vue';
 import courseCardItem from '@/views/home/homeDashboard/comps/courseCardItem.vue';
 import typography from '@/components/layout/typography.vue';
 import baseButton from '@/components/layout/baseButton.vue';
+import { useHomeDashboardStore } from '@/stores/models/homeDashboard/store';
+import type { PopularCourse  } from '@/views/home/homeDashboard/api/types';
 
-interface Course {
-  courseImgUrl: string
-  courseImgAlt: string
-  courseTitle: string
-  courseSubtitle: string
-  courseRank: number
-  courseStudentSum: number
-};
+const courses = ref<PopularCourse[]>([]);
 
-const courses = ref<Course[]>([
-  {
-    courseImgUrl: 'https://i.postimg.cc/yNzcsK4g/chocolate-donuts.jpg',
-    courseImgAlt: 'Bread Sliced',
-    courseTitle: '現代歐風麵包工藝',
-    courseSubtitle: '新手快速上手，家用烤箱輕鬆體驗手作經典歐式麵包的樂趣',
-    courseRank: 5,
-    courseStudentSum: 1238,
-  },
-  {
-    courseImgUrl: 'https://i.postimg.cc/c17jSxpY/bread-sliced.jpg',
-    courseImgAlt: 'Japanese Colorful Mochi',
-    courseTitle: '四季和菓子的詩意生活',
-    courseSubtitle: '跟隨職人學做12款精緻和菓子，感受每個季節的細膩變化',
-    courseRank: 4.8,
-    courseStudentSum: 963,
-  },
-  {
-    courseImgUrl: 'https://i.postimg.cc/KzGT35Ym/cupcake.jpg',
-    courseImgAlt: 'Pink Macarons',
-    courseTitle: '法式經典甜點大師課',
-    courseSubtitle: '揭開法式甜點的秘密，學習8款法式甜點，感受每一口的法式風情',
-    courseRank: 4.9,
-    courseStudentSum: 2849,
-  },
-]);
+// 取得熱門課程
+const homeDashboardStore = useHomeDashboardStore();
+onMounted(async () => {
+  await homeDashboardStore.fetchPopularCourse();
+  courses.value = homeDashboardStore.popularCourses;
+});
+
+// 補上 alt
+const resCourses = computed(() =>
+  courses.value.map((item) => ({
+    ...item,
+    courseImgAlt: `${item.course_name}照片`,
+  }))
+);
 </script>
 
 <style scoped>

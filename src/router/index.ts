@@ -72,8 +72,8 @@ const router = createRouter({
           ],
         },
         {
-          path: 'highlighted-instructor',
-          name: 'highlightedInstructor',
+          path: 'highlighted-instructor/:teacher_id',
+          name: 'HighlightedInstructor',
           component: () => import('@/views/home/highlightedInstructor/index.vue'), // 精選講師
         },
       ],
@@ -145,7 +145,7 @@ const router = createRouter({
 });
 
 router.beforeEach((to) => {
-  const publicPages = ['login', 'loginSuccess', 'HomeDashboard', 'Cart', 'CompTest', 'Course', 'TeacherCourseInfo']; // 不用驗證的 route name
+  const publicPages = ['login', 'loginSuccess', 'HomeDashboard', 'Cart', 'CompTest', 'Course', 'TeacherCourseInfo', 'HighlightedInstructor']; // 不用驗證的 route name
   const token = localStorage.getItem('access_token');
 
   if (!token && !publicPages.includes(to.name as string)) {
