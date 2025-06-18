@@ -12,10 +12,10 @@
       <div class="relative rounded-lg bg-neutral_600/80% shadow-md px-4 py-6 w-110 max-w-72
       sm:px-6 sm:py-8 sm:max-w-128">
         <!-- 輪播箭頭 -->
-        <button class="carousel-arrow left-[-4.5rem] md:left-[-6rem]" @click="prev">
+        <button class="carousel-arrow left-[-3.4rem] md:left-[-6rem]" @click="prev">
           <span class="inline-block w-6 h-6 i-ion:arrow-back color-white"></span>
         </button>
-        <button class="carousel-arrow right-[-4.5rem] md:right-[-6rem]" @click="next">
+        <button class="carousel-arrow right-[-3.4rem] md:right-[-6rem]" @click="next">
           <span class="inline-block w-6 h-6 i-ion:arrow-forward color-white"></span>
         </button>
 
