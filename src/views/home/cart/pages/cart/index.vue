@@ -61,7 +61,7 @@ const goToCheckout = () => {
   }
 
   // 已登入 → 直接導轉到結帳頁
-  router.push('/home/cart-flow/checkout');
+  router.push({ name: 'Checkout'});
 };
 
 const formatCurrency = (value: number, currency = 'NT$'): string => `${currency} ${value.toLocaleString('en-US')}`;

@@ -11,7 +11,7 @@
       <!-- 講師介紹 -->
       <div class="absolute bottom-0 left-0 right-0 z-20 p-4">
         <h4 class="text-white text-5 font-bold mb-2">
-          {{ name }}｜{{ nickname }}
+          {{ name }}｜{{ slogan }}
         </h4>
         <p class="text-neutral_100 text-3.5 leading-snug font-normal mb-4 clamped-text-3">
           {{ teacherDesc }}
@@ -39,7 +39,7 @@ const props = defineProps<{
   teacherImgUrl: string
   teacherImgAlt: string
   name: string
-  nickname: string
+  slogan: string
   teacherDesc: string
   courseTitle: string
   teacherId: string
@@ -49,11 +49,11 @@ const props = defineProps<{
 const router = useRouter();
 
 const goToTeacherPage = () => {
-  router.push(`/home/highlighted-instructor/${props.teacherId}`);
+  router.push({ name: 'HighlightedInstructor', params: { teacher_id: props.teacherId } });
 };
 
 const goToCoursePage = () => {
-  router.push(`/home/course/${props.courseId}`);
+  router.push({ name: 'Course', params: { course_id: props.courseId } });
 };
 </script>
 

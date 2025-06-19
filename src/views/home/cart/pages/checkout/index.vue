@@ -3,7 +3,7 @@
   <div class="text-white">
     <div class="max-w-6xl mx-auto px-4 py-8">
       <div class="text-white m-b-6">
-        <router-link :to="`/home/cart-flow/cart`"
+        <router-link :to="{ name: 'Cart' }"
           class="w-28 cursor-pointer no-underline text-white hover:text-primaryDefault">
           <span class="inline-block align-middle w-3.5 h-3.5 i-ion:arrow-back mx-1"></span>
           <span>回上一步</span>

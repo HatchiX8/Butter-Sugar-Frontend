@@ -8,7 +8,7 @@ const router = createRouter({
       redirect: '/Home', // ✅ 訪問 / 時導向 /Home/homeDashboard
     },
     {
-      path: '/Home',
+      path: '/home',
       component: () => import('@/views/home/index.vue'), // 母頁
       children: [
         {

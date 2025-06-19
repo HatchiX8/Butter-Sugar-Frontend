@@ -25,7 +25,7 @@
           :teacherImgUrl="item.teacherImgUrl"
           :teacherImgAlt="item.teacherImgAlt"
           :name="item.teacher_name"
-          :nickname="item.teacher_slogan"
+          :slogan="item.teacher_slogan"
           :teacherDesc="item.teacher_specialization"
           :teacherId="item.teacher_id"
           :courseTitle="item.course_name"
