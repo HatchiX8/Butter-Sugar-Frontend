@@ -7,7 +7,7 @@
         { label: '訂單紀錄' },
       ]"
     />
-    <typography variant="h2" font-type="title" underline class="mb-8">訂單紀錄</typography>
+    <typography variant="h2" font-type="title" underline class="mb-8 text-white">訂單紀錄</typography>
     <n-select v-model:value="value" :options="options" placeholder="所有訂單" class="w-20% mb-6 ml-auto"/>
       <n-data-table
         :columns="columns"
