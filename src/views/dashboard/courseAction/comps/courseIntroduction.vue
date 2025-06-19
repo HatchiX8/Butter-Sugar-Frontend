@@ -115,16 +115,16 @@
         <n-input type="text" placeholder="請輸入課程目標" class="bg-black focus:outline-none" />
       </div>
     </div>
+    <button @click="modelValue = true">建立課程</button>
   </div>
   <titleModal
-    :modelValue="modelValue"
+    v-model:modelValue="modelValue"
     v-model:inputValue="courseTitle"
+    v-model:value="optionsValue"
     title="請輸入課程標題"
     :showFooter="true"
-    :onConfirm="handleConfirm"
-    @update:modelValue="(val) => emit('update:modelValue', val)"
-    @update:title="modalTitle = $event"
-    @update:type="(val) => (optionsValue = val)"
+    @update:title="handleAddTitle"
+    @update:type="handleAddCategory"
   />
 </template>
 
@@ -136,11 +136,23 @@ import { baseInput } from '@/components/index';
 import type { AddChildRequestPayload } from '@/views/dashboard/type';
 const route = useRoute();
 
+// -----------emit&props-----------
+const props = defineProps<Props>();
+
+interface Props {
+  request: (args: AddChildRequestPayload) => Promise<unknown>;
+}
+
+// const emit = defineEmits<{
+//   (e: 'request', payload: AddChildRequestPayload): void;
+// }>();
+// -----------------------------
+
 // -----------彈跳視窗-----------
 const isEditMode = computed(() => Boolean(route.query.id)); // 有 id 就代表是編輯
 const modelValue = ref(false);
 const courseTitle = ref<string>('');
-const modalTitle = ref('');
+// const modalTitle = ref('');
 
 onMounted(() => {
   console.log('檢視路由ID', isEditMode.value);
@@ -149,23 +161,33 @@ onMounted(() => {
   }
 });
 
-const handleConfirm = () => {
-  console.log('觸發新增標題', modalTitle.value);
-  courseTitle.value = modalTitle.value;
-  console.log('成功寫入', courseTitle.value);
-  // 這邊請求寫入titleAPI
-  emit('request', {
-    type: 'addTitle',
-    payload: courseTitle.value,
-  });
-};
-// -----------------------------
+// const handleConfirm = async () => {
+//   console.log('觸發新增標題', modalTitle.value);
+//   courseTitle.value = modalTitle.value;
+//   console.log('成功寫入', courseTitle.value);
 
-// -----------emit&props-----------
-const emit = defineEmits<{
-  (e: 'update:modelValue', value: boolean): void;
-  (e: 'request', payload: AddChildRequestPayload): void;
-}>();
+// 這邊請求寫入titleAPI
+// try {
+//   const titleId = await props.request({
+//     type: 'addTitle',
+//     payload: courseTitle.value,
+//   });
+
+//   console.log('新增成功，回傳 id:', titleId);
+// } catch (err) {
+// } finally {
+// }
+// };
+
+const handleAddTitle = async (title: string) => {
+  courseTitle.value = title;
+  console.log('成功寫入', courseTitle.value);
+  const courseId = await props.request({
+    type: 'addTitle',
+    payload: title,
+  });
+  titleId.value = courseId;
+};
 // -----------------------------
 
 // -----------下拉選單-----------
@@ -176,17 +198,28 @@ const options = [
 ];
 const optionsValue = ref();
 
-watch(optionsValue, (newVal, oldVal) => {
-  if (newVal && newVal !== oldVal) {
-    console.log('觸發存檔請求API', newVal);
-    emit('request', {
-      type: 'addCategory',
-      payload: newVal,
-    });
-  } else {
-    return;
-  }
-});
+const titleId = ref();
+
+const handleAddCategory = async (categoryId: number) => {
+  await props.request({
+    type: 'addCategory',
+    payload: {
+      categoryId,
+    },
+  });
+};
+
+// watch(optionsValue, (newVal, oldVal) => {
+//   if (newVal && newVal !== oldVal) {
+//     console.log('觸發存檔請求API', newVal);
+//     emit('request', {
+//       type: 'addCategory',
+//       payload: newVal,
+//     });
+//   } else {
+//     return;
+//   }
+// });
 // -----------------------------
 
 // -----------影片上傳-----------

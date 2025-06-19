@@ -25,13 +25,12 @@
             v-show="showSelect"
             v-model:value="selectValue"
             :options="options"
-            @update:value="(val: number) => emit('update:type', val)"
             placeholder="請選擇類別"
           />
         </div>
         <template #footer v-if="showFooter">
           <div class="mt-4 flex justify-end gap-2">
-            <baseButton :label="cancelText" @click="onCancel" />
+            <baseButton :label="cancelText" @click="() => emit('update:modelValue', false)" />
             <baseButton
               v-show="!showSelect"
               :label="confirmText"
@@ -43,7 +42,7 @@
               v-show="showSelect"
               :label="confirmText"
               type="primary"
-              @click="onConfirm"
+              @click="submitType"
             />
           </div>
         </template>
@@ -66,7 +65,6 @@ interface Props {
   confirmText?: string;
   cancelText?: string;
   closable?: boolean;
-  onConfirm?: () => void;
 }
 
 const props = withDefaults(defineProps<Props>(), {
@@ -76,15 +74,12 @@ const props = withDefaults(defineProps<Props>(), {
   confirmText: '確定',
   cancelText: '取消',
   closable: true,
-  onConfirm: undefined,
 });
 
 const emit = defineEmits<{
   (e: 'update:modelValue', value: boolean): void;
   (e: 'update:title', value: string): void;
   (e: 'update:type', value: number): void;
-  (e: 'confirm'): void;
-  (e: 'cancel'): void;
 }>();
 
 // --------------------------------
@@ -102,19 +97,19 @@ watch(show, (val) => emit('update:modelValue', val)); // 內部操作時 → 通
 // ------------------------------
 
 // -----------內部關閉-----------
+
 const nextSelect = () => {
+  // 輸入標題後傳出更新標題訊號並且切換顯示下拉選單
+  console.log('觸發', inputValue.value);
+
+  emit('update:title', inputValue.value);
   showSelect.value = true;
 };
 
-const onConfirm = () => {
-  props.onConfirm?.();
-
-  show.value = false;
-};
-
-const onCancel = () => {
-  emit('cancel');
-  show.value = false;
+const submitType = () => {
+  // 傳出select訊號並關閉彈窗
+  emit('update:type', selectValue.value);
+  emit('update:modelValue', false);
 };
 // ------------------------------
 
