@@ -1,15 +1,12 @@
 <template>
   <div>
-    <div v-if="loading" class="flex justify-center items-center min-h-screen text-gray-600">
-      載入課程資料中...
+    <div v-if="loading || isDataFetching" class="flex justify-center items-center min-h-[65vh] text-gray-600">
+      <typography variant="h2" font-type="title" class="text-white">載入課程資料中...</typography>
     </div>
-    <div v-else-if="error" class="flex justify-center items-center min-h-screen text-red-500">
-      {{ error }}
+    <div v-else-if="!loading && !isDataFetching && !courseData" class="flex justify-center items-center min-h-[65vh] text-gray-600">
+      <typography variant="h2" font-type="title" class="text-white">查無此課程資料!</typography>
     </div>
-    <div v-else-if="!courseData" class="flex justify-center items-center min-h-screen text-gray-600">
-      找不到此課程資料
-    </div>
-    <template v-else>
+    <template v-else-if="courseData">
       <heroSection
         :course-data="courseData"
         @purchase="handlePurchase"
@@ -30,6 +27,7 @@
 <script setup lang="ts">
 import { ref, computed, onMounted } from 'vue'
 import { useRoute } from 'vue-router'
+import typography from '@/components/layout/typography.vue'
 import { useCourseStore } from '@/stores/models/course/store'
 import type { courseListInfo, CourseData, Teacher } from '@/types/course'
 
@@ -45,14 +43,9 @@ const courseId = computed(() => route.params.id as string)
 
 // 使用 course store
 const courseStore = useCourseStore()
-const { loading, error, fetchCourses } = courseStore
+const { loading, fetchCourses } = courseStore
 
-// 清理課程描述中的評分和學生數量
-const cleanDescription = (description: string): string => description
-  .replace(/\s*\d+\.\d+\s*/, '') // 移除評分（如 5.0）
-  .replace(/\s*\d+\s*人\s*/, '') // 移除學生數量（如 1238人）
-  .replace(/\s*\n\s*$/, '') // 移除結尾的換行符
-  .trim();
+// 資料庫回傳資料已修正，不需要清理課程描述
 
 // API 資料轉換為組件期望的格式
 const convertToCourseData = (apiCourse: courseListInfo | null): CourseData | null => {
@@ -83,14 +76,18 @@ const convertToCourseData = (apiCourse: courseListInfo | null): CourseData | nul
     img: apiCourse.course_banner_imageUrl || '/src/assets/images/course/course1.jpg',
     title: apiCourse.course_name,
     teacher: teacherName, // 使用教師暱稱
-    description: cleanDescription(apiCourse.course_banner_description || apiCourse.course_description || ''),
+    description: (apiCourse.course_banner_description || apiCourse.course_description || '').trim(),
     rating: 5.0, // 假設評分，API 中可能沒有此欄位
     students: parseInt(apiCourse.total_users || '0'),
     hours: parseInt(apiCourse.course_hours || '0'),
     price: parseInt(apiCourse.sell_price || '0'),
     originPrice: parseInt(apiCourse.origin_price || '0'),
     is_bookmark: false, // 假設未收藏，API 中可能沒有此欄位
-    created_at: apiCourse.created_at
+    created_at: apiCourse.created_at,
+    course_description: apiCourse.course_description || '',
+    suitable_for: apiCourse.suitable_for || '',
+    course_goal: apiCourse.course_goal || '',
+    course_description_imageUrl: apiCourse.course_description_imageUrl || null
   }
 }
 
@@ -102,10 +99,18 @@ const courseData = computed(() => {
   return convertToCourseData(apiCourse)
 })
 
-// 如果課程列表為空，則獲取課程資料
+// 自定義載入狀態，確保資料完全載入後才顯示內容
+const isDataFetching = ref(true)
+
+// 在元件掛載時獲取課程資料
 onMounted(async () => {
-  if (courseStore.courseList.length === 0) {
+  isDataFetching.value = true
+  try {
+    // 無論如何都重新獲取課程資料，確保資料是最新的
     await fetchCourses()
+  } finally {
+    // 資料獲取完成後，設置載入狀態為 false
+    isDataFetching.value = false
   }
 })
 

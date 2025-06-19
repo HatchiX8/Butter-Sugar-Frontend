@@ -4,8 +4,6 @@
 export interface Teacher {
   nickname: string;
   name?: string;
-  // 允許其他屬性，但使用更明確的型別
-  [key: string]: string | number | boolean | null | undefined;
 }
 
 // 課程資料介面 (API 回傳格式)
@@ -53,4 +51,8 @@ export interface CourseData {
   originPrice: number;
   is_bookmark: boolean;
   created_at: string;
+  course_description: string | null;
+  suitable_for: string | null;
+  course_goal: string | null;
+  course_description_imageUrl: string | null;
 }

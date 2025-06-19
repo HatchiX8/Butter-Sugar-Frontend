@@ -1,5 +1,5 @@
 import { defineStore } from 'pinia';
-import { ref, computed } from 'vue';
+import { ref } from 'vue';
 import { getCourseList } from '@/views/home/courseList/api';
 import type { courseListInfo } from '@/views/home/courseList/api/type';
 
@@ -13,10 +13,17 @@ export const useCourseStore = defineStore('courseStore', () => {
   const fetchCourses = async () => {
     loading.value = true;
     error.value = null;
+    courseList.value = []; // 預設為空陣列，避免使用舊資料
 
     try {
       const response = await getCourseList();
-      courseList.value = response.data.courses;
+      // 確保 response 和 response.data 存在再訪問 courses
+      if (response && response.data && Array.isArray(response.data.courses)) {
+        courseList.value = response.data.courses;
+      } else {
+        // 如果回傳的資料結構不符合預期，設置錯誤訊息
+        error.value = 'API 回傳的資料結構不符合預期';
+      }
     } catch (err) {
       error.value = err instanceof Error ? err.message : '查詢課程列表時發生錯誤';
     } finally {
