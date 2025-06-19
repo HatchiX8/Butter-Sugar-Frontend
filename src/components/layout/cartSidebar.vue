@@ -40,12 +40,12 @@
             :key="item.course_id"
             class="flex items-start gap-3 border-b border-white p-4"
           >
-            <img :src="item.course_small_imageUrl" class="w-25 h-18.5 object-cover rounded" />
+            <img :src="item.course_small_imageurl" class="w-25 h-18.5 object-cover rounded" />
             <div class="flex-1">
               <div class="font-bold line-height-5 text-white clamped-text">{{ item.course_name }}</div>
               <div class="text-3.5 text-neutral_200 mt-2">{{ formatCurrency(item.price) }}</div>
             </div>
-            <baseButton text @click="handleRemoveFromCart(item.course_id)" icon="i-ion:trash-outline" iconClass="w-4 h-4 text-neutral_200 hover:text-primaryDefault" />
+            <baseButton text @click="handleRemoveFromCart(item.cart_item_id ?? item.course_id)" icon="i-ion:trash-outline" iconClass="w-4 h-4 text-neutral_200 hover:text-primaryDefault" />
           </div>
         </div>
 
@@ -77,13 +77,13 @@ const uiCartStore = useCartUIStore();
 const router = useRouter();
 const goToCart = () => {
   uiCartStore.isCartOpen = false;
-  router.push('/home/cart-flow/cart');
+  router.push({ name: 'Cart' });
 };
 
 const formatCurrency = (value?: number, currency = 'NT$'): string => `${currency} ${value?.toLocaleString('en-US')}`;
 
-const handleRemoveFromCart = async (courseId: string) => {
-  const res = await cartStore.removeItem(courseId);
+const handleRemoveFromCart = async (id: string) => {
+  const res = await cartStore.removeItem(id);
   message[res.success ? 'success' : 'error'](res.message);
 };
 </script>

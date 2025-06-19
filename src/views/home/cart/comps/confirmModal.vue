@@ -20,6 +20,7 @@ const message = useMessage();
 const props = defineProps<{
   modelValue: boolean
   item: {
+    cart_item_id?: string
     course_id: string
     course_name: string
   }
@@ -32,7 +33,7 @@ const emit = defineEmits<{
 const cartStore = useCartStore();
 
 const handleConfirm = async () => {
-  const res = await cartStore.removeItem(props.item.course_id);
+  const res = await cartStore.removeItem(props.item.cart_item_id ?? props.item.course_id);
   message[res.success ? 'success' : 'error'](res.message);
 };
 </script>

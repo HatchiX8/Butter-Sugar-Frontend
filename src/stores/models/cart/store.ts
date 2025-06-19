@@ -100,18 +100,18 @@ export const useCartStore = defineStore('cart', () => {
     }
   };
 
-  // 刪除項目
-  const removeItem = async (courseId: string): Promise<ActionResult> => {
+  // 刪除項目 (api 用 cart_item_id, localstorage 用 course_id)
+  const removeItem = async (id: string): Promise<ActionResult> => {
     loading.value = true;
     error.value = null;
 
     try {
       if (model.value === 'api') {
-        const res: ApiResponse<Cart> = await removeCartItem(courseId);
+        const res: ApiResponse<Cart> = await removeCartItem(id);
         await getCart(); // 刪除後重新同步
         return { success: true, message: res.message };
       } else {
-        cartItems.value = cartItems.value.filter(i => i.course_id !== courseId);
+        cartItems.value = cartItems.value.filter(i => i.course_id !== id);
         saveToLocalStorage();
         return { success: true, message: '已從購物車移除課程' };
       }

@@ -11,10 +11,11 @@ export interface Cart{
 };
 
 export interface CartItem {
+  cart_item_id?: string;
   course_id: string;
   course_name: string;
   price: number;
-  course_small_imageUrl: string;
+  course_small_imageurl: string;
 };
 
 export interface MergeCartData {

@@ -17,5 +17,5 @@ export interface OrderItem {
   course_id: string;
   course_name: string;
   price: number;
-  course_small_imageUrl: string;
+  course_small_imageurl: string;
 };
