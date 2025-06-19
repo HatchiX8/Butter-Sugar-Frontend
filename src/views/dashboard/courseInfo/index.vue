@@ -5,7 +5,7 @@
         所有課程
       </typography>
       <p class="text-8"></p>
-      <button class="bg-primaryDefault text-white border-none rounded-md px-4">建立新課程</button>
+      <button class="bg-primaryDefault text-white border-none rounded-md px-4 py-3">建立新課程</button>
     </div>
     <n-divider />
     <div class="w-full">
