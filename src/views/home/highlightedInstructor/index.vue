@@ -1,11 +1,13 @@
 <template>
-  <div class="w-80% max-w-220 mx-auto my-20">
-    <div class="flex flex-col sm:flex-row items-center sm:items-start px-8 py-10 gap-6 mt-14 text-white"
+  <div class="w-full max-w-[80%] md:max-w-[1280px] mx-auto my-20">
+    <div class="flex flex-col sm:flex-row items-center sm:items-start md:items-center px-8 py-10 gap-6 mt-14 text-white"
     :style="{ backgroundImage: `url(${bgImgUrl})` }">
       <!-- 講師左側 -->
       <div class="flex-shrink-0 w-60 bg-black p-4 text-center">
-        <img :src="instructor.avatarUrl" alt="講師頭像" class="w-24 h-24 mx-auto rounded-full object-cover" />
-        <div class="text-sm mt-4">精選講師</div>
+        <div class="teacher-avatar p-3 [background:url('@/assets/images/home/teacher-flower-lace.png')_center_center/contain_no-repeat]">
+          <img :src="instructor.avatarUrl" alt="講師頭像" class="w-24 h-24 mx-auto rounded-full object-cover" />
+        </div>
+        <div class="text-sm text-black mt-4 py-2px [background:url('@/assets/images/home/teacher-flag.png')_center_center/contain_no-repeat]">精選講師</div>
         <div class="text-lg font-bold mt-2">{{ instructor.nickname }}</div>
         <div class="text-xs mt-2 whitespace-pre-line">{{ instructor.specialty }}</div>
         <div class="mt-2 text-sm">
@@ -15,16 +17,19 @@
         </div>
       </div>
       <!-- 講師右側 -->
-      <div class="flex-1 text-sm leading-relaxed">
-        <p class="text-lg mb-4">
-          {{ instructor.slogan }}
-        </p>
-        <p class="text-neutral_100">{{ instructor.aboutMe }}</p>
+      <div class="flex gap-4 py-6 text-sm leading-relaxed">
+        <img :src="quoteImg" alt="講師引號" class="w-10 h-10 object-contain" />
+        <div class="flex flex-row md:flex-col align-middle">
+          <p class="text-4 mb-4">
+            {{ instructor.slogan }}
+          </p>
+          <p class="text-neutral_100">{{ instructor.aboutMe }}</p>
+        </div>
       </div>
     </div>
     <!-- 精選課程 -->
-    <typography variant="h3" font-type="title" underline class="mb-8">精選課程</typography>
-    <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+    <typography variant="h3" font-type="title" underline class="mb-8 mt-5 text-white">精選課程</typography>
+    <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
       <courseCard v-for="course in courses" :key="course.id" v-bind="course" />
     </div>
   </div>
@@ -35,6 +40,7 @@ import typography from '@/components/layout/typography.vue';
 import courseCard from '@/views/home/courseList/comps/courseCard.vue';
 
 const bgImgUrl = new URL('@/assets/images/home/bg-grey-wrinkle.png', import.meta.url).href;
+import quoteImg from '@/assets/images/home/teacher-quote.png'
 
 const formatNumberFixed = (value: unknown, fixedNum: number = 1): string => {
   const num = Number(value);
