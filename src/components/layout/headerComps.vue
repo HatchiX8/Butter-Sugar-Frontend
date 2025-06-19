@@ -45,32 +45,42 @@
     </header>
 
     <!-- 手機版選單區 -->
-    <div v-if="isMobileMenuOpen" class="md:hidden w-90% bg-neutral_600 text-white px-6 pb-4 space-y-4">
-      <!-- 搜尋列 -->
-      <div class="relative px-6 border-b-1 border-b-solid border-b-white/20 py-4">
-        <baseInput type="text" placeholder="輸入關鍵字搜尋" class="w-full h-12 leading-12" />
-        <div class="i-ion:search-outline absolute right-9 top-1/2 -translate-y-1/2 text-5 text-neutral_300"></div>
+    <template v-if="isMobileMenuOpen">
+      <!-- ★ 透明遮罩：覆蓋整頁；點它就關閉 -->
+      <div class="fixed inset-0 z-40 md:hidden bg-black/20" @click="isMobileMenuOpen = false"></div>
+      <!-- 選單本體：加定位 & @click.stop -->
+      <div
+        class="fixed top-20 left-0 w-90% bg-neutral_600 text-white
+              px-6 pb-4 space-y-4 z-50 md:hidden"
+        @click.stop
+      >
+    <!-- <div v-if="isMobileMenuOpen" class="md:hidden w-90% bg-neutral_600 text-white px-6 pb-4 space-y-4"> -->
+        <!-- 搜尋列 -->
+        <div class="relative px-6 border-b-1 border-b-solid border-b-white/20 py-4">
+          <baseInput type="text" placeholder="輸入關鍵字搜尋" class="w-full h-12 leading-12" />
+          <div class="i-ion:search-outline absolute right-9 top-1/2 -translate-y-1/2 text-5 text-neutral_300"></div>
+        </div>
+
+        <!-- 選單項目 -->
+        <a href="#" class="block border-b-1 border-b-solid border-b-white/20 px-6 py-6 text-white no-underline">探索課程</a>
+
+        <template v-if="userStore.isLoggedIn">
+          <!-- 登入後展開選單 -->
+          <div @click="toggleUserDropdown" class="flex items-center justify-between px-6 py-6 cursor-pointer">
+            <userAction />
+            <div>{{userStore.name}}</div>
+            <div :class="[isUserDropdownOpen ? 'i-ion:chevron-up' : 'i-ion:chevron-down','text-primaryDefault',]"></div>
+          </div>
+          <div v-if="isUserDropdownOpen" class="pl-8 space-y-2">
+            <UserDropdownMenu />
+          </div>
+        </template>
+
+        <template v-else>
+          <a href="/login" class="block border-b border-white/20 pb-2">登入 / 註冊</a>
+        </template>
       </div>
-
-      <!-- 選單項目 -->
-      <a href="#" class="block border-b-1 border-b-solid border-b-white/20 px-6 py-6 text-white no-underline">探索課程</a>
-
-      <template v-if="userStore.isLoggedIn">
-        <!-- 登入後展開選單 -->
-        <div @click="toggleUserDropdown" class="flex items-center justify-between px-6 py-6 cursor-pointer">
-          <userAction />
-          <div>{{userStore.name}}</div>
-          <div :class="[isUserDropdownOpen ? 'i-ion:chevron-up' : 'i-ion:chevron-down','text-primaryDefault',]"></div>
-        </div>
-        <div v-if="isUserDropdownOpen" class="pl-8 space-y-2">
-          <UserDropdownMenu />
-        </div>
-      </template>
-
-      <template v-else>
-        <a href="/login" class="block border-b border-white/20 pb-2">登入 / 註冊</a>
-      </template>
-    </div>
+    </template>
   </div>
 </template>
 
