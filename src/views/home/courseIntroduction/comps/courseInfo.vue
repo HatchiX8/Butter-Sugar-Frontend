@@ -30,7 +30,6 @@ import coursePurchase from './coursePurchase.vue';
 import courseIntro from './courseIntro.vue';
 import courseChapter from './courseChapter.vue';
 import faq from './faq.vue';
-import courseFaq from './courseFaq.vue';
 
 interface CourseData {
   id?: number;

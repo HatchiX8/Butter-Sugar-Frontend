@@ -1,5 +1,5 @@
 import { defineStore } from 'pinia';
-import { ref } from 'vue';
+import { ref, computed } from 'vue';
 import { getCourseList } from '@/views/home/courseList/api';
 import type { courseListInfo } from '@/views/home/courseList/api/type';
 
@@ -29,11 +29,15 @@ export const useCourseStore = defineStore('courseStore', () => {
     courseList.value = [];
   };
 
+  // 根據 ID 獲取課程
+  const getCourseById = (id: string) => courseList.value.find(course => String(course.id).toLowerCase() === id) || null;
+
   return {
     courseList,
     loading,
     error,
     fetchCourses,
-    clearCourses
+    clearCourses,
+    getCourseById
   };
 });

@@ -17,16 +17,14 @@ const router = createRouter({
           component: () => import('@/views/home/homeDashboard/index.vue'), // 預設首頁內容
         },
         {
-          path: 'course',
+          path: 'course/:id',
           name: 'Course',
           component: () => import('@/views/home/courseIntroduction/index.vue'), // 課程介紹
-          children: [
-            {
-              path: 'course-page',
-              name: 'CourseVideo',
-              component: () => import('@/views/home/coursePage/index.vue'), // 課程影片
-            },
-          ],
+        },
+        {
+          path: 'course/course-page',
+          name: 'CourseVideo',
+          component: () => import('@/views/home/coursePage/index.vue'), // 課程影片
         },
         {
           path: 'course-info',
@@ -37,6 +35,11 @@ const router = createRouter({
           path: 'my-course',
           name: 'MyCourse',
           component: () => import('@/views/home/myCourse/index.vue'), // 我的課程列表
+        },
+        {
+          path: 'course-chapter',
+          name: 'courseChapter',
+          component: () => import('@/views/home/courseChapter/index.vue'), // 課程章節列表
         },
         {
           path: 'memberCenter',
