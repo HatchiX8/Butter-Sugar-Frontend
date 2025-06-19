@@ -60,13 +60,23 @@ onMounted(async () => {
 });
 
 const formatDatetime = (inputTime: string) => {
-  const date = new Date(inputTime)
-  const y = date.getFullYear()
-  const m = String(date.getMonth() + 1).padStart(2, '0')
-  const d = String(date.getDate()).padStart(2, '0')
-  const hh = String(date.getHours()).padStart(2, '0')
-  const mm = String(date.getMinutes()).padStart(2, '0')
-  return `${y}-${m}-${d} ${hh}:${mm}`
+  try {
+    const formatter = new Intl.DateTimeFormat('zh-TW', {
+      year: 'numeric',
+      month: '2-digit',
+      day: '2-digit',
+      hour: '2-digit',
+      minute: '2-digit',
+      hour12: false,
+      timeZone: 'Asia/Taipei'
+    });
+
+    const formatted = formatter.format(new Date(inputTime)).replace(/\//g, '-'); // 把字串中 所有的 / 字元 換成 -
+    return formatted;
+  } catch (error) {
+    console.warn('時間格式化失敗，回傳原始值：', inputTime, error)
+    return inputTime;
+  }
 };
 
 // 訂單資料
