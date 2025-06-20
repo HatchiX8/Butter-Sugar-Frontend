@@ -17,7 +17,7 @@
           :course-data="courseData"
           button-style="desktop"
           @purchase="$emit('purchase')"
-          @toggle-bookmark="$emit('toggleBookmark')"
+          @toggle-bookmark="(newState) => $emit('toggleBookmark', newState)"
         />
       </div>
     </div>
@@ -50,7 +50,7 @@ const props = defineProps<{
 
 defineEmits<{
   purchase: []
-  toggleBookmark: []
+  toggleBookmark: [boolean]
 }>()
 
 const backgroundImageStyle = computed(() => ({

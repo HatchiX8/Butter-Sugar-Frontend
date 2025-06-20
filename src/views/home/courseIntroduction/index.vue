@@ -29,6 +29,7 @@ import { ref, computed, onMounted } from 'vue'
 import { useRoute } from 'vue-router'
 import typography from '@/components/layout/typography.vue'
 import { useCourseStore } from '@/stores/models/course/store'
+import { useBookmarkStore } from '@/stores/models/bookmark'
 import type { courseListInfo, CourseData, Teacher } from '@/types/course'
 
 import heroSection from './comps/heroSection.vue'
@@ -44,6 +45,9 @@ const courseId = computed(() => route.params.id as string)
 // 使用 course store
 const courseStore = useCourseStore()
 const { loading, fetchCourses } = courseStore
+
+// 使用 bookmark store
+const bookmarkStore = useBookmarkStore()
 
 // 資料庫回傳資料已修正，不需要清理課程描述
 
@@ -73,6 +77,7 @@ const convertToCourseData = (apiCourse: courseListInfo | null): CourseData | nul
   return {
     link: `/home/course/${apiCourse.id}`,
     id: parseInt(apiCourse.id),
+    uuid: apiCourse.id, // 確保 uuid 屬性存在，使用 id 作為 uuid
     img: apiCourse.course_banner_imageUrl || '/src/assets/images/course/course1.jpg',
     title: apiCourse.course_name,
     teacher: teacherName, // 使用教師暱稱
@@ -91,12 +96,23 @@ const convertToCourseData = (apiCourse: courseListInfo | null): CourseData | nul
   }
 }
 
+// 保存課程收藏狀態的參考變數
+const isBookmarked = ref(false)
+
 // 取得對應 ID 的課程資料
 const courseData = computed(() => {
   // 使用 store 的 getCourseById 方法取得原始資料
   const apiCourse = courseStore.getCourseById(courseId.value)
   // 轉換為組件期望的格式
-  return convertToCourseData(apiCourse)
+  const course = convertToCourseData(apiCourse)
+  
+  // 如果課程存在，設置收藏狀態
+  if (course && course.uuid) {
+    // 使用獨立的 ref 變數追蹤收藏狀態
+    course.is_bookmark = isBookmarked.value
+  }
+  
+  return course
 })
 
 // 自定義載入狀態，確保資料完全載入後才顯示內容
@@ -106,8 +122,17 @@ const isDataFetching = ref(true)
 onMounted(async () => {
   isDataFetching.value = true
   try {
+    // 初始化書籤狀態
+    bookmarkStore.initializeFromLocalStorage()
+    
     // 無論如何都重新獲取課程資料，確保資料是最新的
     await fetchCourses()
+    
+    // 課程資料載入完成後，設置初始收藏狀態
+    if (courseId.value) {
+      isBookmarked.value = bookmarkStore.isBookmarked(courseId.value)
+      console.log(`初始收藏狀態: ${isBookmarked.value} for ${courseId.value}`)
+    }
   } finally {
     // 資料獲取完成後，設置載入狀態為 false
     isDataFetching.value = false
@@ -122,10 +147,24 @@ const handlePurchase = () => {
 }
 
 // 處理收藏切換事件
-const handleToggleBookmark = () => {
+const handleToggleBookmark = (newState?: boolean) => {
   const course = courseData.value
-  if (course) {
-    course.is_bookmark = !course.is_bookmark
+  if (course && course.uuid) {
+    // 如果收到了子組件傳來的 newState 參數，直接使用它更新本地狀態
+    // 子組件已經調用了 bookmarkStore.toggleBookmark()，所以不需要再呼叫一次
+    if (typeof newState === 'boolean') {
+      // 直接使用子組件傳來的新狀態
+      isBookmarked.value = newState
+      console.log(`更新本地收藏狀態: ${newState} for ${course.uuid}`)
+    } 
+    // 只有當此方法直接從頁面調用且沒有傳入 newState 時，才調用 toggleBookmark
+    else if (typeof newState === 'undefined') {
+      // 僅在直接從本頁面觸發且沒有提供狀態時才切換
+      const toggledState = bookmarkStore.toggleBookmark(course.uuid)
+      // 更新本地狀態
+      isBookmarked.value = toggledState
+      console.log(`直接切換收藏狀態: ${toggledState} for ${course.uuid}`)
+    }
   }
 }
 

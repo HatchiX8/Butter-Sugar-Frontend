@@ -40,6 +40,7 @@ export interface courseListInfo {
 export interface CourseData {
   link: string;
   id: number;
+  uuid: string; // 課程唯一識別碼，用於收藏功能
   img: string;
   title: string;
   teacher: string;
