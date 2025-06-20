@@ -27,7 +27,7 @@
 
     <div class="tab-content">
       <div class="flex flex-col items-center mx-auto p-6 max-w-[1280px] w-full box-border mt-15">
-        <notify v-if="showNotify" />
+        <notify v-if="showNotify" :course-name="props.courseData?.title || ''" />
 
         <div class="w-full flex flex-col gap-6 max-w-[1280px] mx-auto items-center box-border md:flex-row md:items-start md:justify-center">
           <!-- 課程資訊區塊 (左欄) -->
@@ -57,7 +57,10 @@
             />
 
             <!-- 講師介紹區塊 -->
-            <teacherIntro class="mt-6" />
+            <teacherIntro 
+              class="mt-6" 
+              :teacher-id="props.teacherId" 
+            />
           </div>
         </div>
       </div>
@@ -85,6 +88,11 @@ const props = defineProps({
     default: () => null
   },
   courseId: {
+    type: String,
+    required: false,
+    default: ''
+  },
+  teacherId: {
     type: String,
     required: false,
     default: ''
