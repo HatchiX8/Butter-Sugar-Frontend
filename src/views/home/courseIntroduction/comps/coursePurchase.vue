@@ -69,15 +69,11 @@ const cartItem: CartItem = {
 }
 
 const handlePurchase = () => {
-  if (props.courseData?.id) {
-    emit('purchase', cartItem)
-  }
+  emit('purchase', cartItem);
 };
 
 const handleAddToCart = () => {
-  if (props.courseData?.id) {
-    emit('add-to-cart', cartItem)
-  }
+  emit('add-to-cart', cartItem)
 };
 </script>
 
