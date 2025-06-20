@@ -51,7 +51,7 @@ const menuOptions: MenuOption[] = [
   },
   {
     label: '建立新課程',
-    key: 'courseAction/addCourse',
+    key: 'courseAction/courseManage',
   },
 ];
 

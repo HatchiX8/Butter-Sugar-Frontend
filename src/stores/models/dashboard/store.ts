@@ -15,11 +15,11 @@ export const useDashboardStore = defineStore('dashboardStore', () => {
 
     try {
       const res = await postAddTitle(postData);
-      console.log('檢視回傳', res);
+      console.log('storeLog:檢視回傳', res);
       courseId.value = res;
-      console.log('寫入', courseId.value);
+      console.log('storeLog:寫入', courseId.value);
     } catch (err) {
-      console.log('新增title錯誤', err);
+      console.log('storeLog:新增title錯誤', err);
     } finally {
       loading.value = false;
     }
