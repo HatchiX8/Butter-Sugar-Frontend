@@ -1,5 +1,5 @@
 <template>
-  <div class="w-80% max-w-200 mx-auto mb-20">
+  <div class="w-80% max-w-200 md:max-w-[1280px] mx-auto mb-20">
     <breadcrumbComps
       class="mt-30"
       :items="[
