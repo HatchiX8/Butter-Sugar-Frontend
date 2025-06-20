@@ -1,5 +1,5 @@
 // 我的課程列表api路徑
-// https://sugerbutter-test.zeabur.app/api/v1/course/list
+// https://buttersugar-backend.zeabur.app//api/v1/course/list
 
 import instance from '@/api/axios';
 import type { courseListInfo, courseListResponse } from './type';
