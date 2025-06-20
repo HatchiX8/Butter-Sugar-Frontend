@@ -62,10 +62,55 @@ export const fetchCourseQuestions = async (courseId: string): Promise<QuestionRe
  * 提交新問題
  * @param courseId 課程ID
  * @param content 問題內容
- * @returns Promise<void>
+ * @returns Promise<QuestionResponse> 新創建的問題
  */
-export const submitQuestion = async (courseId: string, content: string): Promise<void> => {
-  // 實際實現時應該會調用API
-  // 目前只是模擬成功
-  alert(`已提交問題：${content}`);
+export const submitQuestion = async (courseId: string, content: string): Promise<QuestionResponse> => {
+  if (!courseId) {
+    throw new Error('無效的課程ID');
+  }
+  
+  // 獲取用戶 token
+  const userStore = useUserStore();
+  const token = userStore.userToken;
+  
+  // 檢查用戶是否已登入
+  if (!token) {
+    throw new Error('請先登入後再提交問題');
+  }
+  
+  // 設置請求頭，包含授權信息
+  const headers: HeadersInit = {
+    'Content-Type': 'application/json',
+    'Authorization': `Bearer ${token}`
+  };
+  
+  // 準備請求體
+  const requestBody = {
+    question_text: content
+  };
+  
+  const response = await fetch(`${API_BASE}/api/v1/course/${courseId}/questions`, {
+    method: 'POST',
+    headers,
+    body: JSON.stringify(requestBody)
+  });
+  
+  if (!response.ok) {
+    // 如果是 401 未授權錯誤，提示用戶登入
+    if (response.status === 401) {
+      throw new Error('請先登入後再提交問題');
+    }
+    throw new Error(`提交問題失敗: ${response.status}`);
+  }
+  
+  // 解析回應數據
+  const responseData = await response.json();
+  
+  // 檢查是否為嵌套的 { data: [...] } 結構
+  if (responseData && typeof responseData === 'object' && 'data' in responseData) {
+    return responseData.data as QuestionResponse;
+  }
+  
+  // 直接返回數據
+  return responseData as QuestionResponse;
 };

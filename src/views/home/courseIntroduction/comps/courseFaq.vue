@@ -155,15 +155,20 @@ watch(() => props.courseId, (newId) => {
 }, { immediate: true });
 
 // 處理留言提交
-const submitComment = () => {
+const submitComment = async () => {
   if (!commentText.value.trim()) {
     alert('請輸入問題內容');
     return;
   }
 
   // 使用store提交問題
-  courseQAStore.submitQuestion(props.courseId, commentText.value);
-  commentText.value = '';
+  const success = await courseQAStore.submitQuestion(props.courseId, commentText.value);
+  
+  if (success) {
+    // 提交成功後清空輸入框
+    commentText.value = '';
+  }
+  // 錯誤已由 store 處理，錯誤會在 UI 中顯示
 };
 </script>
 

@@ -84,10 +84,31 @@ export const useCourseQAStore = defineStore('courseQA', () => {
 
   // 提交新問題
   const submitQuestion = async (courseId: string, content: string) => {
-    await apiSubmitQuestion(courseId, content);
+    if (!courseId) {
+      hasError.value[courseId] = true;
+      errorMessage.value[courseId] = '無效的課程ID';
+      return false;
+    }
 
-    // 提交成功後重新獲取數據
-    await fetchCourseQA(courseId);
+    try {
+      // 設置提交中狀態
+      isLoading.value[courseId] = true;
+      hasError.value[courseId] = false;
+      errorMessage.value[courseId] = '';
+
+      // 調用 API 提交問題
+      await apiSubmitQuestion(courseId, content);
+
+      // 提交成功後重新獲取數據
+      await fetchCourseQA(courseId);
+      return true;
+    } catch (error) {
+      hasError.value[courseId] = true;
+      errorMessage.value[courseId] = error instanceof Error ? error.message : '提交問題失敗';
+      return false;
+    } finally {
+      isLoading.value[courseId] = false;
+    }
   };
 
   return {
