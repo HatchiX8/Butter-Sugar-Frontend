@@ -52,32 +52,35 @@ import cartList from '@/components/data/cartList.vue';
 import { useRoute } from 'vue-router';
 import { storeToRefs } from 'pinia';
 import type { CartItem } from '@/api/cart/types';
-import type { OrderItem } from '@/api/orders/types';
 
-const formatCurrency = (value: number, currency = 'NT$'): string => `${currency} ${value.toLocaleString('en-US')}`;
-
-// 從路由取得 orderNumber
+const orderStatus = '完成付款';
 const route  = useRoute();
-const orderNumber = route.params.orderNumber as string;
-
-// 取得訂單資料
 const orderStore = useOrderStore();
-const { orderItems, itemCount } = storeToRefs(orderStore);
+const { orderItems, itemCount, order } = storeToRefs(orderStore);
 
-// 將訂單項目轉換為購物車項目格式
-const cartItems: CartItem[] = orderItems.value.map((item: OrderItem) => ({
-  course_id: item.course_id,
-  course_name: item.course_name,
-  price: item.sell_price, // 轉換重點
-  course_small_imageurl: item.course_small_imageurl,
-}));
+// 解析路由 renderData，取得 orderNumber
+const renderData = computed(() => {
+  const raw = route.query.renderData as string | undefined;
+  if (!raw) return null;
 
-onMounted(async () => {
-  if (!orderNumber) {
-    console.error('未成功從路由取得 orderNumber');
+  try {
+    return JSON.parse(decodeURIComponent(raw));
+  } catch (error) {
+    console.error('renderData 無法解析', error);
+    return null;
   }
-  await orderStore.fetchOrder(orderNumber);
 });
+const orderNumber = computed(() => renderData.value?.order_number ?? '');
+
+// reactive 的 cartItems
+const cartItems = computed<CartItem[]>(() =>
+  orderItems.value.map(item => ({
+    course_id: item.course_id,
+    course_name: item.course_name,
+    price: item.sell_price,
+    course_small_imageurl: item.course_small_imageurl
+  }))
+);
 
 const formatDatetime = (inputTime: string) => {
   try {
@@ -98,17 +101,26 @@ const formatDatetime = (inputTime: string) => {
     return inputTime;
   }
 };
+const formatCurrency = (value: number, currency = 'NT$'): string => `${currency} ${value.toLocaleString('en-US')}`;
 
-// 訂單資料
-const orderInfo = computed(() => [
-  { label: '訂單編號', value: orderStore.order?.order_number ?? "" },
-  { label: '訂單日期', value: formatDatetime(orderStore.order?.created_at ?? "") },
-  { label: '付款方式', value: orderStore.order?.payway ?? "" },
-  { label: '實付金額', value: formatCurrency(orderStore.order?.final_amount ?? 0) },
-  { label: '課程名稱', value: orderStore.order?.course_name ?? []},
-]);
+// 訂單資訊
+const orderInfo = computed(() => order.value
+  ? [
+      { label: '訂單編號', value: order.value.order_number },
+      { label: '訂單日期', value: formatDatetime(order.value.created_at) },
+      { label: '付款方式', value: order.value.payway },
+      { label: '實付金額', value: formatCurrency(order.value.final_amount) }
+    ]
+  : []
+);
 
-const orderStatus = '完成付款';
+onMounted(async () => {
+  if (!orderNumber.value) {
+    console.error('renderData 中缺少 order_number');
+    return;
+  }
+  await orderStore.fetchOrder(orderNumber.value);
+});
 </script>
 
 <style scoped>

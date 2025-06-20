@@ -53,7 +53,7 @@ const goToTeacherPage = () => {
 };
 
 const goToCoursePage = () => {
-  router.push({ name: 'Course', params: { course_id: props.courseId } });
+  router.push({ name: 'Course', params: { id: props.courseId } });
 };
 </script>
 

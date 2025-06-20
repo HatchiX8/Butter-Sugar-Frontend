@@ -59,7 +59,7 @@ const props = defineProps<{
 
 const router = useRouter();
 const handleClick = () => {
-  router.push({ name: 'Course', params: { course_id: props.courseId } });
+  router.push({ name: 'Course', params: { id: props.courseId } });
 };
 
 const formatNumberFixed = (value: unknown, fixedNum: number = 1): string => {

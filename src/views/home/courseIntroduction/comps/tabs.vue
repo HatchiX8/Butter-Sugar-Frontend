@@ -54,10 +54,15 @@
               @purchase="handlePurchase"
               @add-to-cart="handleAddToCart"
               @toggle-bookmark="handleToggleBookmark"
+              @go-to-teacher="goToTeacher"
             />
 
             <!-- 講師介紹區塊 -->
-            <teacherIntro class="mt-6" />
+            <teacherIntro
+              class="mt-6"
+              :teacher_id="courseData?.teacher_id"
+              @go-to-teacher="goToTeacher"
+            />
           </div>
         </div>
       </div>
@@ -110,13 +115,13 @@ const scrollToSection = (sectionId: string) => {
   }, 100);
 };
 
-const emit = defineEmits(['tab-change', 'purchase', 'toggle-bookmark', 'add-to-cart']);
+const emit = defineEmits(['tab-change', 'purchase', 'toggle-bookmark', 'add-to-cart', 'go-to-teacher']);
 
 const cartItem: CartItem = {
-  course_id: props.courseData?.id ?? "",
-  course_name: props.courseData?.title ?? "",
+  course_id: props.courseData?.uuid ?? '',
+  course_name: props.courseData?.title ?? '',
   price: props.courseData?.price ?? 0,
-  course_smallimage: props.courseData?.course_smallimage ?? ""
+  course_small_imageurl: props.courseData?.course_small_imageUrl ?? ''
 }
 
 const handleTabChange = (tabName: string) => {
@@ -137,6 +142,9 @@ const handleAddToCart = () => {
   emit('add-to-cart', cartItem);
 };
 
+const goToTeacher = () => {
+  emit('go-to-teacher', props.courseData?.teacher_id ?? '');
+};
 </script>
 
 <style scoped>

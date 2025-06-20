@@ -5,9 +5,9 @@
       <!-- 講師左側 -->
       <div class="flex-shrink-0 w-60 bg-black p-4 text-center">
         <img :src="instructor.avatarUrl" alt="講師頭像" class="w-24 h-24 mx-auto rounded-full object-cover" />
-        <div class="text-sm mt-4">精選講師</div>
-        <div class="text-lg font-bold mt-2">{{ instructor.nickname }}</div>
-        <div class="text-xs mt-2 whitespace-pre-line">{{ instructor.specialty }}</div>
+        <p class="text-sm mt-4">精選講師</p>
+        <p class="text-lg font-bold mt-2">{{ instructor.nickname }}</p>
+        <p class="text-xs mt-2 whitespace-pre-line">{{ instructor.specialty }}</p>
         <div class="mt-2 text-sm">
           <span class="inline-block w-3.5 h-3.5 i-ion:star color-primaryLight"></span>
           <span class="pl-1">{{ formatNumberFixed(instructor.rank) }}</span>
@@ -23,7 +23,7 @@
       </div>
     </div>
     <!-- 精選課程 -->
-    <typography variant="h3" font-type="title" underline class="mb-8">精選課程</typography>
+    <typography variant="h3" font-type="title" underline class="my-8 text-white">精選課程</typography>
     <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
       <courseCard v-for="course in courses" :key="course.id" v-bind="course" />
     </div>

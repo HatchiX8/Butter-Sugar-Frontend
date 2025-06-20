@@ -48,16 +48,26 @@ const formatDate = (dateString?: string): string => {
 };
 
 interface CourseData {
-  id?: string;
-  title?: string;
-  teacher?: string;
-  description?: string;
-  hours?: number;
-  students?: number;
-  price?: number;
-  originPrice?: number;
-  is_bookmark?: boolean;
-  created_at?: string;
+  link: string;
+  id: number;
+  uuid: string;
+  img: string;
+  title: string;
+  teacher: string;
+  description: string;
+  rating: number;
+  students: number;
+  hours: number;
+  price: number;
+  originPrice: number;
+  is_bookmark: boolean;
+  created_at: string;
+  course_description: string | null;
+  suitable_for: string | null;
+  course_goal: string | null;
+  course_description_imageUrl: string | null;
+  course_small_imageUrl: string | null;
+  teacher_id: string;
 }
 
 defineProps<{

@@ -40,12 +40,17 @@ export const useOrderStore = defineStore('orderStore', () => {
     error.value = null;
 
     try {
-      const res: ApiResponse<Orders> = await getOrder(orderNumber);
-      if (res.data !== undefined) {
-        order.value = res.data;
-        orderItems.value = order.value?.order_items ?? [];
-        itemCount.value = orderItems.value.length;
-      }
+      const res: ApiResponse<Orders[]> = await getOrder(orderNumber);
+      if (res.data?.length) {
+      order.value = res.data[0];
+      orderItems.value = order.value?.order_items ?? [];
+      itemCount.value = orderItems.value.length;
+    } else {
+      console.warn('找不到訂單資料');
+      order.value = null;
+      orderItems.value = [];
+      itemCount.value = 0;
+    }
     } catch (err) {
       error.value = getErrorMessage(err);
     }

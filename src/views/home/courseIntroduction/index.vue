@@ -20,6 +20,7 @@
           @purchase="handlePurchase"
           @add-to-cart="handleAddToCart"
           @toggle-bookmark="handleToggleBookmark"
+          @go-to-teacher="goToTeacherPage"
         />
       </div>
     </template>
@@ -36,10 +37,11 @@ import type { courseListInfo, CourseData, Teacher } from '@/types/course'
 
 import heroSection from './comps/heroSection.vue'
 import tabs from './comps/tabs.vue'
+// import { useCourseStore } from '@/stores/models/course/store'
 import { useCartStore } from '@/stores/models/cart/store'
 import { useMessage } from 'naive-ui'
 import { useRouter } from 'vue-router'
-import type { CartItem } from '@/api/cart/types';
+import type { CartItem } from '@/api/cart/types'
 
 const message = useMessage()
 const router = useRouter()
@@ -103,6 +105,7 @@ const convertToCourseData = (apiCourse: courseListInfo | null): CourseData | nul
     course_goal: apiCourse.course_goal || '',
     course_description_imageUrl: apiCourse.course_description_imageUrl || null,
     course_small_imageUrl: apiCourse.course_small_imageUrl || '',
+    teacher_id: apiCourse.teacher_id || '',
   }
 }
 
@@ -153,19 +156,30 @@ const activeTab = ref('info')
 
 // 處理購買事件
 const cartStore = useCartStore()
-const handlePurchase = async (item: CartItem) => {
-  if (!item) return;
-  const res = await cartStore.addItem(item);
-  message[res.success ? 'success' : 'error'](res.message);
+const handleAddToCart = async () => {
+  const course = courseData.value
+  if (!course) return
 
-  if (res.success) {
-    router.push('/home/cart-flow/cart')
+  const cartItem: CartItem = {
+    course_id: course.uuid,
+    course_name: course.title,
+    price: course.price,
+    course_small_imageurl: course.course_small_imageUrl ?? '',
+  }
+
+  const res = await cartStore.addItem(cartItem)
+  message[res.success ? 'success' : 'error'](res.message)
+}
+const handlePurchase = async () => {
+  await handleAddToCart()
+  if (!cartStore.error) {
+    router.push({ name: 'Cart'});
   }
 }
-const handleAddToCart = async (item: CartItem) => {
-  if (!item) return;
-  const res = await cartStore.addItem(item);
-  message[res.success ? 'success' : 'error'](res.message);
+
+// 前往講師頁面
+const goToTeacherPage = () => {
+  router.push({ name: 'HighlightedInstructor', params: { teacher_id: courseData.value?.teacher_id ?? '' } });
 }
 
 // 處理收藏切換事件

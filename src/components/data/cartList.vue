@@ -14,7 +14,7 @@
           :class="{ 'custom-border-bottom': index !== visibleItems.length - 1 }"
         >
           <router-link
-            :to="{ name: 'Course', params: { course_id: item.course_id } }"
+            :to="{ name: 'Course', params: { id: item.course_id } }"
             class="group flex flex-1 cursor-pointer items-start gap-4 no-underline"
           >
             <!-- 課程圖片 -->

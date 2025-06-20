@@ -8,7 +8,7 @@ export const getOrderList = async (): Promise<ApiResponse<Orders[]>> => {
 };
 
 // 取得單一訂單
-export const getOrder= async (orderNumber: string): Promise<ApiResponse<Orders>> => {
-  const res = await instance.get<ApiResponse<Orders>>(`/api/v1/users/orders/${orderNumber}`);
+export const getOrder= async (orderNumber: string): Promise<ApiResponse<Orders[]>> => {
+  const res = await instance.get<ApiResponse<Orders[]>>(`/api/v1/users/orders/${orderNumber}`);
   return res.data;
 };
