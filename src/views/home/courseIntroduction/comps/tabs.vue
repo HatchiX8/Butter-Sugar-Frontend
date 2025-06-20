@@ -40,7 +40,7 @@
               <faq/>
             </template>
 
-            <courseFaq v-if="activeTab === 'questions'" />
+            <courseFaq v-if="activeTab === 'questions'" :course-id="props.courseId" />
 
             <courseReview v-if="activeTab === 'reviews'" />
           </div>
@@ -83,6 +83,11 @@ const props = defineProps({
     type: Object as () => CourseData | null,
     required: false,
     default: () => null
+  },
+  courseId: {
+    type: String,
+    required: false,
+    default: ''
   }
 });
 

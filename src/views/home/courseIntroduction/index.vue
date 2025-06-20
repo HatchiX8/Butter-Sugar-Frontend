@@ -15,6 +15,7 @@
       <div class="page-container">
         <tabs
           :course-data="courseData"
+          :course-id="courseId"
           @tab-change="handleTabChange"
           @purchase="handlePurchase"
           @toggle-bookmark="handleToggleBookmark"
