@@ -16,8 +16,8 @@
       <courseSubmit :course-data="courseSubmitData" />
     </div>
   </div>
-  <button @click="preToggle">上一步</button>
-  <button @click="nextToggle">下一步</button>
+  <button @click="preToggle" class="bg-primaryDefault text-white border-none rounded-md px-4 py-3 mr-4">上一步</button>
+  <button @click="nextToggle" class="bg-primaryDefault text-white border-none rounded-md px-4 py-3 mr-4">下一步</button>
 </template>
 <script setup lang="ts">
 import { ref, onMounted, computed } from 'vue';
