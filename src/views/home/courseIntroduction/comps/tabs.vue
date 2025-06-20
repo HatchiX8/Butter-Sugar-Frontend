@@ -35,7 +35,7 @@
             <!-- 根據當前標籤顯示不同內容 -->
             <template v-if="activeTab === 'info' || activeTab === 'chapters' || activeTab === 'faq'">
               <courseDetail v-if="props.courseData" :course-data="props.courseData" />
-              <courseIntro/>
+              <courseIntro v-if="props.courseData" :course-data="props.courseData" />
               <courseChapter/>
               <faq/>
             </template>
@@ -76,13 +76,14 @@ import faq from './faq.vue';
 import coursePurchase from './coursePurchase.vue';
 import teacherIntro from './teacherIntro.vue';
 import courseReview from './courseReview.vue';
+import type { CourseData } from '@/types/course';
 import type { CartItem } from '@/api/cart/types';
 
 const props = defineProps({
   courseData: {
-    type: Object,
+    type: Object as () => CourseData | null,
     required: false,
-    default: () => ({})
+    default: () => null
   }
 });
 

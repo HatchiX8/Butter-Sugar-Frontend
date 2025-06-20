@@ -39,27 +39,29 @@ const { courseList, loading, error } = storeToRefs(courseStore);
 // 將 courseList 轉換為元件需要的格式並根據 categoryId 過濾、sortType 排序及分頁
 // TODO: 根據teacher_id 查講師名稱 & 撥課程評分
 const allCourses = computed(() => {
-  // 先轉換格式
-  const formattedCourses = courseList.value.map(course => {
-    // 將字串轉換為數字，以便排序
-    const studentsCount = parseInt(course.total_users || '0', 10);
-    
-    return {
-      link: `/home/course/${course.id}`,
-      id: course.id,
-      img: course.course_banner_imageUrl || '/src/assets/images/course/course1.jpg', // 使用 API 返回的圖片
-      title: course.course_name,
-      category_id: course.category_id,
-      teacher: '講師', // 這裡需要從 teacher_id 獲取講師名稱，暫時使用預設值
-      rating: 5.0, // API 中沒有評分欄位，使用預設值
-      students: studentsCount.toLocaleString('zh-TW'), // 加上千分位顯示
-      studentsCount, // 保存原始數字以便排序
-      hours: parseInt(course.course_hours || '0', 10),
-      price: parseInt(course.sell_price || '0', 10),
-      originPrice: parseInt(course.origin_price || '0', 10),
-      createdAt: course.created_at || '' // 保存創建時間以便排序
-    };
-  });
+  // 先過濾出已上架的課程，然後轉換格式
+  const formattedCourses = courseList.value
+    .filter(course => course.course_status === '上架')
+    .map(course => {
+      // 將字串轉換為數字，以便排序
+      const studentsCount = parseInt(course.total_users || '0', 10);
+
+      return {
+        link: `/home/course/${course.id}`,
+        id: course.id,
+        img: course.course_banner_imageUrl || '/src/assets/images/course/course1.jpg', // 使用 API 返回的圖片
+        title: course.course_name,
+        category_id: course.category_id,
+        teacher: '講師', // 這裡需要從 teacher_id 獲取講師名稱，暫時使用預設值
+        rating: 5.0, // API 中沒有評分欄位，使用預設值
+        students: studentsCount.toLocaleString('zh-TW'), // 加上千分位顯示
+        studentsCount, // 保存原始數字以便排序
+        hours: parseInt(course.course_hours || '0', 10),
+        price: parseInt(course.sell_price || '0', 10),
+        originPrice: parseInt(course.origin_price || '0', 10),
+        createdAt: course.created_at || '' // 保存創建時間以便排序
+      };
+    });
 
   // 根據選擇的類別過濾課程
   let filteredCourses = formattedCourses;
@@ -90,7 +92,7 @@ const courses = computed(() => {
   if (!props.page || !props.pageSize) {
     return allCourses.value;
   }
-  
+
   // 計算當前頁的課程
   const startIndex = (props.page - 1) * props.pageSize;
   const endIndex = startIndex + props.pageSize;

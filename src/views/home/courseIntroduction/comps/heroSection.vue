@@ -25,7 +25,8 @@ import mobileHeroLayout from './mobileHeroLayout.vue'
 import type { CartItem } from '@/api/cart/types'
 interface CourseData {
   link: string
-  id: string
+  id: number
+  uuid: string
   img: string
   title: string
   teacher: string
@@ -50,13 +51,16 @@ const cartItem: CartItem = {
   course_smallimage: props.courseData?.course_smallimage ?? ""
 }
 
-const emit = defineEmits(['purchase', 'toggle-bookmark'])
+const emit = defineEmits<{
+  purchase: [],
+  toggleBookmark: [boolean]
+}>()
 
 const handlePurchase = () => {
   emit('purchase', cartItem);
 }
 
-const handleToggleBookmark = () => {
-  emit('toggle-bookmark');
+const handleToggleBookmark = (newState: boolean) => {
+  emit('toggleBookmark', newState)
 }
 </script>
