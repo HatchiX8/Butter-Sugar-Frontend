@@ -15,6 +15,8 @@
       <div class="page-container">
         <tabs
           :course-data="courseData"
+          :course-id="courseId"
+          :teacher-id="originalCourseData?.teacher_id || ''"
           :loading="cartStore.loading"
           @tab-change="handleTabChange"
           @purchase="handlePurchase"
@@ -28,7 +30,7 @@
 </template>
 
 <script setup lang="ts">
-import { ref, computed, onMounted } from 'vue'
+import { ref, computed, onMounted, watch } from 'vue'
 import { useRoute } from 'vue-router'
 import typography from '@/components/layout/typography.vue'
 import { useCourseStore } from '@/stores/models/course/store'
@@ -112,6 +114,9 @@ const convertToCourseData = (apiCourse: courseListInfo | null): CourseData | nul
 // 保存課程收藏狀態的參考變數
 const isBookmarked = ref(false)
 
+// 保存原始 API 數據的參考變數
+const originalCourseData = ref<courseListInfo | null>(null)
+
 // 取得對應 ID 的課程資料
 const courseData = computed(() => {
   // 使用 store 的 getCourseById 方法取得原始資料
@@ -127,6 +132,13 @@ const courseData = computed(() => {
 
   return course
 })
+
+// 監聽 courseId 變化，更新原始課程數據
+watch(courseId, (newId) => {
+  if (newId) {
+    originalCourseData.value = courseStore.getCourseById(newId)
+  }
+}, { immediate: true })
 
 // 自定義載入狀態，確保資料完全載入後才顯示內容
 const isDataFetching = ref(true)
