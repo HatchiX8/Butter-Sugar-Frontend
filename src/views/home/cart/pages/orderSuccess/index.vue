@@ -34,11 +34,11 @@
           <span>{{ orderStatus }}</span>
         </div>
       </div>
-      <!-- <cartList
+      <cartList
         :cartItems="cartItems"
         :itemCount="itemCount"
         :orderDetails="true"
-      /> -->
+      />
     </div>
   </div>
 <welcomeSection/>
@@ -48,15 +48,35 @@
 import { onMounted, computed } from 'vue';
 import { useOrderStore } from '@/stores/models/orders/store';
 import welcomeSection from '@/views/home/cart/comps/welcomeSection.vue';
-// import cartList from '@/components/data/cartList.vue';
+import cartList from '@/components/data/cartList.vue';
+import { useRoute } from 'vue-router';
+import { storeToRefs } from 'pinia';
+import type { CartItem } from '@/api/cart/types';
+import type { OrderItem } from '@/api/orders/types';
 
 const formatCurrency = (value: number, currency = 'NT$'): string => `${currency} ${value.toLocaleString('en-US')}`;
 
+// 從路由取得 orderNumber
+const route  = useRoute();
+const orderNumber = route.params.orderNumber as string;
+
 // 取得訂單資料
 const orderStore = useOrderStore();
+const { orderItems, itemCount } = storeToRefs(orderStore);
+
+// 將訂單項目轉換為購物車項目格式
+const cartItems: CartItem[] = orderItems.value.map((item: OrderItem) => ({
+  course_id: item.course_id,
+  course_name: item.course_name,
+  price: item.sell_price, // 轉換重點
+  course_small_imageurl: item.course_small_imageurl,
+}));
+
 onMounted(async () => {
-  await orderStore.fetchOrders();
-  await orderStore.fetchOrder();
+  if (!orderNumber) {
+    console.error('未成功從路由取得 orderNumber');
+  }
+  await orderStore.fetchOrder(orderNumber);
 });
 
 const formatDatetime = (inputTime: string) => {
@@ -83,7 +103,7 @@ const formatDatetime = (inputTime: string) => {
 const orderInfo = computed(() => [
   { label: '訂單編號', value: orderStore.order?.order_number ?? "" },
   { label: '訂單日期', value: formatDatetime(orderStore.order?.created_at ?? "") },
-  // { label: '付款方式', value: "信用卡" },
+  { label: '付款方式', value: orderStore.order?.payway ?? "" },
   { label: '實付金額', value: formatCurrency(orderStore.order?.final_amount ?? 0) },
   { label: '課程名稱', value: orderStore.order?.course_name ?? []},
 ]);

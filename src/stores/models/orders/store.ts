@@ -1,12 +1,14 @@
 import { defineStore } from 'pinia';
 import { ref} from 'vue';
-import { getOrderList } from '@/api/orders/index';
-import type { ApiResponse, Orders } from '@/api/orders/types';
+import { getOrderList, getOrder } from '@/api/orders/index';
+import type { ApiResponse, Orders, OrderItem } from '@/api/orders/types';
 import axios from 'axios';
 
 export const useOrderStore = defineStore('orderStore', () => {
   const orders = ref<Orders[]>([]);
-  const order = ref<Orders>();
+  const order = ref<Orders | null>(null);
+  const orderItems = ref<OrderItem[]>([]);
+  const itemCount = ref<number>(0);
   const error = ref<string | null>(null);
 
   // 錯誤訊息
@@ -33,16 +35,17 @@ export const useOrderStore = defineStore('orderStore', () => {
     }
   };
 
-  // 取得訂單
-  const fetchOrder = async () => {
+  // 取得單一訂單
+  const fetchOrder = async (orderNumber: string) => {
     error.value = null;
 
     try {
-      // await getOrder();
-      // 暫時拿 orders 建立時間最新第一筆
-      order.value = [...orders.value].sort(
-        (a, b) => Number(b.created_at) - Number(a.created_at)
-      )[0];
+      const res: ApiResponse<Orders> = await getOrder(orderNumber);
+      if (res.data !== undefined) {
+        order.value = res.data;
+        orderItems.value = order.value?.order_items ?? [];
+        itemCount.value = orderItems.value.length;
+      }
     } catch (err) {
       error.value = getErrorMessage(err);
     }
@@ -53,6 +56,8 @@ export const useOrderStore = defineStore('orderStore', () => {
     error,
     orders,
     order,
+    orderItems,
+    itemCount,
 
     // actions
     fetchOrders,
