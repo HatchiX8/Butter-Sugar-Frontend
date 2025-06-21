@@ -4,7 +4,7 @@
       class="mt-20"
       :items="[
         { label: '首頁', to: '/' },
-        { label: '我的課程', to: '/explore' },
+        { label: '我的課程', to: '/home/my-course?page=1' },
         { label: '職人級！一次掌握歐式麵包的高水量與發酵秘訣' },
       ]"
     />
