@@ -70,7 +70,7 @@
             <div :class="[isUserDropdownOpen ? 'i-ion:chevron-up' : 'i-ion:chevron-down','text-primaryDefault',]"></div>
           </div>
           <div v-if="isUserDropdownOpen" class="pl-8 space-y-2">
-            <UserDropdownMenu />
+            <userDropdownMenu />
           </div>
         </template>
 
@@ -90,7 +90,7 @@ import { userAction } from '@/components/index';
 import { useCartStore } from '@/stores/models/cart/store';
 import { useCartUIStore } from '@/stores/models/cart/uiStore';
 import { useUserStore } from '@/stores/models/index';
-import UserDropdownMenu from './UserDropdownMenu.vue';
+import userDropdownMenu from './userDropdownMenu.vue';
 
 // 狀態
 const isScrolled = ref(false);
