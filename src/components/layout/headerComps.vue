@@ -1,5 +1,5 @@
 <template>
-  <div :class="['fixed top-0 left-0 w-full z-50 transition-all duration-300', isScrolled ? 'bg-neutral_600/90 backdrop-blur' : 'bg-neutral_600']">Add commentMore actions
+  <div :class="['fixed top-0 left-0 w-full z-50 transition-all duration-300', isScrolled ? 'bg-neutral_600/90 backdrop-blur' : 'bg-neutral_600']">
     <header class="font-['Noto Serif TC'] border-b-1 border-b-solid border-white/25% flex h-20 items-center px-6 z-20 relative">
       <div class="mx-auto flex w-full max-w-7xl items-center justify-between">
         <!-- LOGO -->
@@ -47,7 +47,7 @@
     </header>
 
     <!-- 手機版選單區 -->
-    <template v-if="isMobileMenuOpen">Add commentMore actions
+    <template v-if="isMobileMenuOpen">
       <!-- ★ 透明遮罩：覆蓋整頁；點它就關閉 -->
       <div class="fixed inset-0 z-40 md:hidden bg-black/20" @click="isMobileMenuOpen = false"></div>
       <!-- 選單本體：加定位 & @click.stop -->
