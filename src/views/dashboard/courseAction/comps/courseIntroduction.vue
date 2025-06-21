@@ -198,30 +198,26 @@
 
     <button @click="modelValue = true">建立課程</button>
     <div class="w-40% mb-5">
-      <p>Banner圖片</p>
-      <!-- <div class="flex flex-col">
-        <div v-if="imgUrl !== ''">
-          <img :src="imgUrl" alt="課程圖片預覽" class="w-50 h-auto rounded-lg shadow" />
+      <p>講義</p>
+      <div class="flex items-center justify-between">
+        <!-- 左邊：已上傳影片 (這邊你之後可以放影片預覽 或 file name 等) -->
+        <div v-show="isFile" class="mr-4 flex-1">
+          <n-upload
+            ref="fileUploadRef"
+            accept="application/pdf,application/vnd.ms-powerpoint,application/vnd.openxmlformats-officedocument.presentationml.presentation,application/vnd.ms-excel,application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"
+            :max="1"
+            :custom-request="customFileUpload"
+            :show-file-list="true"
+            :show-trigger="false"
+            @remove="handleFileRemove"
+          />
         </div>
-        <div class="flex items-center justify-between">
-          <div v-show="isImg" class="mr-4 flex-1">
-            <n-upload
-              ref="imgUploadRef"
-              accept="image/*"
-              :max="1"
-              :custom-request="customImgUpload"
-              :show-file-list="true"
-              :show-trigger="false"
-              @remove="handleImgRemove"
-            />
-          </div>
-          <div v-show="!isImg">尚未選擇圖片</div>
-
-          <div>
-            <n-button @click="triggerImgUpload">上傳圖片</n-button>
-          </div>
+        <div v-show="!isFile">尚未選擇檔案</div>
+        <!-- 右邊：上傳按鈕 -->
+        <div>
+          <n-button @click="triggerFileUpload">上傳檔案</n-button>
         </div>
-      </div> -->
+      </div>
     </div>
   </div>
   <titleModal
@@ -246,6 +242,10 @@ import {
   apiDelete_DeleteImgBanner,
   apiPost_AddImgDescription,
   apiDelete_DeleteImgDescription,
+  apiPost_AddTrailer,
+  apiDelete_DeleteTrailer,
+  apiPost_AddHandouts,
+  apiDelete_DeleteHandouts,
 } from '@/views/dashboard/api/index';
 
 // -----------emit&props-----------
@@ -330,14 +330,36 @@ const triggerVideoUpload = () => {
   }
 };
 
-const customVideoUpload = () => {
-  console.log('影片後續API函式');
-  isVideo.value = true;
+const customVideoUpload = async ({
+  file,
+  onFinish,
+  onError,
+}: {
+  file: { file: File };
+  onFinish: () => void;
+  onError: (err: Error) => void;
+}) => {
+  try {
+    const result = await apiPost_AddTrailer('95bcf853-e86f-4cf6-8d7a-8d00fff0caad', file.file); // 你前面存好的課程 id
+    // imgUrl.value = result.data.imageUrl; // 如果你想預覽可以設這個
+    console.log('檢視寫入', result);
+
+    isVideo.value = true;
+    onFinish(); // 通知 n-upload 成功
+  } catch (err) {
+    onError(err as Error); // 通知 n-upload 失敗
+  }
 };
 
 const handleVideoRemove = () => {
   console.log('使用者移除影片');
+  deleteTrailer();
   isVideo.value = false;
+};
+
+const deleteTrailer = async () => {
+  const res = await apiDelete_DeleteTrailer('95bcf853-e86f-4cf6-8d7a-8d00fff0caad');
+  console.log('刪除預告片成功', res);
 };
 // -----------------------------
 
@@ -354,14 +376,36 @@ const triggerFileUpload = () => {
   }
 };
 
-const customFileUpload = () => {
-  console.log('圖片後續API函式');
-  isFile.value = true;
+const customFileUpload = async ({
+  file,
+  onFinish,
+  onError,
+}: {
+  file: { file: File };
+  onFinish: () => void;
+  onError: (err: Error) => void;
+}) => {
+  try {
+    const result = await apiPost_AddHandouts('95bcf853-e86f-4cf6-8d7a-8d00fff0caad', file.file); // 你前面存好的課程 id
+    // imgUrl.value = result.data.imageUrl; // 如果你想預覽可以設這個
+    console.log('檢視寫入', result);
+
+    isFile.value = true;
+    onFinish(); // 通知 n-upload 成功
+  } catch (err) {
+    onError(err as Error); // 通知 n-upload 失敗
+  }
 };
 
 const handleFileRemove = () => {
   console.log('使用者移除檔案');
+  deleteHandouts();
   isFile.value = false;
+};
+
+const deleteHandouts = async () => {
+  const res = await apiDelete_DeleteHandouts('95bcf853-e86f-4cf6-8d7a-8d00fff0caad');
+  console.log('刪除講義成功', res);
 };
 // -----------------------------
 

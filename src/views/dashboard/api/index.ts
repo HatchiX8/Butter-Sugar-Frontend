@@ -96,6 +96,52 @@ export const apiDelete_DeleteImgDescription = async (courseId: string) => {
 };
 // ----------------------------------
 
+// ----------預告片API----------
+// 新增
+export const apiPost_AddTrailer = async (courseId: string, file: File) => {
+  const formData = new FormData();
+  formData.append('trailer', file);
+
+  const res = await axiosInstance.post<{ data: { video: string } }>(
+    `/api/v1/course/${courseId}/upload/course-trailer`,
+    formData,
+    {
+      headers: { 'Content-Type': 'multipart/form-data' },
+    }
+  );
+
+  return res.data;
+};
+// 刪除
+export const apiDelete_DeleteTrailer = async (courseId: string) => {
+  const res = await axiosInstance.delete(`/api/v1/course/${courseId}/upload/course-trailer`);
+  return res.data;
+};
+// ----------------------------------
+
+// ----------講義API----------
+// 新增
+export const apiPost_AddHandouts = async (courseId: string, file: File) => {
+  const formData = new FormData();
+  formData.append('handouts', file);
+
+  const res = await axiosInstance.post<{ data: { url: string } }>(
+    `/api/v1/course/${courseId}/upload/course-handouts`,
+    formData,
+    {
+      headers: { 'Content-Type': 'multipart/form-data' },
+    }
+  );
+
+  return res.data;
+};
+// 刪除
+export const apiDelete_DeleteHandouts = async (courseId: string) => {
+  const res = await axiosInstance.delete(`/api/v1/course/${courseId}/upload/course-handouts`);
+  return res.data;
+};
+// ----------------------------------
+
 // export const apiFunctionName = async (postData: PostDataType) => {
 //   const res = await axios.post<ResponseType>('/your/api/path', postData);
 //   return res.data;
