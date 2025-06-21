@@ -16,7 +16,7 @@
         <tabs
           :course-data="courseData"
           :course-id="courseId"
-          :teacher-id="originalCourseData?.teacher_id || ''"
+          :teacher-id="courseData?.teacher_id || ''"
           @tab-change="handleTabChange"
           @purchase="handlePurchase"
           @toggle-bookmark="handleToggleBookmark"
@@ -31,6 +31,7 @@ import { ref, computed, onMounted, watch } from 'vue'
 import { useRoute } from 'vue-router'
 import typography from '@/components/layout/typography.vue'
 import { useCourseStore } from '@/stores/models/course/store'
+import { useTeacherStore } from '@/stores/models/teacher/store'
 import { useBookmarkStore } from '@/stores/models/bookmark'
 import type { courseListInfo, CourseData, Teacher } from '@/types/course'
 
@@ -48,6 +49,10 @@ const courseId = computed(() => route.params.id as string)
 const courseStore = useCourseStore()
 const { loading, fetchCourses } = courseStore
 
+// 使用 teacher store
+const teacherStore = useTeacherStore()
+const { fetchTeacher } = teacherStore
+
 // 使用 bookmark store
 const bookmarkStore = useBookmarkStore()
 
@@ -60,8 +65,13 @@ const convertToCourseData = (apiCourse: courseListInfo | null): CourseData | nul
   // 取得教師暱稱
   let teacherName = '未知教師';
 
+  // 嘗試從 teacherStore 獲取教師資訊
+  const cachedTeacher = teacherStore.getTeacherById(apiCourse.teacher_id);
+  if (cachedTeacher && cachedTeacher.nickname) {
+    teacherName = cachedTeacher.nickname;
+  }
   // 如果 teacher 是物件且有 nickname 屬性
-  if (apiCourse.teacher && typeof apiCourse.teacher === 'object' && apiCourse.teacher !== null) {
+  else if (apiCourse.teacher && typeof apiCourse.teacher === 'object' && apiCourse.teacher !== null) {
     const teacherObj = apiCourse.teacher as Teacher;
     if (teacherObj.nickname) {
       teacherName = teacherObj.nickname;
@@ -71,10 +81,6 @@ const convertToCourseData = (apiCourse: courseListInfo | null): CourseData | nul
   else if (typeof apiCourse.teacher === 'string' && apiCourse.teacher) {
     teacherName = apiCourse.teacher;
   }
-  // 如果沒有 teacher 資訊，使用 teacher_id
-  else if (apiCourse.teacher_id) {
-    teacherName = apiCourse.teacher_id;
-  }
 
   return {
     link: `/home/course/${apiCourse.id}`,
@@ -83,6 +89,7 @@ const convertToCourseData = (apiCourse: courseListInfo | null): CourseData | nul
     img: apiCourse.course_banner_imageUrl || '/src/assets/images/course/course1.jpg',
     title: apiCourse.course_name,
     teacher: teacherName, // 使用教師暱稱
+    teacher_id: apiCourse.teacher_id || '', // 添加教師 ID，確保傳遞給子組件
     description: (apiCourse.course_banner_description || apiCourse.course_description || '').trim(),
     rating: 5.0, // 假設評分，API 中可能沒有此欄位
     students: parseInt(apiCourse.total_users || '0'),
@@ -110,13 +117,13 @@ const courseData = computed(() => {
   const apiCourse = courseStore.getCourseById(courseId.value)
   // 轉換為組件期望的格式
   const course = convertToCourseData(apiCourse)
-  
+
   // 如果課程存在，設置收藏狀態
   if (course && course.uuid) {
     // 使用獨立的 ref 變數追蹤收藏狀態
     course.is_bookmark = isBookmarked.value
   }
-  
+
   return course
 })
 
@@ -136,14 +143,18 @@ onMounted(async () => {
   try {
     // 初始化書籤狀態
     bookmarkStore.initializeFromLocalStorage()
-    
+
     // 無論如何都重新獲取課程資料，確保資料是最新的
     await fetchCourses()
-    
+
+    // 獲取課程數據後，嘗試獲取講師數據
+    if (originalCourseData.value && originalCourseData.value.teacher_id) {
+      await fetchTeacher(originalCourseData.value.teacher_id);
+    }
+
     // 課程資料載入完成後，設置初始收藏狀態
     if (courseId.value) {
       isBookmarked.value = bookmarkStore.isBookmarked(courseId.value)
-      console.log(`初始收藏狀態: ${isBookmarked.value} for ${courseId.value}`)
     }
   } finally {
     // 資料獲取完成後，設置載入狀態為 false
@@ -167,15 +178,13 @@ const handleToggleBookmark = (newState?: boolean) => {
     if (typeof newState === 'boolean') {
       // 直接使用子組件傳來的新狀態
       isBookmarked.value = newState
-      console.log(`更新本地收藏狀態: ${newState} for ${course.uuid}`)
-    } 
+    }
     // 只有當此方法直接從頁面調用且沒有傳入 newState 時，才調用 toggleBookmark
     else if (typeof newState === 'undefined') {
       // 僅在直接從本頁面觸發且沒有提供狀態時才切換
       const toggledState = bookmarkStore.toggleBookmark(course.uuid)
       // 更新本地狀態
       isBookmarked.value = toggledState
-      console.log(`直接切換收藏狀態: ${toggledState} for ${course.uuid}`)
     }
   }
 }

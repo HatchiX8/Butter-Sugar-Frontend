@@ -23,7 +23,7 @@
       </div>
     </div>
     <!-- 精選課程 -->
-    <typography variant="h3" font-type="title" underline class="mb-8">精選課程</typography>
+    <typography variant="h3" font-type="title" underline class="text-white my-8">精選課程</typography>
     <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
       <courseCard v-for="course in courses" :key="course.id" v-bind="course" />
     </div>

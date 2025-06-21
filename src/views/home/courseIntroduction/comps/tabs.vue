@@ -57,9 +57,9 @@
             />
 
             <!-- 講師介紹區塊 -->
-            <teacherIntro 
-              class="mt-6" 
-              :teacher-id="props.teacherId" 
+            <teacherIntro
+              class="mt-6"
+              :teacher-id="props.teacherId"
             />
           </div>
         </div>
@@ -107,13 +107,10 @@ const scrollToSection = (sectionId: string) => {
   setTimeout(() => {
     const element = document.getElementById(sectionId);
     if (element) {
-      // 获取元素的位置信息
       const rect = element.getBoundingClientRect();
-      // 计算滚动位置，考虑页面顶部可能的固定导航栏
       const scrollTop = window.pageYOffset || document.documentElement.scrollTop;
-      const offsetTop = rect.top + scrollTop - 80; // 减去导航栏高度（假设为80px）
+      const offsetTop = rect.top + scrollTop - 80;
 
-      // 使用 window.scrollTo 实现平滑滚动，兼容性更好
       window.scrollTo({
         top: offsetTop,
         behavior: 'smooth'
