@@ -1,5 +1,5 @@
 <template>
-  <div class="w-full max-w-sm mx-auto cursor-pointer flex flex-col">
+  <div class="w-full max-w-sm mx-auto cursor-pointer flex flex-col" @click="handleClick">
     <!-- 圖片區塊 -->
     <div class="group relative overflow-hidden aspect-[4/3] transition-shadow duration-300 group-hover:shadow-lg">
       <img
@@ -45,8 +45,10 @@
 
 <script setup lang="ts">
 import { defineProps } from 'vue';
+import { useRouter } from 'vue-router';
 
-defineProps<{
+const props = defineProps<{
+  courseId: string
   courseImgUrl: string
   courseImgAlt: string
   courseTitle: string
@@ -54,6 +56,11 @@ defineProps<{
   courseRank: number
   courseStudentSum: number
 }>();
+
+const router = useRouter();
+const handleClick = () => {
+  router.push({ name: 'Course', params: { id: props.courseId } });
+};
 
 const formatNumberFixed = (value: unknown, fixedNum: number = 1): string => {
   const num = Number(value);

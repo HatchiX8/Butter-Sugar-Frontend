@@ -1,5 +1,5 @@
 <template>
-  <div class="w-full max-w-80 h-auto p-6 mx-auto cursor-pointer transition-colors duration-300 hover:bg-white/10%">
+  <div class="w-full max-w-80 h-auto p-6 mx-auto transition-colors duration-300 hover:bg-white/10%">
     <div>
       <h4 class="clamped-text-1 mb-6 text-4.5 font-bold text-white leading-normal">{{ courseTitle }}</h4>
       <p class="clamped-text-4 h-16 text-3.5 text-neutral_200 leading-tight">{{ review }}</p>

@@ -54,12 +54,14 @@
               @purchase="handlePurchase"
               @add-to-cart="handleAddToCart"
               @toggle-bookmark="handleToggleBookmark"
+              @go-to-teacher="goToTeacher"
             />
 
             <!-- 講師介紹區塊 -->
-            <teacherIntro 
-              class="mt-6" 
-              :teacher-id="props.teacherId" 
+            <teacherIntro
+              class="mt-6"
+              :teacher-id="props.teacherId"
+              @go-to-teacher="goToTeacher"
             />
           </div>
         </div>
@@ -80,6 +82,7 @@ import coursePurchase from './coursePurchase.vue';
 import teacherIntro from './teacherIntro.vue';
 import courseReview from './courseReview.vue';
 import type { CourseData } from '@/types/course';
+import type { CartItem } from '@/api/cart/types';
 
 const props = defineProps({
   courseData: {
@@ -107,13 +110,10 @@ const scrollToSection = (sectionId: string) => {
   setTimeout(() => {
     const element = document.getElementById(sectionId);
     if (element) {
-      // 获取元素的位置信息
       const rect = element.getBoundingClientRect();
-      // 计算滚动位置，考虑页面顶部可能的固定导航栏
       const scrollTop = window.pageYOffset || document.documentElement.scrollTop;
-      const offsetTop = rect.top + scrollTop - 80; // 减去导航栏高度（假设为80px）
+      const offsetTop = rect.top + scrollTop - 80;
 
-      // 使用 window.scrollTo 实现平滑滚动，兼容性更好
       window.scrollTo({
         top: offsetTop,
         behavior: 'smooth'
@@ -122,7 +122,14 @@ const scrollToSection = (sectionId: string) => {
   }, 100);
 };
 
-const emit = defineEmits(['tab-change', 'purchase', 'toggle-bookmark', 'add-to-cart']);
+const emit = defineEmits(['tab-change', 'purchase', 'toggle-bookmark', 'add-to-cart', 'go-to-teacher']);
+
+const cartItem: CartItem = {
+  course_id: props.courseData?.uuid ?? '',
+  course_name: props.courseData?.title ?? '',
+  price: props.courseData?.price ?? 0,
+  course_small_imageurl: props.courseData?.course_small_imageUrl ?? ''
+}
 
 const handleTabChange = (tabName: string) => {
   activeTab.value = tabName;
@@ -131,7 +138,7 @@ const handleTabChange = (tabName: string) => {
 };
 
 const handlePurchase = () => {
-  emit('purchase');
+  emit('purchase', cartItem);
 };
 
 const handleToggleBookmark = () => {
@@ -139,9 +146,12 @@ const handleToggleBookmark = () => {
 };
 
 const handleAddToCart = () => {
-  emit('add-to-cart');
+  emit('add-to-cart', cartItem);
 };
 
+const goToTeacher = () => {
+  emit('go-to-teacher', props.courseData?.teacher_id ?? '');
+};
 </script>
 
 <style scoped>

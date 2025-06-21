@@ -96,10 +96,8 @@ export const useCourseRatingStore = defineStore('courseRatingStore', () => {
         const apiRatings = res.data.data as CourseRatingResponse[];
         const newRatings = apiRatings.filter(rating => !ratings.value.some(r => r.id === rating.id));
         ratings.value = [...ratings.value, ...newRatings];
-        console.log('Ratings loaded:', ratings.value.length);
       }
     } catch (err) {
-      console.error('Error fetching ratings:', err);
       error.value = err instanceof Error ? err.message : '無法取得課程評價資料';
     } finally {
       loading.value = false;

@@ -6,7 +6,7 @@
         { label: '教師會員中心', to: '/teacher/memberCenter/revenue' },
       ]"
     />
-    <typography variant="h2" font-type="title" underline class="mb-8">教師會員中心</typography>
+    <typography variant="h2" font-type="title" underline class="my-8 text-white">教師會員中心</typography>
     <div class="p-4">
       <!-- 圓餅圖 -->
       <div class="grid grid-cols-1 md:grid-cols-3 gap-4 mb-4">
