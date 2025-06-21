@@ -4,7 +4,7 @@
       class="mt-30"
       :items="[
         { label: '首頁', to: '/' },
-        { label: '探索課程', to: '/explore' },
+        { label: '探索課程', to: '/explore', disabled: true },
         { label: '所有課程' },
       ]"
     />
@@ -111,13 +111,13 @@ watch(
         // 否則設置為第一頁
         query.page = '1';
       }
-      
+
       // 更新路由
       router.replace({
         path: route.path,
         query
       });
-      
+
       // 更新當前頁碼
       currentPage.value = 1;
     }
