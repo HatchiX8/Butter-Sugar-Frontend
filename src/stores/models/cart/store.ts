@@ -1,7 +1,13 @@
 import { defineStore } from 'pinia';
 import { ref, computed } from 'vue';
 import type { ApiResponse, Cart, CartItem, CheckoutPayload } from '@/api/cart/types';
-import { getCartList, addCartItem, removeCartItem, mergeCartList, checkoutCart } from '@/api/cart/index';
+import {
+  getCartList,
+  addCartItem,
+  removeCartItem,
+  mergeCartList,
+  checkoutCart,
+} from '@/api/cart/index';
 import { useUserStore } from '@/stores/models/user/store';
 import axios from 'axios';
 
@@ -21,9 +27,7 @@ export const useCartStore = defineStore('cart', () => {
 
   // 根據登入狀態自動決定使用哪一組資料
   const itemCount = computed(() =>
-    model.value === 'api'
-      ? (serverItemCount.value ?? 0)
-      : cartItems.value.length
+    model.value === 'api' ? (serverItemCount.value ?? 0) : cartItems.value.length
   );
   const totalPrice = computed(() =>
     model.value === 'api'
@@ -38,7 +42,7 @@ export const useCartStore = defineStore('cart', () => {
   const getErrorMessage = (err: unknown): string => {
     if (axios.isAxiosError(err)) {
       // 優先取後端回傳的 message
-      const msg = err.response?.data?.message
+      const msg = err.response?.data?.message;
       if (typeof msg === 'string') return msg;
     }
     if (typeof err === 'string') return err;
@@ -67,7 +71,7 @@ export const useCartStore = defineStore('cart', () => {
         cartItems.value = localCart ? JSON.parse(localCart) : [];
       }
     } catch (err) {
-        error.value = getErrorMessage(err);
+      error.value = getErrorMessage(err);
     } finally {
       loading.value = false;
     }
@@ -83,7 +87,7 @@ export const useCartStore = defineStore('cart', () => {
         await getCart(); // 新增後重新同步
         return { success: true, message: res.message };
       } else {
-        const exists = cartItems.value.some(i => i.course_id === item.course_id);
+        const exists = cartItems.value.some((i) => i.course_id === item.course_id);
         if (!exists) {
           cartItems.value.push(item);
           saveToLocalStorage();
@@ -92,9 +96,9 @@ export const useCartStore = defineStore('cart', () => {
         return { success: false, message: '此課程已存在購物車' };
       }
     } catch (err) {
-        const msg = getErrorMessage(err);
-        error.value = msg;
-        return { success: false, message: msg };
+      const msg = getErrorMessage(err);
+      error.value = msg;
+      return { success: false, message: msg };
     } finally {
       loading.value = false;
     }
@@ -111,14 +115,14 @@ export const useCartStore = defineStore('cart', () => {
         await getCart(); // 刪除後重新同步
         return { success: true, message: res.message };
       } else {
-        cartItems.value = cartItems.value.filter(i => i.course_id !== id);
+        cartItems.value = cartItems.value.filter((i) => i.course_id !== id);
         saveToLocalStorage();
         return { success: true, message: '已從購物車移除課程' };
       }
     } catch (err) {
-        const msg = getErrorMessage(err);
-        error.value = msg;
-        return { success: false, message: msg };
+      const msg = getErrorMessage(err);
+      error.value = msg;
+      return { success: false, message: msg };
     } finally {
       loading.value = false;
     }
@@ -139,7 +143,7 @@ export const useCartStore = defineStore('cart', () => {
         localStorage.removeItem('cart');
       }
     } catch (err) {
-        error.value = getErrorMessage(err);
+      error.value = getErrorMessage(err);
     } finally {
       loading.value = false;
     }

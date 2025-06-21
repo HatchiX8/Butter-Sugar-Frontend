@@ -14,12 +14,36 @@
         <div class="text-4 max-h-[60vh] overflow-y-auto leading-normal">
           <slot />
           <div class="mt-2">{{ detail }}</div>
-          <baseInput placeholder="請輸入標題" v-model="inputValue" @update:modelValue="emitInput" />
+          <baseInput
+            v-show="!showSelect"
+            placeholder="請輸入標題"
+            v-model="inputValue"
+            @update:modelValue="emitInput"
+          />
+
+          <n-select
+            v-show="showSelect"
+            v-model:value="selectValue"
+            :options="options"
+            placeholder="請選擇類別"
+          />
         </div>
         <template #footer v-if="showFooter">
           <div class="mt-4 flex justify-end gap-2">
-            <baseButton :label="cancelText" @click="onCancel" />
-            <baseButton :label="confirmText" type="primary" @click="onConfirm" />
+            <baseButton :label="cancelText" @click="() => emit('update:modelValue', false)" />
+            <baseButton
+              v-show="!showSelect"
+              :label="confirmText"
+              type="primary"
+              @click="nextSelect"
+            />
+            <baseButton
+              :disabled="!selectValue"
+              v-show="showSelect"
+              :label="confirmText"
+              type="primary"
+              @click="submitType"
+            />
           </div>
         </template>
       </n-card>
@@ -32,6 +56,7 @@ import { ref, watch } from 'vue';
 import { hexToRgba, themeColors } from '@/utils';
 import { baseButton, baseInput } from '@/components/index.ts';
 
+// -----------props&emit-----------
 interface Props {
   modelValue: boolean;
   title?: string;
@@ -40,7 +65,7 @@ interface Props {
   confirmText?: string;
   cancelText?: string;
   closable?: boolean;
-  onConfirm?: () => void;
+  isFirst?: boolean;
 }
 
 const props = withDefaults(defineProps<Props>(), {
@@ -50,41 +75,64 @@ const props = withDefaults(defineProps<Props>(), {
   confirmText: '確定',
   cancelText: '取消',
   closable: true,
-  onConfirm: undefined,
+  isFirst: true,
 });
 
 const emit = defineEmits<{
   (e: 'update:modelValue', value: boolean): void;
   (e: 'update:title', value: string): void;
-  (e: 'confirm'): void;
-  (e: 'cancel'): void;
+  (e: 'update:type', value: number): void;
 }>();
 
-const show = ref(props.modelValue);
+// --------------------------------
 
+// -----------彈跳視窗-----------
+const show = ref(props.modelValue);
+const showSelect = ref(false);
+// 因為需要內部關閉視窗，所以採用雙監聽方式
+watch(
+  () => props.modelValue,
+  (val) => (show.value = val)
+);
+// 外部傳進來時 → 同步到內部
+watch(show, (val) => emit('update:modelValue', val)); // 內部操作時 → 通知外部更新
+// ------------------------------
+
+// -----------內部關閉-----------
+
+const nextSelect = () => {
+  // 輸入標題後傳出更新標題訊號並且切換顯示下拉選單
+  console.log('觸發', inputValue.value);
+
+  emit('update:title', inputValue.value);
+  showSelect.value = true;
+};
+
+const submitType = () => {
+  // 傳出select訊號並關閉彈窗
+  emit('update:type', selectValue.value);
+  emit('update:modelValue', false);
+};
+// ------------------------------
+
+// -----------input-----------
 const inputValue = ref('');
 
 const emitInput = (value: string) => {
   emit('update:title', value); // 傳給父層
 };
 
-watch(
-  () => props.modelValue,
-  (val) => (show.value = val)
-); // 外部傳進來時 → 同步到內部
-watch(show, (val) => emit('update:modelValue', val)); // 內部操作時 → 通知外部更新
+// ----------------------------
 
-const onConfirm = () => {
-  props.onConfirm?.();
-  emit('confirm');
-  show.value = false;
-};
+// -----------下拉選單-----------
+const options = [
+  { label: '麵包', value: 1 },
+  { label: '蛋糕', value: 2 },
+  { label: '餅乾', value: 3 },
+];
+const selectValue = ref();
 
-const onCancel = () => {
-  emit('cancel');
-  show.value = false;
-};
-
+// -----------------------------
 const colors = themeColors.colors;
 const themeOverrides = {
   Card: {

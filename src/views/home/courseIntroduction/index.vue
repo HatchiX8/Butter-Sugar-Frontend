@@ -16,7 +16,7 @@
         <tabs
           :course-data="courseData"
           :course-id="courseId"
-          :teacher-id="originalCourseData?.teacher_id || ''"
+          :teacher-id="courseData?.teacher_id || ''"
           :loading="cartStore.loading"
           @tab-change="handleTabChange"
           @purchase="handlePurchase"
@@ -160,6 +160,10 @@ onMounted(async () => {
     // 無論如何都重新獲取課程資料，確保資料是最新的
     await fetchCourses()
 
+    // 獲取課程數據後，嘗試獲取講師數據
+    if (originalCourseData.value && originalCourseData.value.teacher_id) {
+      await fetchTeacher(originalCourseData.value.teacher_id);
+    }
     // 課程資料載入完成後，設置初始收藏狀態
     if (courseId.value) {
       isBookmarked.value = bookmarkStore.isBookmarked(courseId.value)
@@ -209,7 +213,6 @@ const handleToggleBookmark = (newState?: boolean) => {
     if (typeof newState === 'boolean') {
       // 直接使用子組件傳來的新狀態
       isBookmarked.value = newState
-      console.log(`更新本地收藏狀態: ${newState} for ${course.uuid}`)
     }
     // 只有當此方法直接從頁面調用且沒有傳入 newState 時，才調用 toggleBookmark
     else if (typeof newState === 'undefined') {
