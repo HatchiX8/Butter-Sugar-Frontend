@@ -1,5 +1,5 @@
 <template>
-  <div :class="['fixed top-0 left-0 w-full z-50 transition-all duration-300', isScrolled ? 'bg-neutral_600/90 backdrop-blur' : 'bg-neutral_600']">Add commentMore actions
+  <div :class="['fixed top-0 left-0 w-full z-50 transition-all duration-300', isScrolled ? 'bg-neutral_600/90 backdrop-blur' : 'bg-neutral_600']">
     <header class="font-['Noto Serif TC'] border-b-1 border-b-solid border-white/25% flex h-20 items-center px-6 z-20 relative">
       <div class="mx-auto flex w-full max-w-7xl items-center justify-between">
         <!-- LOGO -->
@@ -9,7 +9,9 @@
 
         <!-- 桌面版 nav -->
         <nav class="hidden md:flex items-center gap-4 max-w-[596px]">
-          <a href="#" class="p-2 text-white no-underline">探索課程</a>
+          <router-link to="/home/course-info" class="p-2 text-white no-underline">
+            探索課程
+          </router-link>
           <div class="relative flex items-center">
             <baseInput type="text" placeholder="輸入關鍵字搜尋" class="w-75 h-12 leading-12" />
             <div class="i-ion:search-outline absolute right-2 top-1/2 -translate-y-1/2 cursor-pointer text-5 text-neutral_300"></div>
@@ -45,7 +47,7 @@
     </header>
 
     <!-- 手機版選單區 -->
-    <template v-if="isMobileMenuOpen">Add commentMore actions
+    <template v-if="isMobileMenuOpen">
       <!-- ★ 透明遮罩：覆蓋整頁；點它就關閉 -->
       <div class="fixed inset-0 z-40 md:hidden bg-black/20" @click="isMobileMenuOpen = false"></div>
       <!-- 選單本體：加定位 & @click.stop -->
