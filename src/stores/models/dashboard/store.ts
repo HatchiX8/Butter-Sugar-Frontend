@@ -45,5 +45,9 @@ export const useDashboardStore = defineStore('dashboardStore', () => {
   };
   // -----------------------------------
 
+  // ----------上傳課程圖片API----------
+
+  // ----------------------------------
+
   return { addTitle, addCategory };
 });

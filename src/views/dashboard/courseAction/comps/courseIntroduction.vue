@@ -44,8 +44,60 @@
           <n-input type="text" placeholder="請輸入課程描述" class="bg-black focus:outline-none" />
         </div>
         <div class="mb-5">
+          <!-- banner圖片 -->
+          <p>Banner圖片</p>
+          <div class="flex flex-col">
+            <!-- 左邊：已上傳影片 (這邊你之後可以放影片預覽 或 file name 等) -->
+            <div v-if="imgBannerUrl !== ''">
+              <img :src="imgBannerUrl" alt="課程圖片預覽" class="w-50 h-auto rounded-lg shadow" />
+            </div>
+            <div class="flex items-center justify-between">
+              <div v-show="isImgBanner" class="mr-4 flex-1">
+                <n-upload
+                  ref="imgBannerUploadRef"
+                  accept="image/*"
+                  :max="1"
+                  :custom-request="customImgBannerUpload"
+                  :show-file-list="true"
+                  :show-trigger="false"
+                  @remove="handleImgBannerRemove"
+                />
+              </div>
+              <div v-show="!isImg">尚未選擇Banner圖片</div>
+              <!-- 右邊：上傳按鈕 -->
+              <div>
+                <n-button @click="triggerImgBannerUpload">上傳Banner圖片</n-button>
+              </div>
+            </div>
+          </div>
+        </div>
+        <!-- 課程封面圖片 -->
+        <div class="mb-5">
           <p>課程圖片</p>
-          <div class="h-50 w-50 bg-yellow-900">圖片內容</div>
+          <div class="flex flex-col">
+            <!-- 左邊：已上傳影片 (這邊你之後可以放影片預覽 或 file name 等) -->
+            <div v-if="imgUrl !== ''">
+              <img :src="imgUrl" alt="課程圖片預覽" class="w-50 h-auto rounded-lg shadow" />
+            </div>
+            <div class="flex items-center justify-between">
+              <div v-show="isImg" class="mr-4 flex-1">
+                <n-upload
+                  ref="imgUploadRef"
+                  accept="image/*"
+                  :max="1"
+                  :custom-request="customImgUpload"
+                  :show-file-list="true"
+                  :show-trigger="false"
+                  @remove="handleImgRemove"
+                />
+              </div>
+              <div v-show="!isImg">尚未選擇圖片</div>
+              <!-- 右邊：上傳按鈕 -->
+              <div>
+                <n-button @click="triggerImgUpload">上傳圖片</n-button>
+              </div>
+            </div>
+          </div>
         </div>
 
         <div class="mb-5">
@@ -55,8 +107,34 @@
         <div class="mb-5">
           <p>課程簡介說明圖片</p>
           <div class="mb-5 flex gap-3">
-            <div class="w-50 h-40 bg-yellow-900">圖片內容</div>
-            <div class="w-50 h-40 bg-yellow-900">圖片內容</div>
+            <div class="flex flex-col">
+              <!-- 左邊：已上傳影片 (這邊你之後可以放影片預覽 或 file name 等) -->
+              <div v-if="imgDescriptionUrl !== ''">
+                <img
+                  :src="imgDescriptionUrl"
+                  alt="課程簡介圖片預覽"
+                  class="w-50 h-auto rounded-lg shadow"
+                />
+              </div>
+              <div class="flex items-center justify-between">
+                <div v-show="isImgDescription" class="mr-4 flex-1">
+                  <n-upload
+                    ref="imgDescriptionUploadRef"
+                    accept="image/*"
+                    :max="1"
+                    :custom-request="customImgDescriptionUpload"
+                    :show-file-list="true"
+                    :show-trigger="false"
+                    @remove="handleImgDescriptionRemove"
+                  />
+                </div>
+                <div v-show="!isImgDescription">尚未選擇簡介圖片</div>
+                <!-- 右邊：上傳按鈕 -->
+                <div>
+                  <n-button @click="triggerImgDescriptionUpload">上傳簡介圖片</n-button>
+                </div>
+              </div>
+            </div>
           </div>
         </div>
 
@@ -119,6 +197,32 @@
     </div>
 
     <button @click="modelValue = true">建立課程</button>
+    <div class="w-40% mb-5">
+      <p>Banner圖片</p>
+      <!-- <div class="flex flex-col">
+        <div v-if="imgUrl !== ''">
+          <img :src="imgUrl" alt="課程圖片預覽" class="w-50 h-auto rounded-lg shadow" />
+        </div>
+        <div class="flex items-center justify-between">
+          <div v-show="isImg" class="mr-4 flex-1">
+            <n-upload
+              ref="imgUploadRef"
+              accept="image/*"
+              :max="1"
+              :custom-request="customImgUpload"
+              :show-file-list="true"
+              :show-trigger="false"
+              @remove="handleImgRemove"
+            />
+          </div>
+          <div v-show="!isImg">尚未選擇圖片</div>
+
+          <div>
+            <n-button @click="triggerImgUpload">上傳圖片</n-button>
+          </div>
+        </div>
+      </div> -->
+    </div>
   </div>
   <titleModal
     v-model:modelValue="modelValue"
@@ -135,6 +239,14 @@ import { ref, computed, watch } from 'vue';
 import titleModal from './titleModal.vue';
 import { baseInput } from '@/components/index';
 import type { AddChildRequestPayload } from '@/views/dashboard/type';
+import {
+  apiPost_AddImg,
+  apiDelete_DeleteImg,
+  apiPost_AddImgBanner,
+  apiDelete_DeleteImgBanner,
+  apiPost_AddImgDescription,
+  apiDelete_DeleteImgDescription,
+} from '@/views/dashboard/api/index';
 
 // -----------emit&props-----------
 const props = defineProps<Props>();
@@ -243,7 +355,7 @@ const triggerFileUpload = () => {
 };
 
 const customFileUpload = () => {
-  console.log('檔案後續API函式');
+  console.log('圖片後續API函式');
   isFile.value = true;
 };
 
@@ -253,8 +365,174 @@ const handleFileRemove = () => {
 };
 // -----------------------------
 
+// -----------課程圖片-----------
+const imgUploadRef = ref();
+const isImg = ref(false);
+const imgUrl = ref<string>(''); // 儲存圖片網址
+
+const triggerImgUpload = () => {
+  // 拿到內部 input element 手動 click
+  const inputEl = imgUploadRef.value?.$el?.querySelector('input[type="file"]');
+  if (inputEl) {
+    inputEl.click();
+  } else {
+    console.warn('找不到 input element');
+  }
+};
+
+const customImgUpload = async ({
+  file,
+  onFinish,
+  onError,
+}: {
+  file: { file: File };
+  onFinish: () => void;
+  onError: (err: Error) => void;
+}) => {
+  try {
+    const result = await apiPost_AddImg('95bcf853-e86f-4cf6-8d7a-8d00fff0caad', file.file); // 你前面存好的課程 id
+    imgUrl.value = result.data.imageUrl; // 如果你想預覽可以設這個
+    console.log('檢視寫入', imgUrl.value);
+
+    isImg.value = true;
+    onFinish(); // 通知 n-upload 成功
+  } catch (err) {
+    onError(err as Error); // 通知 n-upload 失敗
+  }
+};
+
+const handleImgRemove = () => {
+  console.log('使用者移除圖片');
+  imgUrl.value = '';
+  deleteImg();
+  isImg.value = false;
+};
+
+const deleteImg = async () => {
+  try {
+    const res = await apiDelete_DeleteImg('95bcf853-e86f-4cf6-8d7a-8d00fff0caad');
+    console.log('檢視回傳', res);
+  } catch (err) {
+    console.log('刪除失敗', err);
+  }
+};
+// -----------------------------
+
+// -----------Banner圖片-----------
+const imgBannerUploadRef = ref();
+const isImgBanner = ref(false);
+const imgBannerUrl = ref<string>(''); // 儲存圖片網址
+
+const triggerImgBannerUpload = () => {
+  // 拿到內部 input element 手動 click
+  const inputEl = imgBannerUploadRef.value?.$el?.querySelector('input[type="file"]');
+  if (inputEl) {
+    inputEl.click();
+  } else {
+    console.warn('找不到 input element');
+  }
+};
+
+const customImgBannerUpload = async ({
+  file,
+  onFinish,
+  onError,
+}: {
+  file: { file: File };
+  onFinish: () => void;
+  onError: (err: Error) => void;
+}) => {
+  try {
+    const result = await apiPost_AddImgBanner('95bcf853-e86f-4cf6-8d7a-8d00fff0caad', file.file); // 你前面存好的課程 id
+    imgBannerUrl.value = result.data.imageUrl; // 如果你想預覽可以設這個
+    console.log('檢視寫入', imgBannerUrl.value);
+
+    isImgBanner.value = true;
+    onFinish(); // 通知 n-upload 成功
+  } catch (err) {
+    onError(err as Error); // 通知 n-upload 失敗
+  }
+};
+
+const handleImgBannerRemove = () => {
+  console.log('使用者移除圖片');
+  imgBannerUrl.value = '';
+  deleteImgBanner();
+  isImgBanner.value = false;
+};
+
+const deleteImgBanner = async () => {
+  try {
+    const res = await apiDelete_DeleteImgBanner('95bcf853-e86f-4cf6-8d7a-8d00fff0caad');
+    console.log('檢視回傳', res);
+  } catch (err) {
+    console.log('刪除失敗', err);
+  }
+};
+// -----------------------------
+
+// -----------課程描述圖片-----------
+const imgDescriptionUploadRef = ref();
+const isImgDescription = ref(false);
+const imgDescriptionUrl = ref<string>(''); // 儲存圖片網址
+
+const triggerImgDescriptionUpload = () => {
+  // 拿到內部 input element 手動 click
+  const inputEl = imgDescriptionUploadRef.value?.$el?.querySelector('input[type="file"]');
+  if (inputEl) {
+    inputEl.click();
+  } else {
+    console.warn('找不到 input element');
+  }
+};
+
+const customImgDescriptionUpload = async ({
+  file,
+  onFinish,
+  onError,
+}: {
+  file: { file: File };
+  onFinish: () => void;
+  onError: (err: Error) => void;
+}) => {
+  try {
+    const result = await apiPost_AddImgDescription(
+      '95bcf853-e86f-4cf6-8d7a-8d00fff0caad',
+      file.file
+    ); // 你前面存好的課程 id
+    imgDescriptionUrl.value = result.data.imageUrl; // 如果你想預覽可以設這個
+    console.log('檢視寫入', imgDescriptionUrl.value);
+
+    isImgDescription.value = true;
+    onFinish(); // 通知 n-upload 成功
+  } catch (err) {
+    onError(err as Error); // 通知 n-upload 失敗
+  }
+};
+
+const handleImgDescriptionRemove = () => {
+  console.log('使用者移除圖片');
+  imgDescriptionUrl.value = '';
+  deleteImgDescription();
+  isImgDescription.value = false;
+};
+
+const deleteImgDescription = async () => {
+  try {
+    const res = await apiDelete_DeleteImgDescription('95bcf853-e86f-4cf6-8d7a-8d00fff0caad');
+    console.log('檢視回傳', res);
+  } catch (err) {
+    console.log('刪除失敗', err);
+  }
+};
+// -----------------------------
+
 // -----------表單內容-----------
+// 當滿足三個值都有的時候才會顯示表單內容
 const canShowForm = computed(() => !!courseTitle.value && !!optionsValue.value && !!titleId.value);
+// -----------------------------
+
+// -----------課程圖片API--------------
 // -----------------------------
 
 // -----------區塊-----------
