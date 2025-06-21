@@ -47,7 +47,7 @@
     <router-link :to="`/Home/highlighted-instructor/${props.teacherId}`" v-if="props.teacherId">
       <n-button size="large" class="px-3 py-6 max-w-164px">
         <div class="flex items-center gap-1">
-          <typography variant="paragraph-regular" font-type="content" class="text-neutral-100">前往講師頁面</typography>
+          <typography variant="paragraph-regular" font-type="content" class="text-neutral-100" @click="goToTeacher">前往講師頁面</typography>
           <div class="i-ion:arrow-forward-outline cursor-pointer w-5 h-5"></div>
         </div>
       </n-button>
@@ -97,4 +97,11 @@ onMounted(() => {
     loadTeacherData();
   }
 });
+
+const props = defineProps<{ teacher_id?: string }>();   // 由 tabs 傳入
+const emit = defineEmits(['go-to-teacher']);
+
+const goToTeacher = () => {
+  emit('go-to-teacher', props.teacher_id);
+};
 </script>

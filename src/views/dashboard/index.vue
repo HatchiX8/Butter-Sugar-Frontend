@@ -1,21 +1,27 @@
 <template>
   <div class="flex min-h-screen flex-1 flex-col" :style="{ backgroundImage: `url(${bgImgUrl})` }">
     <headerComps />
-    <div class="mx-auto box-border flex w-full max-w-[1280px] flex-col items-start px-4 text-white">
-      <typography variant="h3" font-type="title" class="mt-15 mb-5 ml-5 text-white" no-underline>
-        講師頁面
-      </typography>
-      <div class="flex flex-col md:flex-row">
-        <div class="w-full md:w-1/4">
-          <n-menu
-            :root-indent="36"
-            :indent="12"
-            :options="menuOptions"
-            :value="activeKey"
-            @update:value="handleMenuSelect"
-          />
+    <div class="w-full max-w-[1280px] mx-auto px-4 flex flex-col md:flex-row items-start box-border text-white">
+      <div class="flex flex-1 w-full mt-20">
+        <!-- 左側選單 -->
+        <div class="w-full md:w-1/5 md:sticky md:max-h-[calc(100vh-6rem)] md:overflow-y-auto mt-10 mobile-menu">
+          <typography variant="h3" font-type="title" class="text-white mb-5 ml-5" no-underline>
+            講師頁面
+          </typography>
+          <n-config-provider>
+            <n-menu
+              :root-indent="36"
+              :indent="12"
+              :options="menuOptions"
+              :value="activeKey"
+              @update:value="handleMenuSelect"
+            />
+          </n-config-provider>
         </div>
-        <div class="flex-1"><router-view /></div>
+        <!-- 右側內容 -->
+        <div class="w-full md:w-4/5 flex-1 mt-10 pt-10 min-width-0 mobile-content">
+          <router-view />
+        </div>
       </div>
     </div>
     <footerComps />
@@ -45,7 +51,7 @@ const menuOptions: MenuOption[] = [
   },
   {
     label: '建立新課程',
-    key: 'courseAction/addCourse',
+    key: 'courseAction/courseManage',
   },
 ];
 

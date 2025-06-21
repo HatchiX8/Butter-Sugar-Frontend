@@ -6,7 +6,7 @@
       <courseIntroduction
         :course-data="courseInfoData"
         :is-edit="isEditMode"
-        @request="addChildRequest"
+        :request="addChildRequest"
       />
     </div>
     <div v-show="currentStep === 2">
@@ -27,7 +27,7 @@ import {
   courseIntroduction,
   courseStepIndicator,
   courseSubmit,
-} from '../../comps/index';
+} from '../comps/index';
 import type { AddChildRequestPayload } from '@/views/dashboard/type';
 import { useDashboardStore } from '@/stores/models/index';
 
@@ -81,7 +81,7 @@ const courseChapterData = ref({
 // ----------------------------------
 
 // -----------API請求-----------
-const addChildRequest = ({ type, payload }: AddChildRequestPayload) => {
+const addChildRequest = async ({ type, payload }: AddChildRequestPayload): Promise<unknown> => {
   // 觸發標題API
   if (type === 'addTitle') {
     // 呼叫新增課程標題 API
@@ -89,15 +89,18 @@ const addChildRequest = ({ type, payload }: AddChildRequestPayload) => {
       course_name: payload,
     };
     console.log('觸發標題API', postData);
-    dashboardStore.addTitle(postData);
+    return dashboardStore.addTitle(postData);
   }
   // 觸發類別API
   else if (type === 'addCategory') {
     const postData = {
-      category_id: payload,
+      category_id: payload.categoryId,
     };
     console.log('觸發類別API', postData);
+    // 假設未來會有 API 呼叫，這裡先回傳 resolved Promise
+    return dashboardStore.addCategory(postData);
   }
+  return Promise.resolve();
 };
 // -----------------------------
 </script>

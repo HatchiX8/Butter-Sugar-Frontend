@@ -14,7 +14,7 @@
           :class="{ 'custom-border-bottom': index !== visibleItems.length - 1 }"
         >
           <router-link
-            :to="`/home/course/${item.course_id}`"
+            :to="{ name: 'Course', params: { id: item.course_id } }"
             class="group flex flex-1 cursor-pointer items-start gap-4 no-underline"
           >
             <!-- 課程圖片 -->
@@ -22,7 +22,7 @@
               class="h-24 w-36 shrink-0 overflow-hidden rounded-md transition-shadow duration-300 group-hover:shadow-lg"
             >
               <img
-                :src="item.course_smallimage"
+                :src="item.course_small_imageurl"
                 alt="課程小圖"
                 class="h-full w-full object-cover transition-transform duration-300 group-hover:scale-105"
               />
@@ -69,11 +69,12 @@ import { ref, computed } from 'vue';
 import confirmModal from '@/views/home/cart/comps/confirmModal.vue';
 import baseButton from '@/components/layout/baseButton.vue';
 import typography from '@/components/layout/typography.vue';
+import type { CartItem } from '@/api/cart/types';
 
 // 移除課程彈窗
-const itemToDelete = ref<{ course_id: string; course_name: string } | null>(null);
+const itemToDelete = ref<{ cart_item_id?: string; course_id: string; course_name: string } | null>(null);
 const showConfirmModal = ref(false);
-const openConfirmModal = (item: { course_id: string; course_name: string }) => {
+const openConfirmModal = (item: { cart_item_id?: string; course_id: string; course_name: string }) => {
   itemToDelete.value = item
   showConfirmModal.value = true
 };
@@ -82,13 +83,6 @@ const openConfirmModal = (item: { course_id: string; course_name: string }) => {
 const headerTitle = computed(() =>
   props.orderDetails ? '訂單明細' : '購物車',
 );
-
-interface CartItem {
-  course_id: string;
-  course_name: string;
-  course_smallimage: string;
-  price: number;
-}
 
 // ----------props & emit----------
 const props = withDefaults(

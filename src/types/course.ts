@@ -57,4 +57,6 @@ export interface CourseData {
   suitable_for: string | null;
   course_goal: string | null;
   course_description_imageUrl: string | null;
+  course_small_imageUrl: string | null;
+  teacher_id: string;
 }

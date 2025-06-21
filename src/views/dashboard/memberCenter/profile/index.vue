@@ -8,7 +8,7 @@
       ]"
     />
     <div class="flex items-center justify-between">
-      <typography variant="h2" font-type="title" underline class="mb-8">老師資料管理</typography>
+      <typography variant="h2" font-type="title" underline class="my-8 text-white">老師資料管理</typography>
       <baseButton v-if="!isEdit"
         label="編輯資料"
         type="primary"
