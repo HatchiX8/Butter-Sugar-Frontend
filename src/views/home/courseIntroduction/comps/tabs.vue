@@ -42,7 +42,7 @@
 
             <courseFaq v-if="activeTab === 'questions'" :course-id="props.courseId" />
 
-            <courseReview v-if="activeTab === 'reviews'" />
+            <courseReview v-if="activeTab === 'reviews'" :course-id="props.courseId" />
           </div>
 
           <!-- 右欄內容：購買課程和講師介紹 -->
