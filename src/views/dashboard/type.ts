@@ -51,3 +51,7 @@ interface AddCategoryPayload {
 export type AddChildRequestPayload = AddTitlePayload | AddCategoryPayload;
 
 // ------------------------------
+
+export interface handoutsResponse {
+  id: string;
+}

@@ -5,6 +5,7 @@ import type {
   courseAddCategoryPostData,
   courseAddCategoryResponse,
   courseSaveFormPostData,
+  handoutsResponse,
 } from '../type';
 
 // ----------標題&類別----------
@@ -126,7 +127,7 @@ export const apiPost_AddHandouts = async (courseId: string, file: File) => {
   const formData = new FormData();
   formData.append('handout', file);
 
-  const res = await axiosInstance.post<{ data: { url: string } }>(
+  const res = await axiosInstance.post<{ data: { handouts: Array<handoutsResponse> } }>(
     `/api/v1/course/${courseId}/upload/course-handouts`,
     formData,
     {

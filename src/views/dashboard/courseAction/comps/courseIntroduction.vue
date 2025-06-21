@@ -221,6 +221,28 @@
     <button v-if="!isSubmitCategory" @click="modelValue = true">建立課程</button>
     <button v-if="isSubmitCategory" @click="submitForm" :disabled="!isAllFilled">儲存</button>
   </div>
+  <div class="mb-5">
+    <p>課程講義</p>
+    <div class="flex items-center justify-between">
+      <!-- 左邊：已上傳影片 (這邊你之後可以放影片預覽 或 file name 等) -->
+      <div v-show="isFile" class="mr-4 flex-1">
+        <n-upload
+          ref="fileUploadRef"
+          accept="video/mp4,application/pdf,application/vnd.ms-powerpoint,application/vnd.openxmlformats-officedocument.presentationml.presentation,application/msword,application/vnd.openxmlformats-officedocument.wordprocessingml.document"
+          :max="1"
+          :custom-request="customFileUpload"
+          :show-file-list="true"
+          :show-trigger="false"
+          @remove="handleFileRemove"
+        />
+      </div>
+      <div v-show="!isFile">尚未選擇檔案</div>
+      <!-- 右邊：上傳按鈕 -->
+      <div>
+        <n-button @click="triggerFileUpload">上傳檔案</n-button>
+      </div>
+    </div>
+  </div>
   <titleModal
     v-model:modelValue="modelValue"
     v-model:inputValue="courseTitle"
@@ -365,7 +387,7 @@ const deleteTrailer = async () => {
 };
 // -----------------------------
 
-// -----------檔案上傳-----------
+// -----------講義上傳-----------
 const fileUploadRef = ref();
 const isFile = ref(false);
 const triggerFileUpload = () => {
@@ -377,7 +399,7 @@ const triggerFileUpload = () => {
     console.warn('找不到 input element');
   }
 };
-
+const handoutsId = ref();
 const customFileUpload = async ({
   file,
   onFinish,
@@ -389,9 +411,8 @@ const customFileUpload = async ({
 }) => {
   try {
     const result = await apiPost_AddHandouts(titleId.value, file.file); // 你前面存好的課程 id
-    // imgUrl.value = result.data.imageUrl; // 如果你想預覽可以設這個
-    console.log('檢視寫入', result);
-
+    handoutsId.value = result.data.handouts[0].id;
+    console.log('檢視寫入', handoutsId.value); // 暫時只刪一筆
     isFile.value = true;
     onFinish(); // 通知 n-upload 成功
   } catch (err) {
@@ -406,7 +427,7 @@ const handleFileRemove = () => {
 };
 
 const deleteHandouts = async () => {
-  const res = await apiDelete_DeleteHandouts(titleId.value);
+  const res = await apiDelete_DeleteHandouts(handoutsId.value);
   console.log('刪除講義成功', res);
 };
 // -----------------------------
