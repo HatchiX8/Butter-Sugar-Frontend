@@ -1,119 +1,67 @@
 <template>
-  <div id="course-review" class="flex flex-col gap-10 w-full">
-    <typography variant="h2" font-type="title" class="text-white" underline>課程評價</typography>
-
-    <!-- 評價列表元件 -->
-    <ReviewList
-      :reviewList="reviewList"
-      :defaultPageSize="defaultPageSize"
-      :expandedPageSize="expandedPageSize"
-      :initialShowAll="showAllReviews"
-      @update:showAll="showAllReviews = $event"
-    />
+  <div class="w-full">
+    <div class="mb-8">
+      <typography class="text-white mb-2" size="h3">課程評價</typography>
+      <div v-if="!courseRatingStore.loading && !courseRatingStore.error && courseRatingStore.totalRatings > 0" class="flex items-center gap-4 mb-4">
+        <div class="flex items-center">
+          <span class="text-2xl font-bold text-yellow-500 mr-2">{{ courseRatingStore.averageRating }}</span>
+          <div class="flex">
+            <span v-for="i in 5" :key="i" class="text-lg">
+              <span v-if="i <= Math.round(courseRatingStore.averageRating)" class="text-yellow-500">★</span>
+              <span v-else class="text-gray-300">★</span>
+            </span>
+          </div>
+        </div>
+        <span class="text-gray-600">({{ courseRatingStore.totalRatings }} 則評價)</span>
+      </div>
+    </div>
+    <div v-if="courseRatingStore.loading" class="flex justify-center items-center py-8">
+      <typography variant="paragraph-medium" font-type="content" class="text-white">載入中...</typography>
+    </div>
+    <div v-else-if="courseRatingStore.error" class="flex justify-center items-center py-8">
+      <typography variant="paragraph-medium" font-type="content" class="text-red-500">{{ courseRatingStore.error }}</typography>
+    </div>
+    <div v-else-if="courseRatingStore.totalRatings === 0" class="flex justify-center items-center py-8">
+      <typography variant="paragraph-medium" font-type="content" class="text-gray-500">此課程尚無評價</typography>
+    </div>
+    <div v-else>
+      <ReviewList :reviewList="courseRatingStore.reviewList" :pageSize="showAllReviews ? expandedPageSize : collapsedPageSize" @update:showAll="showAllReviews = $event" />
+    </div>
   </div>
 </template>
 
 <script setup lang="ts">
-import { ref } from 'vue';
+import { ref, watch } from 'vue';
 import typography from '@/components/layout/typography.vue';
 import ReviewList from '../../../../components/layout/reviewList.vue';
+import { useCourseRatingStore } from '../../../../stores/models/courseRating/store';
 
-// 分頁相關狀態
-const showAllReviews = ref(false); // 控制顯示全部評價還是預設數量
-const defaultPageSize = 5; // 預設每頁顯示 5 筆
+// Props 定義
+const props = defineProps({
+  courseId: {
+    type: String,
+    required: true
+  }
+});
+
+const collapsedPageSize = 3; // 預設顯示 3 筆
 const expandedPageSize = 10; // 展開後每頁顯示 10 筆
 
-// 課程評價資料
-const reviewList = ref([
-  {
-    user: {
-      name: '小乖',
-      date: '2025/06/08 13:23:36'
-    },
-    rating: 5.0,
-    content: '老師講得太清楚了，第一次嘗試做水星餡餅不再那麼可怕！'
+// 使用評價 store
+const courseRatingStore = useCourseRatingStore();
+// Using store properties directly instead of destructuring to maintain reactivity
+const showAllReviews = ref(false);
+
+// 監聽 courseId prop 變化，重新獲取資料
+watch(
+  () => props.courseId,
+  (newId) => {
+    if (newId) {
+      courseRatingStore.fetchRatingsByCourseId(newId);
+    }
   },
-  {
-    user: {
-      name: '正義',
-      date: '2025/06/08 13:23:36'
-    },
-    rating: 5.0,
-    content: '這堂課讓我完全改觀！以前總覺得做水星餡餅太難處理，但老師的講解超清楚，搭配有作品集片段教學，這次我終於成功做出新鮮的拖鞋麵包，真的太有成就感了！'
-  },
-  {
-    user: {
-      name: 'Mike',
-      date: '2025/06/08 13:23:36'
-    },
-    rating: 5.0,
-    content: '跟著步驟做出來的拖鞋麵包，朋友都以為是麵包店買的！'
-  },
-  {
-    user: {
-      name: '伊宇',
-      date: '2025/06/08 13:23:36'
-    },
-    rating: 5.0,
-    content: '課程不只是學技術，還教會我如何製作麵團的訣竅，老師與學員互動很頻繁，讓我終於搞懂平常常常解釋不清楚的問題，現在每次出爐都有成就感！'
-  },
-  {
-    user: {
-      name: '建宏',
-      date: '2025/06/08 13:23:36'
-    },
-    rating: 5.0,
-    content: '老師很細心，這會解釋失敗的原因，真的超有收穫！'
-  },
-  {
-    user: {
-      name: 'Mike',
-      date: '2025/06/08 13:23:36'
-    },
-    rating: 5.0,
-    content: '對於已經有掌握基礎的人來說，部分內容算是入門，但在發酵控制與麵團處理的細節上還是有不少收穫，尤其是講解水星餡餅操作的部分很有幫助。'
-  },
-  {
-    user: {
-      name: '正義',
-      date: '2025/06/08 13:23:36'
-    },
-    rating: 5.0,
-    content: '這堂課讓我完全改觀！以前總覺得做水星餡餅太難處理，但老師的講解超清楚，搭配有作品集片段教學，這次我終於成功做出新鮮的拖鞋麵包，真的太有成就感了！'
-  },
-  {
-    user: {
-      name: 'Mike',
-      date: '2025/06/08 13:23:36'
-    },
-    rating: 5.0,
-    content: '跟著步驟做出來的拖鞋麵包，朋友都以為是麵包店買的！'
-  },
-  {
-    user: {
-      name: '伊宇',
-      date: '2025/06/08 13:23:36'
-    },
-    rating: 5.0,
-    content: '課程不只是學技術，還教會我如何製作麵團的訣竅，老師與學員互動很頻繁，讓我終於搞懂平常常常解釋不清楚的問題，現在每次出爐都有成就感！'
-  },
-  {
-    user: {
-      name: '建宏',
-      date: '2025/06/08 13:23:36'
-    },
-    rating: 5.0,
-    content: '老師很細心，這會解釋失敗的原因，真的超有收穫！'
-  },
-  {
-    user: {
-      name: 'Mike',
-      date: '2025/06/08 13:23:36'
-    },
-    rating: 5.0,
-    content: '對於已經有掌握基礎的人來說，部分內容算是入門，但在發酵控制與麵團處理的細節上還是有不少收穫，尤其是講解水星餡餅操作的部分很有幫助。'
-  },
-]);
+  { immediate: true }
+);
 </script>
 
 <style scoped>

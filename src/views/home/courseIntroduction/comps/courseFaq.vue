@@ -60,7 +60,7 @@
               <!-- 如果是401未授權錯誤，顯示登入按鈕 -->
               <div v-if="errorMessage.includes('請先登入')" class="mt-4">
                 <NButton @click="onGoogleLogin" type="primary">
-                  使用 Google 登入
+                  登入/註冊
                 </NButton>
               </div>
               <!-- 其他錯誤則顯示重試按鈕 -->
@@ -163,7 +163,7 @@ const submitComment = async () => {
 
   // 使用store提交問題
   const success = await courseQAStore.submitQuestion(props.courseId, commentText.value);
-  
+
   if (success) {
     // 提交成功後清空輸入框
     commentText.value = '';
