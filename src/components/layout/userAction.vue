@@ -17,6 +17,8 @@ import { onMounted, onUnmounted, ref, computed } from 'vue';
 import { useUserStore } from '@/stores/models/index';
 import axios from 'axios';
 import userDropdownMenu from './userDropdownMenu.vue';
+import { useRouter } from 'vue-router'
+const router = useRouter()
 
 const userStore = useUserStore();
 const API_BASE = import.meta.env.VITE_API_URL;
