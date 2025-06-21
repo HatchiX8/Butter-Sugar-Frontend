@@ -2,8 +2,8 @@
   <div class="w-full flex flex-col gap-6 mt-[3.75rem] max-w-[1280px] mx-auto items-center box-border md:flex-row md:items-start md:justify-center">
     <!-- 課程資訊區塊 (左欄) -->
     <div class="flex flex-col gap-6 w-full box-border border border-white/20 p-6 rounded-[0.125rem] order-last md:order-first gap-25 md:w-[845px] md:p-6">
-      <courseDetail :course-data="courseData" />
-      <courseIntro />
+      <courseDetail v-if="props.courseData" :course-data="courseData" />
+      <courseIntro v-if="props.courseData" :course-data="props.courseData" />
       <courseChapter />
       <faq />
     </div>
