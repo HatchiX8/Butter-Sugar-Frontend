@@ -221,28 +221,6 @@
     <button v-if="!isSubmitCategory" @click="modelValue = true">建立課程</button>
     <button v-if="isSubmitCategory" @click="submitForm" :disabled="!isAllFilled">儲存</button>
   </div>
-  <div class="mb-5">
-    <p>課程講義</p>
-    <div class="flex items-center justify-between">
-      <!-- 左邊：已上傳影片 (這邊你之後可以放影片預覽 或 file name 等) -->
-      <div v-show="isFile" class="mr-4 flex-1">
-        <n-upload
-          ref="fileUploadRef"
-          accept="video/mp4,application/pdf,application/vnd.ms-powerpoint,application/vnd.openxmlformats-officedocument.presentationml.presentation,application/msword,application/vnd.openxmlformats-officedocument.wordprocessingml.document"
-          :max="1"
-          :custom-request="customFileUpload"
-          :show-file-list="true"
-          :show-trigger="false"
-          @remove="handleFileRemove"
-        />
-      </div>
-      <div v-show="!isFile">尚未選擇檔案</div>
-      <!-- 右邊：上傳按鈕 -->
-      <div>
-        <n-button @click="triggerFileUpload">上傳檔案</n-button>
-      </div>
-    </div>
-  </div>
   <titleModal
     v-model:modelValue="modelValue"
     v-model:inputValue="courseTitle"
