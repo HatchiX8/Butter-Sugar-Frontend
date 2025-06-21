@@ -2,6 +2,10 @@ import { createRouter, createWebHistory } from 'vue-router';
 
 const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
+  scrollBehavior() {
+    // 始終平滑滾動到頂部
+    return { top: 0, behavior: 'smooth' } as ScrollToOptions
+  },
   routes: [
     {
       path: '/',
@@ -156,7 +160,7 @@ router.beforeEach((to) => {
     'CompTest',
     'Course',
     'CourseInfoList',
-    'HighlightedInstructor',
+    'highlightedInstructor',
   ]; // 不用驗證的 route name
   const token = localStorage.getItem('access_token');
 
