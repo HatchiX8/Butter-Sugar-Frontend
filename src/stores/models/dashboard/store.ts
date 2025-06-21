@@ -17,7 +17,7 @@ export const useDashboardStore = defineStore('dashboardStore', () => {
       const res = await apiPost_AddTitle(postData);
       console.log('storeLog:檢視回傳', res);
       courseId.value = res.data.course.id;
-      console.log('storeLog:寫入', courseId.value);
+      return courseId.value;
     } catch (err) {
       console.log('storeLog:新增title錯誤', err);
     } finally {

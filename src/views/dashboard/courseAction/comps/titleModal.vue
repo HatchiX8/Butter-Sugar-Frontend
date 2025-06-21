@@ -65,6 +65,7 @@ interface Props {
   confirmText?: string;
   cancelText?: string;
   closable?: boolean;
+  isFirst?: boolean;
 }
 
 const props = withDefaults(defineProps<Props>(), {
@@ -74,6 +75,7 @@ const props = withDefaults(defineProps<Props>(), {
   confirmText: '確定',
   cancelText: '取消',
   closable: true,
+  isFirst: true,
 });
 
 const emit = defineEmits<{
