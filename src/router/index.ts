@@ -8,7 +8,7 @@ const router = createRouter({
       redirect: '/Home', // ✅ 訪問 / 時導向 /Home/homeDashboard
     },
     {
-      path: '/Home',
+      path: '/home',
       component: () => import('@/views/home/index.vue'), // 母頁
       children: [
         {
@@ -17,21 +17,29 @@ const router = createRouter({
           component: () => import('@/views/home/homeDashboard/index.vue'), // 預設首頁內容
         },
         {
-          path: 'course',
+          path: 'course/:id',
           name: 'Course',
           component: () => import('@/views/home/courseIntroduction/index.vue'), // 課程介紹
-          children: [
-            {
-              path: 'course-page',
-              name: 'CourseVideo',
-              component: () => import('@/views/home/coursePage/index.vue'), // 課程影片
-            },
-          ],
+        },
+        {
+          path: 'course/course-page',
+          name: 'CourseVideo',
+          component: () => import('@/views/home/coursePage/index.vue'), // 課程影片
         },
         {
           path: 'course-info',
-          name: 'TeacherCourseInfo',
+          name: 'CourseInfoList',
           component: () => import('@/views/home/courseList/index.vue'), // 所有課程資訊
+        },
+        {
+          path: 'my-course',
+          name: 'MyCourse',
+          component: () => import('@/views/home/myCourse/index.vue'), // 我的課程列表
+        },
+        {
+          path: 'course-chapter',
+          name: 'courseChapter',
+          component: () => import('@/views/home/courseChapter/index.vue'), // 課程章節列表
         },
         {
           path: 'memberCenter',
@@ -72,8 +80,8 @@ const router = createRouter({
           ],
         },
         {
-          path: 'highlighted-instructor',
-          name: 'highlightedInstructor',
+          path: 'highlighted-instructor/:teacher_id',
+          name: 'HighlightedInstructor',
           component: () => import('@/views/home/highlightedInstructor/index.vue'), // 精選講師
         },
       ],
@@ -147,7 +155,8 @@ router.beforeEach((to) => {
     'Cart',
     'CompTest',
     'Course',
-    'CourseInfo',
+    'CourseInfoList',
+    'HighlightedInstructor',
   ]; // 不用驗證的 route name
   const token = localStorage.getItem('access_token');
 
@@ -155,6 +164,7 @@ router.beforeEach((to) => {
     // 如果没有 token，又不是公開页，就重定向到 HomeDashboard
     return { name: 'HomeDashboard' };
   }
+  return true;
 });
 
 export default router;

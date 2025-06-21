@@ -41,166 +41,134 @@
     </div>
 
     <!-- 問答列表元件 (所有用戶都能看到) -->
-    <QnAList
-      :qaList="qaList"
-      :defaultPageSize="defaultPageSize"
-      :expandedPageSize="expandedPageSize"
-      :initialShowAll="showAllQa"
-      @update:showAll="showAllQa = $event"
-    />
+    <div class="w-full">
+      <div class="flex flex-col gap-6">
+        <!-- 加載中狀態 -->
+        <div v-if="isLoading" class="flex justify-center items-center p-10">
+          <NSpin size="large" />
+        </div>
+
+        <!-- 錯誤狀態 -->
+        <div v-else-if="hasError" class="flex flex-col items-center justify-center py-8">
+          <NEmpty :description="errorMessage" size="large">
+            <template #icon>
+              <div class="text-red-500 text-4xl mb-2">
+                <i class="fas fa-exclamation-circle"></i>
+              </div>
+            </template>
+            <template #extra>
+              <!-- 如果是401未授權錯誤，顯示登入按鈕 -->
+              <div v-if="errorMessage.includes('請先登入')" class="mt-4">
+                <NButton @click="onGoogleLogin" type="primary">
+                  使用 Google 登入
+                </NButton>
+              </div>
+              <!-- 其他錯誤則顯示重試按鈕 -->
+              <NButton v-else @click="fetchCourseQA" type="primary" class="mt-4">
+                重新嘗試
+              </NButton>
+            </template>
+          </NEmpty>
+        </div>
+
+        <!-- 無數據狀態 -->
+        <div v-else-if="qaList.length === 0 && !isLoading" class="flex justify-center items-center p-10">
+          <NEmpty description="暫無問答數據" />
+        </div>
+
+        <!-- 數據顯示 -->
+        <template v-else>
+          <QnAList :qa-list="qaList" :page-size="showMore ? expandedPageSize : defaultPageSize" />
+          <div class="flex justify-center">
+            <NButton v-if="!showMore && qaList.length > defaultPageSize" type="primary" @click="showMore = true">
+              顯示更多
+            </NButton>
+            <NButton v-else-if="showMore" type="primary" @click="showMore = false">
+              收起
+            </NButton>
+          </div>
+        </template>
+      </div>
+    </div>
   </div>
 </template>
 
 <script setup lang="ts">
-import { ref, computed } from 'vue';
+import { ref, computed, watch } from 'vue';
 import { useUserStore } from '@/stores/models/index';
+import { useCourseQAStore } from '@/stores/models/courseQA/store';
 import typography from '@/components/layout/typography.vue';
-import { NButton, NInput } from 'naive-ui';
+import { NButton, NInput, NEmpty, NSpin } from 'naive-ui';
 import QnAList from '@/components/layout/qaList.vue';
 
-// ----------第三方登入----------
+// 接收課程ID作為props
+const props = defineProps<{
+  courseId: string
+}>();
+
+// API 基礎 URL
 const API_BASE = import.meta.env.VITE_API_URL;
+
+// 使用者狀態
+const userStore = useUserStore();
+const isLoggedIn = computed(() => userStore.isLoggedIn);
+
+// 第三方登入
 const onGoogleLogin = () => {
   window.location.href = `${API_BASE}/api/v1/users/auth/google`;
 };
 
-// 使用 pinia 的 userStore 來判斷登入狀態
-const userStore = useUserStore();
-const isLoggedIn = computed(() => userStore.isLoggedIn);
 const commentText = ref('');
 
 // 分頁相關狀態
-const showAllQa = ref(false); // 控制顯示全部問答還是預設數量
+// 控制顯示更多問答
 const defaultPageSize = 5; // 預設每頁顯示 5 筆
 const expandedPageSize = 10; // 展開後每頁顯示 10 筆
+const showMore = ref(false);
 
-// 課程問答資料
-const qaList = ref([
-  {
-    user: {
-      name: '小乖貓',
-      date: '2025/06/08 13:23:36'
-    },
-    question: '請問，沒有發酵箱，會教其他的替代方案嗎？',
-    answer: {
-      name: '許燁堂',
-      date: '2025/06/09 10:29:45',
-      role: '授課講師',
-      content: '會教簡易的家用發酵方式。'
-    }
-  },
-  {
-    user: {
-      name: 'Seris',
-      date: '2025/05/14 00:23:36'
-    },
-    question: '請問我可以使用手持攪拌機來打麵糰嗎？',
-    answer: {
-      name: '許燁堂',
-      date: '2025/06/09 10:29:45',
-      role: '授課講師',
-      content: '不建議使用手持攪拌機，課程中會提供手揉靜置的方式，讓沒有攪拌機的同學也能製作麵包。'
-    }
-  },
-  {
-    user: {
-      name: 'Seris',
-      date: '2025/05/14 00:23:36'
-    },
-    question: '請問我可以使用手持攪拌機來打麵糰嗎？',
-  },
-  {
-    user: {
-      name: 'Seris',
-      date: '2025/05/14 00:23:36'
-    },
-    question: '請問我可以使用手持攪拌機來打麵糰嗎？',
-    answer: [{
-      name: '許燁堂',
-      date: '2025/06/09 10:29:45',
-      role: '授課講師',
-      content: '不建議使用手持攪拌機，課程中會提供手揉靜置的方式，讓沒有攪拌機的同學也能製作麵包。'
-    },{
-      name: 'Seris',
-      date: '2025/06/09 10:29:45',
-      content: '感謝您的回覆'
-    }]
-  },
-  {
-    user: {
-      name: 'Seris',
-      date: '2025/05/14 00:23:36'
-    },
-    question: '請問我可以使用手持攪拌機來打麵糰嗎？',
-  },
-  {
-    user: {
-      name: 'Seris',
-      date: '2025/05/14 00:23:36'
-    },
-    question: '請問我可以使用手持攪拌機來打麵糰嗎？',
-    answer: {
-      name: '許燁堂',
-      date: '2025/06/09 10:29:45',
-      role: '授課講師',
-      content: '不建議使用手持攪拌機，課程中會提供手揉靜置的方式，讓沒有攪拌機的同學也能製作麵包。'
-    }
-  },
-  {
-    user: {
-      name: 'Seris',
-      date: '2025/05/14 00:23:36'
-    },
-    question: '請問我可以使用手持攪拌機來打麵糰嗎？',
-  },
-  {
-    user: {
-      name: 'Seris',
-      date: '2025/05/14 00:23:36'
-    },
-    question: '請問我可以使用手持攪拌機來打麵糰嗎？',
-    answer: [{
-      name: '許燁堂',
-      date: '2025/06/09 10:29:45',
-      role: '授課講師',
-      content: '不建議使用手持攪拌機，課程中會提供手揉靜置的方式，讓沒有攪拌機的同學也能製作麵包。'
-    },{
-      name: 'Seris',
-      date: '2025/06/09 10:29:45',
-      content: '感謝您的回覆'
-    }]
-  },
-  {
-    user: {
-      name: 'Seris',
-      date: '2025/05/14 00:23:36'
-    },
-    question: '請問我可以使用手持攪拌機來打麵糰嗎？',
-  },
-  {
-    user: {
-      name: 'Seris',
-      date: '2025/05/14 00:23:36'
-    },
-    question: '請問我可以使用手持攪拌機來打麵糰嗎？',
-  },
-  {
-    user: {
-      name: 'Seris',
-      date: '2025/05/14 00:23:36'
-    },
-    question: '請問我可以使用手持攪拌機來打麵糰嗎？',
-  },
-]);
+// 使用課程問答 store
+const courseQAStore = useCourseQAStore();
+
+// 計算屬性：獲取當前課程的問答列表
+const qaList = computed(() => courseQAStore.getCourseQA(props.courseId));
+
+// 計算屬性：獲取當前課程的加載狀態
+const isLoading = computed(() => courseQAStore.getLoadingState(props.courseId));
+
+// 計算屬性：獲取當前課程的錯誤狀態
+const errorState = computed(() => courseQAStore.getErrorState(props.courseId));
+const hasError = computed(() => errorState.value.hasError);
+const errorMessage = computed(() => errorState.value.errorMessage);
+
+// 從API獲取課程問答數據
+const fetchCourseQA = () => {
+  if (props.courseId) {
+    courseQAStore.fetchCourseQA(props.courseId);
+  }
+};
+
+// 監聽courseId變化，重新獲取數據
+watch(() => props.courseId, (newId) => {
+  if (newId) {
+    fetchCourseQA();
+  }
+}, { immediate: true });
 
 // 處理留言提交
-const submitComment = () => {
-  if (!commentText.value.trim()) return;
+const submitComment = async () => {
+  if (!commentText.value.trim()) {
+    alert('請輸入問題內容');
+    return;
+  }
 
-  // 這裡可以添加提交留言到後端的邏輯
-  // 目前僅做前端模擬
-  alert('留言已送出：' + commentText.value);
-  commentText.value = ''; // 清空輸入框
+  // 使用store提交問題
+  const success = await courseQAStore.submitQuestion(props.courseId, commentText.value);
+  
+  if (success) {
+    // 提交成功後清空輸入框
+    commentText.value = '';
+  }
+  // 錯誤已由 store 處理，錯誤會在 UI 中顯示
 };
 </script>
 

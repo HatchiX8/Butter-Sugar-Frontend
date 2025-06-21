@@ -7,7 +7,7 @@
         </router-link>
 
         <nav class="flex max-w-[596px] items-center gap-4">
-          <a href="#" class="p-2 text-white no-underline">探索課程</a>
+          <router-link to="/home/course-info" class="p-2 text-white no-underline">探索課程</router-link>
           <div class="pos-relative flex items-center justify-between">
             <baseInput
               type="text"
