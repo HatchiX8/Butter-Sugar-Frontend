@@ -10,6 +10,7 @@ lerna-debug.log*
 node_modules
 .env
 .env.*
+.env.development
 .DS_Store
 dist
 dist-ssr

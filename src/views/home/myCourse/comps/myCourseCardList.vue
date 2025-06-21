@@ -5,7 +5,8 @@
   <div v-else-if="error" class="w-full flex justify-center items-center py-10 text-red-500">
     {{ error }}
   </div>
-  <div v-else class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4 sm:gap-6 md:gap-8 justify-items-center w-full">
+  <div v-else class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 xl:grid-cols-4 gap-4 sm:gap-6 md:gap-8 justify-items-center w-full">
+  <!-- <div v-else class="w-full flex flex-wrap content-around justify-between px-2"> -->
     <!-- 因為 API 沒有提供講師名稱，所以使用預設值 -->
     <my-course-card
       v-for="course in paginatedCourses"
