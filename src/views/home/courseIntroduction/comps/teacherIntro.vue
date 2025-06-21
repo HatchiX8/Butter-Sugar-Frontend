@@ -98,10 +98,10 @@ onMounted(() => {
   }
 });
 
-const props = defineProps<{ teacher_id?: string }>();   // 由 tabs 傳入
+// const props = defineProps<{ teacher_id?: string }>();   // 由 tabs 傳入
 const emit = defineEmits(['go-to-teacher']);
 
 const goToTeacher = () => {
-  emit('go-to-teacher', props.teacher_id);
+  emit('go-to-teacher', props.teacherId);
 };
 </script>
