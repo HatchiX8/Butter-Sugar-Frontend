@@ -27,7 +27,7 @@
 
     <div class="tab-content">
       <div class="flex flex-col items-center mx-auto p-6 max-w-[1280px] w-full box-border mt-15">
-        <notify v-if="showNotify" />
+        <notify v-if="showNotify" :course-name="props.courseData?.title || ''" />
 
         <div class="w-full flex flex-col gap-6 max-w-[1280px] mx-auto items-center box-border md:flex-row md:items-start md:justify-center">
           <!-- 課程資訊區塊 (左欄) -->
@@ -35,12 +35,12 @@
             <!-- 根據當前標籤顯示不同內容 -->
             <template v-if="activeTab === 'info' || activeTab === 'chapters' || activeTab === 'faq'">
               <courseDetail v-if="props.courseData" :course-data="props.courseData" />
-              <courseIntro/>
+              <courseIntro v-if="props.courseData" :course-data="props.courseData" />
               <courseChapter/>
               <faq/>
             </template>
 
-            <courseFaq v-if="activeTab === 'questions'" />
+            <courseFaq v-if="activeTab === 'questions'" :course-id="props.courseId" />
 
             <courseReview v-if="activeTab === 'reviews'" />
           </div>
@@ -54,10 +54,15 @@
               @purchase="handlePurchase"
               @add-to-cart="handleAddToCart"
               @toggle-bookmark="handleToggleBookmark"
+              @go-to-teacher="goToTeacher"
             />
 
             <!-- 講師介紹區塊 -->
-            <teacherIntro class="mt-6" />
+            <teacherIntro
+              class="mt-6"
+              :teacher-id="props.teacherId"
+              @go-to-teacher="goToTeacher"
+            />
           </div>
         </div>
       </div>
@@ -76,12 +81,24 @@ import faq from './faq.vue';
 import coursePurchase from './coursePurchase.vue';
 import teacherIntro from './teacherIntro.vue';
 import courseReview from './courseReview.vue';
+import type { CourseData } from '@/types/course';
+import type { CartItem } from '@/api/cart/types';
 
 const props = defineProps({
   courseData: {
-    type: Object,
+    type: Object as () => CourseData | null,
     required: false,
-    default: () => ({})
+    default: () => null
+  },
+  courseId: {
+    type: String,
+    required: false,
+    default: ''
+  },
+  teacherId: {
+    type: String,
+    required: false,
+    default: ''
   }
 });
 
@@ -108,7 +125,14 @@ const scrollToSection = (sectionId: string) => {
   }, 100);
 };
 
-const emit = defineEmits(['tab-change', 'purchase', 'toggle-bookmark', 'add-to-cart']);
+const emit = defineEmits(['tab-change', 'purchase', 'toggle-bookmark', 'add-to-cart', 'go-to-teacher']);
+
+const cartItem: CartItem = {
+  course_id: props.courseData?.uuid ?? '',
+  course_name: props.courseData?.title ?? '',
+  price: props.courseData?.price ?? 0,
+  course_small_imageurl: props.courseData?.course_small_imageUrl ?? ''
+}
 
 const handleTabChange = (tabName: string) => {
   activeTab.value = tabName;
@@ -117,7 +141,7 @@ const handleTabChange = (tabName: string) => {
 };
 
 const handlePurchase = () => {
-  emit('purchase');
+  emit('purchase', cartItem);
 };
 
 const handleToggleBookmark = () => {
@@ -125,9 +149,12 @@ const handleToggleBookmark = () => {
 };
 
 const handleAddToCart = () => {
-  emit('add-to-cart');
+  emit('add-to-cart', cartItem);
 };
 
+const goToTeacher = () => {
+  emit('go-to-teacher', props.courseData?.teacher_id ?? '');
+};
 </script>
 
 <style scoped>

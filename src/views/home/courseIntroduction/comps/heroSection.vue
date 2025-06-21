@@ -22,35 +22,51 @@
 import courseHeroImage from '@/assets/images/course/courseHero.jpg'
 import desktopHeroLayout from './desktopHeroLayout.vue'
 import mobileHeroLayout from './mobileHeroLayout.vue'
+import type { CartItem } from '@/api/cart/types'
 interface CourseData {
-  link: string
-  id: number
-  img: string
-  title: string
-  teacher: string
-  description: string
-  rating: number
-  students: number
-  hours: number
-  price: number
-  originPrice: number
-  is_bookmark: boolean
+  link: string;
+  id: number;
+  uuid: string;
+  img: string;
+  title: string;
+  teacher: string;
+  description: string;
+  rating: number;
+  students: number;
+  hours: number;
+  price: number;
+  originPrice: number;
+  is_bookmark: boolean;
+  created_at: string;
+  course_description: string | null;
+  suitable_for: string | null;
+  course_goal: string | null;
+  course_description_imageUrl: string | null;
+  course_small_imageUrl: string | null;
+  teacher_id: string;
 }
 
 const props = defineProps<{
   courseData: CourseData
 }>()
 
+const cartItem: CartItem = {
+  course_id: props.courseData?.uuid ?? '',
+  course_name: props.courseData?.title ?? '',
+  price: props.courseData?.price ?? 0,
+  course_small_imageurl: props.courseData?.course_small_imageUrl ?? ''
+}
+
 const emit = defineEmits<{
-  purchase: []
-  toggleBookmark: []
+  (e: 'purchase', item: CartItem): void
+  (e: 'toggleBookmark', value: boolean): void
 }>()
 
 const handlePurchase = () => {
-  emit('purchase')
+  emit('purchase', cartItem);
 }
 
-const handleToggleBookmark = () => {
-  emit('toggleBookmark')
+const handleToggleBookmark = (newState: boolean) => {
+  emit('toggleBookmark', newState)
 }
 </script>

@@ -21,12 +21,15 @@
         <instructorCardItem
           v-for="(item, index) in instructors"
           :key="index"
+          :teacher_id="item.teacher_id"
           :teacherImgUrl="item.teacherImgUrl"
           :teacherImgAlt="item.teacherImgAlt"
-          :name="item.name"
-          :nickname="item.nickname"
-          :teacherDesc="item.teacherDesc"
-          :courseTitle="item.courseTitle"
+          :name="item.teacher_name"
+          :slogan="item.teacher_slogan"
+          :teacherDesc="item.teacher_specialization"
+          :teacherId="item.teacher_id"
+          :courseTitle="item.course_name"
+          :courseId="item.course_id"
         />
       </div>
     </div>
@@ -34,57 +37,39 @@
 </template>
 
 <script setup lang="ts">
+import { ref, onMounted, computed } from 'vue';
 import instructorCardItem from '@/views/home/homeDashboard/comps/instructorCardItem.vue';
 import typography from '@/components/layout/typography.vue';
+import { useHomeDashboardStore } from '@/stores/models/homeDashboard/store';
+import type { TeacherFeatured  } from '@/views/home/homeDashboard/api/types';
 
 const bgImgUrl = new URL('@/assets/images/home/bg-grey-wrinkle.png', import.meta.url).href;
 
-interface Instructor {
-  teacherImgUrl: string;
-  teacherImgAlt: string;
-  name: string;
-  nickname: string;
-  teacherDesc: string;
-  courseTitle: string;
-}
+const teachers = ref<TeacherFeatured[]>([]);
 
-// 原始資料（不含 teacherImgAlt)s
-const rawInstructors: Omit<Instructor, 'teacherImgAlt'>[] = [
-  {
-    teacherImgUrl: 'https://i.postimg.cc/0ygH2LNg/professional-baker-woman.jpg',
-    name: '林芷茵',
-    nickname: '資深麵包師',
-    teacherDesc: '擅長各式麵糰配方與手感技法，帶你從基礎揉捏到口感升級，掌握鬆軟與酥脆的黃金比例。',
-    courseTitle: '打造鬆軟可口的手工麵包',
-  },
-  {
-    teacherImgUrl: 'https://i.postimg.cc/MHTgVRCh/grandpa-chef.jpg',
-    name: '陳子昂',
-    nickname: '甜點主廚',
-    teacherDesc: '法式甜點專家，結合視覺美感與配方理論，讓每一道甜點都能兼具風味與精緻度。',
-    courseTitle: '法式蛋糕與創意裝飾',
-  },
-  {
-    teacherImgUrl: 'https://i.postimg.cc/d1vYkhtY/chef-girl.jpg',
-    name: '葉梓薇',
-    nickname: '巧克力工藝師',
-    teacherDesc: '深入了解可可原料，掌握溫度與質地的關鍵，帶你創造口感豐富的巧克力甜品與裝飾。',
-    courseTitle: '從豆子到甜品的全攻略',
-  },
-  {
-    teacherImgUrl: 'https://i.postimg.cc/VNKx6DTj/professional-man.jpg',
-    name: '高煜誠',
-    nickname: '烘焙科學顧問',
-    teacherDesc: '從烘焙化學到原料選擇，系統化剖析麵粉、水分、發酵與溫度的細節，扎實打好烘焙基礎。',
-    courseTitle: '掌握溫度與配方的精準奧秘',
-  },
+// 取得精選講師
+const homeDashboardStore = useHomeDashboardStore();
+onMounted(async () => {
+  await homeDashboardStore.fetchTeacherFeatured();
+  teachers.value = homeDashboardStore.highlightedTeachers;
+});
+
+// 假資料圖片陣列（順序對應後端回傳的前 4 筆）
+const teacherImages = [
+  'https://i.postimg.cc/0ygH2LNg/professional-baker-woman.jpg',
+  'https://i.postimg.cc/MHTgVRCh/grandpa-chef.jpg',
+  'https://i.postimg.cc/d1vYkhtY/chef-girl.jpg',
+  'https://i.postimg.cc/VNKx6DTj/professional-man.jpg',
 ];
 
-// 加上 teacherImgAlt 屬性
-const instructors: Instructor[] = rawInstructors.map((instructor) => ({
-  ...instructor,
-  teacherImgAlt: `${instructor.name}照片`,
-}));
+// 補上 alt & 合併圖片的 computed 陣列
+const instructors = computed(() =>
+  teachers.value.map((item, index) => ({
+    ...item,
+    teacherImgUrl: item.teacher_image_url || teacherImages[index] || '',
+    teacherImgAlt: `${item.teacher_name}照片`,
+  }))
+);
 </script>
 
 <style scoped>

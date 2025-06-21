@@ -40,12 +40,23 @@
             :key="item.course_id"
             class="flex items-start gap-3 border-b border-white p-4"
           >
-            <img :src="item.course_smallimage" class="w-25 h-18.5 object-cover rounded" />
-            <div class="flex-1">
-              <div class="font-bold line-height-5 text-white clamped-text">{{ item.course_name }}</div>
-              <div class="text-3.5 text-neutral_200 mt-2">{{ formatCurrency(item.price) }}</div>
+            <div class="group flex flex-1 cursor-pointer items-start gap-4 no-underline" @click="goToCourse(item.course_id)"
+            >
+              <div
+              class="w-25 h-18.5 shrink-0 overflow-hidden rounded-md transition-shadow duration-300 group-hover:shadow-lg"
+              >
+                <img
+                  :src="item.course_small_imageurl"
+                  alt="課程小圖"
+                  class="w-full h-full object-cover transition-transform duration-300 group-hover:scale-105"
+                />
+              </div>
+              <div class="flex-1">
+                <div class="font-bold line-height-5 text-white clamped-text">{{ item.course_name }}</div>
+                <div class="text-3.5 text-neutral_200 mt-2">{{ formatCurrency(item.price) }}</div>
+              </div>
             </div>
-            <baseButton text @click="handleRemoveFromCart(item.course_id)" icon="i-ion:trash-outline" iconClass="w-4 h-4 text-neutral_200 hover:text-primaryDefault" />
+            <baseButton text @click="handleRemoveFromCart(item.cart_item_id ?? item.course_id)" icon="i-ion:trash-outline" iconClass="w-4 h-4 text-neutral_200 hover:text-primaryDefault" />
           </div>
         </div>
 
@@ -65,7 +76,8 @@
 <script setup lang="ts">
 import { useCartStore } from '@/stores/models/cart/store';
 import { useCartUIStore } from '@/stores/models/cart/uiStore';
-import { useRouter } from 'vue-router';
+import { useRouter, useRoute } from 'vue-router';
+import { watch } from 'vue';
 import baseButton from '@/components/layout/baseButton.vue';
 import { useMessage } from 'naive-ui';
 
@@ -73,17 +85,34 @@ const message = useMessage();
 
 const cartStore = useCartStore();
 const uiCartStore = useCartUIStore();
-
+const route = useRoute();
 const router = useRouter();
+
+/**
+ * 只要路由的完整路徑（含 query/hash）改變就關閉購物車
+ * 注意：第一次載入元件時也會觸發一次 watch，
+ *      因為不想讓那一次把購物車側邊欄關掉（使用者可能剛點開），
+ *      所以用 immediate: false 避免初始執行。
+ */
+watch(
+  () => route.fullPath,
+  () => {
+    uiCartStore.closeCart();
+  },
+  { immediate: false }
+);
+
 const goToCart = () => {
-  uiCartStore.isCartOpen = false;
-  router.push('/home/cart-flow/cart');
+  router.push({ name: 'Cart' });
 };
+const goToCourse = (id: string) => {
+  router.push({ name: 'Course', params: { id } });
+}
 
-const formatCurrency = (value: number, currency = 'NT$'): string => `${currency} ${value.toLocaleString('en-US')}`;
+const formatCurrency = (value?: number, currency = 'NT$'): string => `${currency} ${value?.toLocaleString('en-US')}`;
 
-const handleRemoveFromCart = async (courseId: string) => {
-  const res = await cartStore.removeItem(courseId);
+const handleRemoveFromCart = async (id: string) => {
+  const res = await cartStore.removeItem(id);
   message[res.success ? 'success' : 'error'](res.message);
 };
 </script>

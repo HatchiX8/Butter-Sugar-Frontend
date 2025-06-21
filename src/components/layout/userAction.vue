@@ -29,7 +29,7 @@ interface MenuOption {
   key: string;
 };
 const studentOptions: MenuOption[] = [
-  { label: '我的課程', key: 'course' },
+  { label: '我的課程', key: 'myCourse' },
   { label: '學生資料管理', key: 'studentProfile'  },
   { label: '訂單紀錄', key: 'orders',  },
   { label: '登出', key: 'logout' },
@@ -48,30 +48,30 @@ const userOptions = computed<MenuOption[]>(() =>
 
 const handleSelect = (key: string) => {
   switch (key) {
-    case 'course':
-      router.push('/home/course');
+    case 'myCourse':
+      router.push({ name: 'MyCourse' });
       break;
     case 'studentProfile':
-      router.push('/home/memberCenter/profile');
+      router.push({ name: 'StudentProfile' });
       break;
     case 'orders':
-      router.push('/home/memberCenter/orders');
+      router.push({ name: 'Orders' });
       break;
     case 'revenue':
-      router.push('/teacher/memberCenter/revenue');
+      router.push({ name: 'Revenue' });
       break;
     case 'dashboard':
-      router.push('/teacher/courseInfo');
+      router.push({ name: 'CourseInfo' });
       break;
     case 'teacherProfile':
-      router.push('/teacher/memberCenter/profile');
+      router.push({ name: 'TeacherProfile' });
       break;
     case 'logout':
       userStore.logout();
-      router.push('/home');
+      router.push({ name: 'HomeDashboard' });
       break;
     default:
-      router.push('/home');
+      router.push({ name: 'HomeDashboard' });
   }
 };
 
