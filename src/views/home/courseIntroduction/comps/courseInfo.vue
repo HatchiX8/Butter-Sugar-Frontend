@@ -3,7 +3,7 @@
     <!-- 課程資訊區塊 (左欄) -->
     <div class="flex flex-col gap-6 w-full box-border border border-white/20 p-6 rounded-[0.125rem] order-last md:order-first gap-25 md:w-[845px] md:p-6">
       <courseDetail :course-data="courseData" />
-      <courseIntro />
+      <courseIntro v-if="courseData" :course-data="courseData" />
       <courseChapter />
       <faq />
     </div>
@@ -30,19 +30,20 @@ import coursePurchase from './coursePurchase.vue';
 import courseIntro from './courseIntro.vue';
 import courseChapter from './courseChapter.vue';
 import faq from './faq.vue';
+import type { CourseData } from '@/types/course'
 
-interface CourseData {
-  id?: number;
-  title?: string;
-  teacher?: string;
-  description?: string;
-  hours?: number;
-  students?: number;
-  price?: number;
-  originPrice?: number;
-  is_bookmark?: boolean;
-  created_at?: string;
-}
+// interface CourseData {
+//   id?: number;
+//   title?: string;
+//   teacher?: string;
+//   description?: string;
+//   hours?: number;
+//   students?: number;
+//   price?: number;
+//   originPrice?: number;
+//   is_bookmark?: boolean;
+//   created_at?: string;
+// }
 defineProps<{
   courseData?: CourseData;
 }>();
