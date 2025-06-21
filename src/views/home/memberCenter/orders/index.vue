@@ -1,5 +1,5 @@
 <template>
-  <div class="w-80% max-w-200 mx-auto mb-20">
+  <div class="w-80% max-w-200 md:max-w-[1280px] mx-auto mb-20">
     <breadcrumbComps
       class="mt-30"
       :items="[
@@ -7,21 +7,14 @@
         { label: '訂單紀錄' }
       ]"
     />
-    <typography variant="h2" font-type="title" underline class="my-8 text-white">
-      訂單紀錄
-    </typography>
-    <n-select
-      v-model:value="value"
-      :options="options"
-      placeholder="所有訂單"
-      class="w-20% mb-6 ml-auto"
-    />
-    <n-data-table
-      :columns="columns"
-      :data="filteredOrders"
-      :bordered="true"
-      :pagination="false"
-    />
+    <typography variant="h2" font-type="title" underline class="text-white mb-8">訂單紀錄</typography>
+    <n-select v-model:value="value" :options="options" placeholder="所有訂單" class="w-20% mb-6 ml-auto"/>
+      <n-data-table
+        :columns="columns"
+        :data="orders"
+        :bordered="true"
+        :pagination="false"
+      />
   </div>
 </template>
 

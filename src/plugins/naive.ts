@@ -23,6 +23,9 @@ export function withNaiveProviders(App: Component) {
           NConfigProvider,
           {
             themeOverrides: {
+              Icon: {
+                color: colors.primaryDefault
+              },
               Input: {
                 border: `1px solid ${colors.black}`,
                 borderHover: `1px solid ${colors.black}`,
@@ -96,7 +99,12 @@ export function withNaiveProviders(App: Component) {
                     color: '#0D0B07', // 預設黑背景色
                     boxShadowFocus: '0 0 0 2px rgba(255, 255, 255, 0.2)',
                     border: '1px solid #FFFDFA',
-                    colorActive: '#1D1810'
+                    colorActive: '#1D1810',
+                    borderActive: '1px solid #D68E39',
+                    borderFocus: '1px solid #D68E39',
+                    borderHover: '1px solid #D68E39',
+                    caretColor: colors.primaryDefault,
+                    loadingColor: colors.primaryDefault,
                   },
                   InternalSelectMenu: {
                     color: '#3e382e', // 下拉選單背景色
