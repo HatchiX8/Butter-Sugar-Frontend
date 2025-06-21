@@ -10,6 +10,9 @@ export const useUserStore = defineStore('userStore', () => {
   // 使用者角色（預設 student）
   const role = ref<UserRole>('student');
 
+  /* 使用者顯示名稱（可先給空字串） */
+  const name = ref<string>('');
+
   // ----------寫入token----------
   const setToken = (token: string) => {
     userToken.value = token;
@@ -23,9 +26,13 @@ export const useUserStore = defineStore('userStore', () => {
   };
 
   return {
+    /** state */
     userToken,
-    isLoggedIn,
     role,
+    name,
+    /** getters */
+    isLoggedIn,
+    /** actions */
     setToken,
     logout,
   };
