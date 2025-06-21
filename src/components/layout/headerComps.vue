@@ -9,7 +9,9 @@
 
         <!-- 桌面版 nav -->
         <nav class="hidden md:flex items-center gap-4 max-w-[596px]">
-          <a href="#" class="p-2 text-white no-underline">探索課程</a>
+          <router-link to="/home/course-info" class="p-2 text-white no-underline">
+            探索課程
+          </router-link>
           <div class="relative flex items-center">
             <baseInput type="text" placeholder="輸入關鍵字搜尋" class="w-75 h-12 leading-12" />
             <div class="i-ion:search-outline absolute right-2 top-1/2 -translate-y-1/2 cursor-pointer text-5 text-neutral_300"></div>
