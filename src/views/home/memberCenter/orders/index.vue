@@ -24,6 +24,7 @@ import { useOrderStore } from '@/stores/models/orders/store';
 import breadcrumbComps from '@/components/layout/breadcrumbComps.vue';
 import typography from '@/components/layout/typography.vue';
 import type { Orders } from '@/api/orders/types';
+const orders = ref<Orders[]>([]); 
 
 // 下拉選項
 const options = [

@@ -114,7 +114,6 @@ const convertToCourseData = (apiCourse: courseListInfo | null): CourseData | nul
     course_goal: apiCourse.course_goal || '',
     course_description_imageUrl: apiCourse.course_description_imageUrl || null,
     course_small_imageUrl: apiCourse.course_small_imageUrl || '',
-    teacher_id: apiCourse.teacher_id || '',
   }
 }
 

@@ -20,7 +20,7 @@
         <!-- 講師左側 -->
         <div class="flex-shrink-0 w-60 bg-black p-4 text-center">
           <div class="teacher-avatar p-3 [background:url('@/assets/images/home/teacher-flower-lace.png')_center_center/contain_no-repeat]">
-            <img :src="instructor.avatarUrl" alt="講師頭像" class="w-24 h-24 mx-auto rounded-full object-cover" />
+            <img :src="instructor.avatar" alt="講師頭像" class="w-24 h-24 mx-auto rounded-full object-cover" />
           </div>
           <div class="text-sm text-black mt-4 py-2px [background:url('@/assets/images/home/teacher-flag.png')_center_center/contain_no-repeat]">精選講師</div>
           <div class="text-lg font-bold mt-2">{{ instructor.name }}</div>
@@ -38,7 +38,7 @@
             <p class="text-4 mb-4">
               {{ instructor.slogan }}
             </p>
-            <p class="text-neutral_100">{{ instructor.aboutMe }}</p>
+            <p class="text-neutral_100">{{ instructor.introduction }}</p>
           </div>
         </div>
       </div>
