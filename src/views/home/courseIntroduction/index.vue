@@ -16,10 +16,13 @@
         <tabs
           :course-data="courseData"
           :course-id="courseId"
-          :teacher-id="courseData?.teacher_id || ''"
+          :teacher-id="originalCourseData?.teacher_id || ''"
+          :loading="cartStore.loading"
           @tab-change="handleTabChange"
           @purchase="handlePurchase"
+          @add-to-cart="handleAddToCart"
           @toggle-bookmark="handleToggleBookmark"
+          @go-to-teacher="goToTeacherPage"
         />
       </div>
     </template>
@@ -37,6 +40,14 @@ import type { courseListInfo, CourseData, Teacher } from '@/types/course'
 
 import heroSection from './comps/heroSection.vue'
 import tabs from './comps/tabs.vue'
+// import { useCourseStore } from '@/stores/models/course/store'
+import { useCartStore } from '@/stores/models/cart/store'
+import { useMessage } from 'naive-ui'
+import { useRouter } from 'vue-router'
+import type { CartItem } from '@/api/cart/types'
+
+const message = useMessage()
+const router = useRouter()
 
 // 使用已定義的 CourseData 介面
 // 已從 @/types/course 導入
@@ -101,7 +112,9 @@ const convertToCourseData = (apiCourse: courseListInfo | null): CourseData | nul
     course_description: apiCourse.course_description || '',
     suitable_for: apiCourse.suitable_for || '',
     course_goal: apiCourse.course_goal || '',
-    course_description_imageUrl: apiCourse.course_description_imageUrl || null
+    course_description_imageUrl: apiCourse.course_description_imageUrl || null,
+    course_small_imageUrl: apiCourse.course_small_imageUrl || '',
+    teacher_id: apiCourse.teacher_id || '',
   }
 }
 
@@ -147,11 +160,6 @@ onMounted(async () => {
     // 無論如何都重新獲取課程資料，確保資料是最新的
     await fetchCourses()
 
-    // 獲取課程數據後，嘗試獲取講師數據
-    if (originalCourseData.value && originalCourseData.value.teacher_id) {
-      await fetchTeacher(originalCourseData.value.teacher_id);
-    }
-
     // 課程資料載入完成後，設置初始收藏狀態
     if (courseId.value) {
       isBookmarked.value = bookmarkStore.isBookmarked(courseId.value)
@@ -165,8 +173,31 @@ onMounted(async () => {
 const activeTab = ref('info')
 
 // 處理購買事件
-const handlePurchase = () => {
-  // 加入購買邏輯
+const cartStore = useCartStore()
+const handleAddToCart = async () => {
+  const course = courseData.value
+  if (!course) return
+
+  const cartItem: CartItem = {
+    course_id: course.uuid,
+    course_name: course.title,
+    price: course.price,
+    course_small_imageurl: course.course_small_imageUrl ?? '',
+  }
+
+  const res = await cartStore.addItem(cartItem)
+  message[res.success ? 'success' : 'error'](res.message)
+}
+const handlePurchase = async () => {
+  await handleAddToCart()
+  if (!cartStore.error) {
+    router.push({ name: 'Cart'});
+  }
+}
+
+// 前往講師頁面
+const goToTeacherPage = () => {
+  router.push({ name: 'HighlightedInstructor', params: { teacher_id: courseData.value?.teacher_id ?? '' } });
 }
 
 // 處理收藏切換事件
@@ -178,6 +209,7 @@ const handleToggleBookmark = (newState?: boolean) => {
     if (typeof newState === 'boolean') {
       // 直接使用子組件傳來的新狀態
       isBookmarked.value = newState
+      console.log(`更新本地收藏狀態: ${newState} for ${course.uuid}`)
     }
     // 只有當此方法直接從頁面調用且沒有傳入 newState 時，才調用 toggleBookmark
     else if (typeof newState === 'undefined') {

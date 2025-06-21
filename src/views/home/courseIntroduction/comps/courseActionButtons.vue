@@ -97,7 +97,7 @@ const handleBookmarkMouseUp = () => {
   if (isMouseDown.value) {
     // 使用 store 的 toggleBookmark 函數切換收藏狀態
     const newState = bookmarkStore.toggleBookmark(props.courseData.uuid)
-    
+
     // 通知父元件更新狀態
     emit('toggleBookmark', newState)
   }

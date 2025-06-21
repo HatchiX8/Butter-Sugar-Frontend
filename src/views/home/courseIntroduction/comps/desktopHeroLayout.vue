@@ -29,18 +29,26 @@ import { computed } from 'vue'
 import courseHeroContent from './courseHeroContent.vue'
 import courseActionButtons from './courseActionButtons.vue'
 interface CourseData {
-  link: string
-  id: number
-  img: string
-  title: string
-  teacher: string
-  description: string
-  rating: number
-  students: number
-  hours: number
-  price: number
-  originPrice: number
-  is_bookmark: boolean
+  link: string;
+  id: number;
+  uuid: string;
+  img: string;
+  title: string;
+  teacher: string;
+  description: string;
+  rating: number;
+  students: number;
+  hours: number;
+  price: number;
+  originPrice: number;
+  is_bookmark: boolean;
+  created_at: string;
+  course_description: string | null;
+  suitable_for: string | null;
+  course_goal: string | null;
+  course_description_imageUrl: string | null;
+  course_small_imageUrl: string | null;
+  teacher_id: string;
 }
 
 const props = defineProps<{

@@ -1,7 +1,7 @@
 import { defineStore } from 'pinia';
 import { ref, computed } from 'vue';
-import type { ApiResponse, Cart, CartItem, MergeCartData } from '@/api/cart/types';
-import { getCartList, addCartItem, removeCartItem, mergeCartList } from '@/api/cart/index';
+import type { ApiResponse, Cart, CartItem, CheckoutPayload } from '@/api/cart/types';
+import { getCartList, addCartItem, removeCartItem, mergeCartList, checkoutCart } from '@/api/cart/index';
 import { useUserStore } from '@/stores/models/user/store';
 import axios from 'axios';
 
@@ -28,7 +28,7 @@ export const useCartStore = defineStore('cart', () => {
   const totalPrice = computed(() =>
     model.value === 'api'
       ? (serverTotalPrice.value ?? 0)
-      : cartItems.value.reduce((sum, item) => sum + item.price, 0)
+      : cartItems.value.reduce((sum, item) => sum + (item?.price ?? 0), 0)
   );
 
   const loading = ref(false);
@@ -39,7 +39,7 @@ export const useCartStore = defineStore('cart', () => {
     if (axios.isAxiosError(err)) {
       // 優先取後端回傳的 message
       const msg = err.response?.data?.message
-      if (typeof msg === 'string') return err.response?.data?.message;
+      if (typeof msg === 'string') return msg;
     }
     if (typeof err === 'string') return err;
     if (err instanceof Error) return err.message;
@@ -58,9 +58,8 @@ export const useCartStore = defineStore('cart', () => {
 
     try {
       if (model.value === 'api') {
-        const res : ApiResponse<Cart> = await getCartList();
-        if (!res.status) throw new Error(res.message);
-        cartItems.value = res?.data?.items ?? [];
+        const res: ApiResponse<Cart> = await getCartList();
+        cartItems.value = res?.data?.cart_items ?? [];
         serverItemCount.value = res?.data?.item_count ?? 0;
         serverTotalPrice.value = res?.data?.total_price ?? 0;
       } else {
@@ -78,11 +77,9 @@ export const useCartStore = defineStore('cart', () => {
   const addItem = async (item: CartItem): Promise<ActionResult> => {
     loading.value = true;
     error.value = null;
-
     try {
       if (model.value === 'api') {
-        const res : ApiResponse<Cart> = await addCartItem(item.course_id);
-        if (!res.status) throw new Error(res.message);
+        const res: ApiResponse<Cart> = await addCartItem(item.course_id);
         await getCart(); // 新增後重新同步
         return { success: true, message: res.message };
       } else {
@@ -103,19 +100,18 @@ export const useCartStore = defineStore('cart', () => {
     }
   };
 
-  // 刪除項目
-  const removeItem = async (courseId: string): Promise<ActionResult> => {
+  // 刪除項目 (api 用 cart_item_id, localstorage 用 course_id)
+  const removeItem = async (id: string): Promise<ActionResult> => {
     loading.value = true;
     error.value = null;
 
     try {
       if (model.value === 'api') {
-        const res : ApiResponse<Cart> = await removeCartItem(courseId);
-        if (!res.status) throw new Error(res.message);
+        const res: ApiResponse<Cart> = await removeCartItem(id);
         await getCart(); // 刪除後重新同步
         return { success: true, message: res.message };
       } else {
-        cartItems.value = cartItems.value.filter(i => i.course_id !== courseId);
+        cartItems.value = cartItems.value.filter(i => i.course_id !== id);
         saveToLocalStorage();
         return { success: true, message: '已從購物車移除課程' };
       }
@@ -138,14 +134,44 @@ export const useCartStore = defineStore('cart', () => {
         const localCart = JSON.parse(localStorage.getItem('cart') || '[]');
         const courseIds = localCart.map((item: CartItem) => item.course_id);
 
-        const res : ApiResponse<MergeCartData> = await mergeCartList(courseIds);
-        if (!res.status) throw new Error(res.message);
+        await mergeCartList(courseIds);
         await getCart(); // 整合後重新同步
         localStorage.removeItem('cart');
       }
     } catch (err) {
-        const msg = getErrorMessage(err);
-        error.value = msg;
+        error.value = getErrorMessage(err);
+    } finally {
+      loading.value = false;
+    }
+  };
+
+  // 結帳：呼叫後端並自動送出藍新表單
+  const checkout = async (payload: CheckoutPayload): Promise<void> => {
+    loading.value = true;
+    error.value = null;
+
+    try {
+      // 1) 向後端拿 HTML
+      const html = await checkoutCart(payload);
+
+      // 2) 動態注入隱藏節點
+      const wrapperId = 'newebpay-wrapper';
+      let wrapper = document.getElementById(wrapperId);
+
+      // 若尚未存在就建立
+      if (!wrapper) {
+        wrapper = document.createElement('div');
+        wrapper.id = wrapperId;
+        wrapper.style.display = 'none'; // 隱藏
+        document.body.appendChild(wrapper);
+      }
+
+      // 3) 插入 HTML 並觸發 submit
+      wrapper.innerHTML = html;
+      (wrapper.querySelector('form') as HTMLFormElement | null)?.submit();
+    } catch (err) {
+      error.value = getErrorMessage(err);
+      console.error('結帳失敗：', error.value);
     } finally {
       loading.value = false;
     }
@@ -169,6 +195,7 @@ export const useCartStore = defineStore('cart', () => {
     getCart,
     addItem,
     removeItem,
-    mergeCart
+    mergeCart,
+    checkout,
   };
 });

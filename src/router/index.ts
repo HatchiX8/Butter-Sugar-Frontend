@@ -8,7 +8,7 @@ const router = createRouter({
       redirect: '/Home', // ✅ 訪問 / 時導向 /Home/homeDashboard
     },
     {
-      path: '/Home',
+      path: '/home',
       component: () => import('@/views/home/index.vue'), // 母頁
       children: [
         {
@@ -153,7 +153,7 @@ const router = createRouter({
 });
 
 router.beforeEach((to) => {
-  const publicPages = ['login', 'loginSuccess', 'HomeDashboard', 'Cart', 'CompTest', 'Course', 'CourseInfoList']; // 不用驗證的 route name
+  const publicPages = ['login', 'loginSuccess', 'HomeDashboard', 'Cart', 'CompTest', 'Course', 'CourseInfoList', 'HighlightedInstructor']; // 不用驗證的 route name
   const token = localStorage.getItem('access_token');
 
   if (!token && !publicPages.includes(to.name as string)) {
