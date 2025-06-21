@@ -6,8 +6,11 @@
   </div>
   <div v-else ref="dropdownRef" class="relative inline-block" @click.stop>
     <n-avatar round :size="40" class="cursor-pointer" :src="userImage" @click="toggleDropdown" />
-    <div v-if="showDropdown" class="w-150px absolute right-0 bg-black text-white shadow rounded z-50 mt-5">
-      <userDropdownMenu :options="userOptions" @select="handleSelect"/>
+    <div
+      v-if="showDropdown"
+      class="w-150px absolute right-0 z-50 mt-5 rounded bg-black text-white shadow"
+    >
+      <userDropdownMenu />
     </div>
   </div>
 </template>
@@ -44,9 +47,9 @@ const toggleDropdown = () => (showDropdown.value = !showDropdown.value);
 /* -------------- click-outside ---------------- */
 const dropdownRef = ref<HTMLElement | null>(null);
 const handleClickOutside = (e: MouseEvent) => {
-  if (!showDropdown.value) return;                   // 已收合就不判斷
+  if (!showDropdown.value) return; // 已收合就不判斷
   if (dropdownRef.value && !dropdownRef.value.contains(e.target as Node)) {
-    showDropdown.value = false;                      // 點到外部 → 收合
+    showDropdown.value = false; // 點到外部 → 收合
   }
 };
 onMounted(() => {
