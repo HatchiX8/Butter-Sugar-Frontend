@@ -34,11 +34,11 @@ export const useCourseQAStore = defineStore('courseQA', () => {
     }
   };
 
-  // 從API獲取課程問答數據
+  // 從 API 獲取課程問答數據
   const fetchCourseQA = async (courseId: string) => {
     if (!courseId) {
       hasError.value[courseId] = true;
-      errorMessage.value[courseId] = '無效的課程ID';
+      errorMessage.value[courseId] = '無效的課程 ID';
       return;
     }
 
@@ -47,18 +47,27 @@ export const useCourseQAStore = defineStore('courseQA', () => {
     errorMessage.value[courseId] = '';
 
     try {
+      // 備份當前課程的問答列表，避免覆蓋
+      const currentQAList = [...(qaList.value[courseId] || [])];
+
       // fetchCourseQuestions 已經處理了回應數據的解析
       const data = await fetchCourseQuestions(courseId);
 
-      // 將API返回的數據轉換為組件所需的格式
-      qaList.value[courseId] = data.map((item: QuestionResponse) => {
+      // 如果沒有新數據且已有現有數據，則保留現有數據
+      if (data.length === 0 && currentQAList.length > 0) {
+        return;
+      }
+
+      // 將 API 返回的數據轉換為組件所需的格式
+      const formattedData = data.map((item: QuestionResponse) => {
         // 處理回答陣列
         let formattedAnswers: Answer[] = [];
         if (item.answers && item.answers.length > 0) {
           formattedAnswers = item.answers.map((answer) => ({
             name: answer.user_name || '回答者',
             date: formatDate(answer.created_at),
-            role: answer.is_instructor || answer.user_role === 'teacher' ? '授課講師' : '',
+            // 僅當 is_instructor 為 true 時才顯示授課講師標籤
+            role: answer.is_instructor === true ? '授課講師' : '',
             content: answer.answer_text
           }));
         }
@@ -73,6 +82,9 @@ export const useCourseQAStore = defineStore('courseQA', () => {
           answer: formattedAnswers
         } as QA;
       });
+      
+      // 更新到狀態中，使用新的數組引用確保反應性更新
+      qaList.value[courseId] = formattedData;
     } catch (error) {
       hasError.value[courseId] = true;
       errorMessage.value[courseId] = error instanceof Error ? error.message : '獲取數據失敗';
@@ -86,7 +98,7 @@ export const useCourseQAStore = defineStore('courseQA', () => {
   const submitQuestion = async (courseId: string, content: string) => {
     if (!courseId) {
       hasError.value[courseId] = true;
-      errorMessage.value[courseId] = '無效的課程ID';
+      errorMessage.value[courseId] = '無效的課程id';
       return false;
     }
 
@@ -96,11 +108,28 @@ export const useCourseQAStore = defineStore('courseQA', () => {
       hasError.value[courseId] = false;
       errorMessage.value[courseId] = '';
 
-      // 調用 API 提交問題
-      await apiSubmitQuestion(courseId, content);
+      // 備份當前問答列表，確保不會丟失現有數據
+      const currentQAList = [...(qaList.value[courseId] || [])];
 
-      // 提交成功後重新獲取數據
-      await fetchCourseQA(courseId);
+      // 調用 API 提交問題
+      const newQuestion = await apiSubmitQuestion(courseId, content);
+
+      // 將新問題格式化並添加到現有列表中
+      if (newQuestion) {
+        // 格式化新問題
+        const formattedQuestion: QA = {
+          user: {
+            name: newQuestion.user_name || '提問者',
+            date: formatDate(newQuestion.created_at)
+          },
+          question: newQuestion.question_text,
+          answer: [] // 新提交的問題預設沒有回答
+        };
+
+        // 使用新的數組引用，確保反應性更新
+        qaList.value[courseId] = [formattedQuestion, ...currentQAList];
+      }
+
       return true;
     } catch (error) {
       hasError.value[courseId] = true;
