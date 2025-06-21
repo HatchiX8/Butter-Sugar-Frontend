@@ -24,6 +24,7 @@
         </li>
       </ul>
     </div>
+    <!--  -->
     <div v-if="canShowForm">
       <div class="w-40% mb-5">
         <div class="mb-5">
@@ -37,11 +38,16 @@
           </n-space>
         </div>
       </div>
-
+      <!--  -->
       <div v-show="courseTitle && optionsValue" class="w-40%">
         <div class="mb-5">
           <p>課程描述</p>
-          <n-input type="text" placeholder="請輸入課程描述" class="bg-black focus:outline-none" />
+          <n-input
+            v-model:value="course_banner_description"
+            type="text"
+            placeholder="請輸入課程描述"
+            class="bg-black focus:outline-none"
+          />
         </div>
         <div class="mb-5">
           <!-- banner圖片 -->
@@ -99,11 +105,17 @@
             </div>
           </div>
         </div>
-
+        <!-- 課程簡介 -->
         <div class="mb-5">
           <p>課程簡介</p>
-          <n-input type="text" placeholder="請輸入課程簡介" class="bg-black focus:outline-none" />
+          <n-input
+            v-model:value="course_description"
+            type="text"
+            placeholder="請輸入課程簡介"
+            class="bg-black focus:outline-none"
+          />
         </div>
+        <!-- 課程簡介圖片 -->
         <div class="mb-5">
           <p>課程簡介說明圖片</p>
           <div class="mb-5 flex gap-3">
@@ -137,7 +149,7 @@
             </div>
           </div>
         </div>
-
+        <!-- 預告片 -->
         <div class="mb-5">
           <p>課前準備</p>
           <p>預告片</p>
@@ -161,7 +173,7 @@
             </div>
           </div>
         </div>
-
+        <!-- 課程講義 -->
         <div class="mb-5">
           <p>課程講義</p>
           <div class="flex items-center justify-between">
@@ -187,38 +199,27 @@
 
         <div class="mb-5">
           <p>適合對象</p>
-          <n-input type="text" placeholder="請輸入適合對象" class="bg-black focus:outline-none" />
+          <n-input
+            v-model:value="suitable_for"
+            type="text"
+            placeholder="請輸入適合對象"
+            class="bg-black focus:outline-none"
+          />
         </div>
         <div class="mb-5">
           <p>課程目標</p>
-          <n-input type="text" placeholder="請輸入課程目標" class="bg-black focus:outline-none" />
+          <n-input
+            v-model:value="course_goal"
+            type="text"
+            placeholder="請輸入課程目標"
+            class="bg-black focus:outline-none"
+          />
         </div>
       </div>
     </div>
 
-    <button @click="modelValue = true">建立課程</button>
-    <div class="w-40% mb-5">
-      <p>講義</p>
-      <div class="flex items-center justify-between">
-        <!-- 左邊：已上傳影片 (這邊你之後可以放影片預覽 或 file name 等) -->
-        <div v-show="isFile" class="mr-4 flex-1">
-          <n-upload
-            ref="fileUploadRef"
-            accept="application/pdf,application/vnd.ms-powerpoint,application/vnd.openxmlformats-officedocument.presentationml.presentation,application/vnd.ms-excel,application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"
-            :max="1"
-            :custom-request="customFileUpload"
-            :show-file-list="true"
-            :show-trigger="false"
-            @remove="handleFileRemove"
-          />
-        </div>
-        <div v-show="!isFile">尚未選擇檔案</div>
-        <!-- 右邊：上傳按鈕 -->
-        <div>
-          <n-button @click="triggerFileUpload">上傳檔案</n-button>
-        </div>
-      </div>
-    </div>
+    <button v-if="!isSubmitCategory" @click="modelValue = true">建立課程</button>
+    <button v-if="isSubmitCategory" @click="submitForm" :disabled="!isAllFilled">儲存</button>
   </div>
   <titleModal
     v-model:modelValue="modelValue"
@@ -234,7 +235,7 @@
 import { ref, computed, watch } from 'vue';
 import titleModal from './titleModal.vue';
 import { baseInput } from '@/components/index';
-import type { AddChildRequestPayload } from '@/views/dashboard/type';
+import type { AddChildRequestPayload, courseSaveFormPostData } from '@/views/dashboard/type';
 import {
   apiPost_AddImg,
   apiDelete_DeleteImg,
@@ -246,6 +247,7 @@ import {
   apiDelete_DeleteTrailer,
   apiPost_AddHandouts,
   apiDelete_DeleteHandouts,
+  apiPost_SaveForm,
 } from '@/views/dashboard/api/index';
 
 // -----------emit&props-----------
@@ -260,6 +262,7 @@ interface Props {
 // -----------彈跳視窗-----------
 const modelValue = ref(false);
 const courseTitle = ref<string>('');
+const isSubmitCategory = ref(false);
 
 const handleAddTitle = async (title: string) => {
   courseTitle.value = title;
@@ -280,7 +283,6 @@ const options = [
   { label: '蛋糕', value: 4 },
 ];
 const optionsValue = ref();
-
 const titleId = ref();
 
 const handleAddCategory = async (categoryId: number) => {
@@ -291,10 +293,10 @@ const handleAddCategory = async (categoryId: number) => {
       categoryId,
     },
   });
+  isSubmitCategory.value = true;
 };
 
 const hasCategoryChanged = ref(false);
-
 watch(
   optionsValue,
   (newVal, oldVal) => {
@@ -340,7 +342,7 @@ const customVideoUpload = async ({
   onError: (err: Error) => void;
 }) => {
   try {
-    const result = await apiPost_AddTrailer('95bcf853-e86f-4cf6-8d7a-8d00fff0caad', file.file); // 你前面存好的課程 id
+    const result = await apiPost_AddTrailer(titleId.value, file.file); // 你前面存好的課程 id
     // imgUrl.value = result.data.imageUrl; // 如果你想預覽可以設這個
     console.log('檢視寫入', result);
 
@@ -358,7 +360,7 @@ const handleVideoRemove = () => {
 };
 
 const deleteTrailer = async () => {
-  const res = await apiDelete_DeleteTrailer('95bcf853-e86f-4cf6-8d7a-8d00fff0caad');
+  const res = await apiDelete_DeleteTrailer(titleId.value);
   console.log('刪除預告片成功', res);
 };
 // -----------------------------
@@ -386,7 +388,7 @@ const customFileUpload = async ({
   onError: (err: Error) => void;
 }) => {
   try {
-    const result = await apiPost_AddHandouts('95bcf853-e86f-4cf6-8d7a-8d00fff0caad', file.file); // 你前面存好的課程 id
+    const result = await apiPost_AddHandouts(titleId.value, file.file); // 你前面存好的課程 id
     // imgUrl.value = result.data.imageUrl; // 如果你想預覽可以設這個
     console.log('檢視寫入', result);
 
@@ -404,7 +406,7 @@ const handleFileRemove = () => {
 };
 
 const deleteHandouts = async () => {
-  const res = await apiDelete_DeleteHandouts('95bcf853-e86f-4cf6-8d7a-8d00fff0caad');
+  const res = await apiDelete_DeleteHandouts(titleId.value);
   console.log('刪除講義成功', res);
 };
 // -----------------------------
@@ -434,7 +436,7 @@ const customImgUpload = async ({
   onError: (err: Error) => void;
 }) => {
   try {
-    const result = await apiPost_AddImg('95bcf853-e86f-4cf6-8d7a-8d00fff0caad', file.file); // 你前面存好的課程 id
+    const result = await apiPost_AddImg(titleId.value, file.file); // 你前面存好的課程 id
     imgUrl.value = result.data.imageUrl; // 如果你想預覽可以設這個
     console.log('檢視寫入', imgUrl.value);
 
@@ -454,7 +456,7 @@ const handleImgRemove = () => {
 
 const deleteImg = async () => {
   try {
-    const res = await apiDelete_DeleteImg('95bcf853-e86f-4cf6-8d7a-8d00fff0caad');
+    const res = await apiDelete_DeleteImg(titleId.value);
     console.log('檢視回傳', res);
   } catch (err) {
     console.log('刪除失敗', err);
@@ -487,7 +489,7 @@ const customImgBannerUpload = async ({
   onError: (err: Error) => void;
 }) => {
   try {
-    const result = await apiPost_AddImgBanner('95bcf853-e86f-4cf6-8d7a-8d00fff0caad', file.file); // 你前面存好的課程 id
+    const result = await apiPost_AddImgBanner(titleId.value, file.file); // 你前面存好的課程 id
     imgBannerUrl.value = result.data.imageUrl; // 如果你想預覽可以設這個
     console.log('檢視寫入', imgBannerUrl.value);
 
@@ -507,7 +509,7 @@ const handleImgBannerRemove = () => {
 
 const deleteImgBanner = async () => {
   try {
-    const res = await apiDelete_DeleteImgBanner('95bcf853-e86f-4cf6-8d7a-8d00fff0caad');
+    const res = await apiDelete_DeleteImgBanner(titleId.value);
     console.log('檢視回傳', res);
   } catch (err) {
     console.log('刪除失敗', err);
@@ -540,13 +542,9 @@ const customImgDescriptionUpload = async ({
   onError: (err: Error) => void;
 }) => {
   try {
-    const result = await apiPost_AddImgDescription(
-      '95bcf853-e86f-4cf6-8d7a-8d00fff0caad',
-      file.file
-    ); // 你前面存好的課程 id
+    const result = await apiPost_AddImgDescription(titleId.value, file.file); // 你前面存好的課程 id
     imgDescriptionUrl.value = result.data.imageUrl; // 如果你想預覽可以設這個
     console.log('檢視寫入', imgDescriptionUrl.value);
-
     isImgDescription.value = true;
     onFinish(); // 通知 n-upload 成功
   } catch (err) {
@@ -563,7 +561,7 @@ const handleImgDescriptionRemove = () => {
 
 const deleteImgDescription = async () => {
   try {
-    const res = await apiDelete_DeleteImgDescription('95bcf853-e86f-4cf6-8d7a-8d00fff0caad');
+    const res = await apiDelete_DeleteImgDescription(titleId.value);
     console.log('檢視回傳', res);
   } catch (err) {
     console.log('刪除失敗', err);
@@ -574,11 +572,36 @@ const deleteImgDescription = async () => {
 // -----------表單內容-----------
 // 當滿足三個值都有的時候才會顯示表單內容
 const canShowForm = computed(() => !!courseTitle.value && !!optionsValue.value && !!titleId.value);
-// -----------------------------
 
-// -----------課程圖片API--------------
-// -----------------------------
+const suitable_for = ref<string>(''); // 適合對象
+const course_goal = ref<string>(''); // 課程目標
+const course_description = ref<string>(''); // 課程簡介
+const course_banner_description = ref<string>(''); // 課程橫幅描述
 
-// -----------區塊-----------
+const isAllFilled = computed(
+  () =>
+    suitable_for.value.trim() !== '' &&
+    course_goal.value.trim() !== '' &&
+    course_description.value.trim() !== '' &&
+    course_banner_description.value.trim() !== ''
+);
+
+const submitForm = () => {
+  const postData = {
+    suitable_for: suitable_for.value,
+    course_goal: course_goal.value,
+    course_description: course_description.value,
+    course_banner_description: course_banner_description.value,
+  };
+  submitFormApi(titleId.value, postData);
+};
+const submitFormApi = async (titleId: string, postData: courseSaveFormPostData) => {
+  try {
+    const res = await apiPost_SaveForm(titleId, postData);
+    console.log('檢視寫入', res);
+  } catch (err) {
+    console.log('寫入失敗', err);
+  }
+};
 // -----------------------------
 </script>

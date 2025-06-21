@@ -29,6 +29,12 @@ export interface courseAddCategoryResponse {
   };
 }
 
+export interface courseSaveFormPostData {
+  suitable_for: string;
+  course_goal: string;
+  course_description: string;
+  course_banner_description: string;
+}
 // ----------API參數型別----------
 interface AddTitlePayload {
   type: 'addTitle';

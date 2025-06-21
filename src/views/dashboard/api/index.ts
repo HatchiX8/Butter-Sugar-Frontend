@@ -4,6 +4,7 @@ import type {
   courseAddTitleResponse,
   courseAddCategoryPostData,
   courseAddCategoryResponse,
+  courseSaveFormPostData,
 } from '../type';
 
 // ----------標題&類別----------
@@ -123,7 +124,7 @@ export const apiDelete_DeleteTrailer = async (courseId: string) => {
 // 新增
 export const apiPost_AddHandouts = async (courseId: string, file: File) => {
   const formData = new FormData();
-  formData.append('handouts', file);
+  formData.append('handout', file);
 
   const res = await axiosInstance.post<{ data: { url: string } }>(
     `/api/v1/course/${courseId}/upload/course-handouts`,
@@ -141,6 +142,13 @@ export const apiDelete_DeleteHandouts = async (courseId: string) => {
   return res.data;
 };
 // ----------------------------------
+
+// ----------表單內容----------
+export const apiPost_SaveForm = async (courseId: string, postData: courseSaveFormPostData) => {
+  const res = await axiosInstance.post(`/api/v1/course/${courseId}/save`, postData);
+  return res.data;
+};
+// ---------------------------
 
 // export const apiFunctionName = async (postData: PostDataType) => {
 //   const res = await axios.post<ResponseType>('/your/api/path', postData);
