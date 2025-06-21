@@ -27,7 +27,7 @@
 
     <div class="tab-content">
       <div class="flex flex-col items-center mx-auto p-6 max-w-[1280px] w-full box-border mt-15">
-        <notify v-if="showNotify" />
+        <notify v-if="showNotify" :course-name="props.courseData?.title || ''" />
 
         <div class="w-full flex flex-col gap-6 max-w-[1280px] mx-auto items-center box-border md:flex-row md:items-start md:justify-center">
           <!-- 課程資訊區塊 (左欄) -->
@@ -35,14 +35,14 @@
             <!-- 根據當前標籤顯示不同內容 -->
             <template v-if="activeTab === 'info' || activeTab === 'chapters' || activeTab === 'faq'">
               <courseDetail v-if="props.courseData" :course-data="props.courseData" />
-              <courseIntro/>
+              <courseIntro v-if="props.courseData" :course-data="props.courseData" />
               <courseChapter/>
               <faq/>
             </template>
 
-            <courseFaq v-if="activeTab === 'questions'" />
+            <courseFaq v-if="activeTab === 'questions'" :course-id="props.courseId" />
 
-            <courseReview v-if="activeTab === 'reviews'" />
+            <courseReview v-if="activeTab === 'reviews'" :course-id="props.courseId" />
           </div>
 
           <!-- 右欄內容：購買課程和講師介紹 -->
@@ -57,7 +57,10 @@
             />
 
             <!-- 講師介紹區塊 -->
-            <teacherIntro class="mt-6" />
+            <teacherIntro 
+              class="mt-6" 
+              :teacher-id="props.teacherId" 
+            />
           </div>
         </div>
       </div>
@@ -76,12 +79,23 @@ import faq from './faq.vue';
 import coursePurchase from './coursePurchase.vue';
 import teacherIntro from './teacherIntro.vue';
 import courseReview from './courseReview.vue';
+import type { CourseData } from '@/types/course';
 
 const props = defineProps({
   courseData: {
-    type: Object,
+    type: Object as () => CourseData | null,
     required: false,
-    default: () => ({})
+    default: () => null
+  },
+  courseId: {
+    type: String,
+    required: false,
+    default: ''
+  },
+  teacherId: {
+    type: String,
+    required: false,
+    default: ''
   }
 });
 

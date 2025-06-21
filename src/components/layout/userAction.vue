@@ -20,6 +20,61 @@ import userDropdownMenu from './userDropdownMenu.vue';
 
 const userStore = useUserStore();
 const API_BASE = import.meta.env.VITE_API_URL;
+const onGoogleLogin = () => {
+  window.location.href = `${API_BASE}/api/v1/users/auth/google`;
+};
+
+// ----------登入後選單----------
+interface MenuOption {
+  label: string;
+  key: string;
+};
+const studentOptions: MenuOption[] = [
+  { label: '我的課程', key: 'myCourse' },
+  { label: '學生資料管理', key: 'studentProfile'  },
+  { label: '訂單紀錄', key: 'orders',  },
+  { label: '登出', key: 'logout' },
+];
+const teacherOptions: MenuOption[] = [
+  { label: '教師儀表板', key: 'revenue' },
+  { label: '課程管理', key: 'dashboard'  },
+  { label: '教師資料管理', key: 'teacherProfile'  },
+  { label: '登出', key: 'logout' },
+];
+
+// 根據角色取得選單
+const userOptions = computed<MenuOption[]>(() =>
+  userStore.role === 'teacher' ? teacherOptions : studentOptions
+);
+
+const handleSelect = (key: string) => {
+  switch (key) {
+    case 'myCourse':
+      router.push('/home/my-course');
+      break;
+    case 'studentProfile':
+      router.push('/home/memberCenter/profile');
+      break;
+    case 'orders':
+      router.push('/home/memberCenter/orders');
+      break;
+    case 'revenue':
+      router.push('/teacher/memberCenter/revenue');
+      break;
+    case 'dashboard':
+      router.push('/teacher/courseInfo');
+      break;
+    case 'teacherProfile':
+      router.push('/teacher/memberCenter/profile');
+      break;
+    case 'logout':
+      userStore.logout();
+      router.push('/home');
+      break;
+    default:
+      router.push('/home');
+  }
+};
 
 const userImage = ref('');
 const fetchData = async () => {

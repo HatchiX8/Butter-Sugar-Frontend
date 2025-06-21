@@ -25,6 +25,7 @@ import mobileHeroLayout from './mobileHeroLayout.vue'
 interface CourseData {
   link: string
   id: number
+  uuid: string
   img: string
   title: string
   teacher: string
@@ -43,14 +44,14 @@ const props = defineProps<{
 
 const emit = defineEmits<{
   purchase: []
-  toggleBookmark: []
+  toggleBookmark: [boolean]
 }>()
 
 const handlePurchase = () => {
   emit('purchase')
 }
 
-const handleToggleBookmark = () => {
-  emit('toggleBookmark')
+const handleToggleBookmark = (newState: boolean) => {
+  emit('toggleBookmark', newState)
 }
 </script>

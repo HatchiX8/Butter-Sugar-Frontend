@@ -19,7 +19,7 @@
         :course-data="courseData"
         button-style="mobile"
         @purchase="$emit('purchase')"
-        @toggle-bookmark="$emit('toggleBookmark')"
+        @toggle-bookmark="(newState) => $emit('toggleBookmark', newState)"
       />
     </div>
   </div>
@@ -31,6 +31,7 @@ import courseActionButtons from './courseActionButtons.vue'
 interface CourseData {
   link: string
   id: number
+  uuid: string
   img: string
   title: string
   teacher: string
@@ -50,6 +51,6 @@ defineProps<{
 
 defineEmits<{
   purchase: []
-  toggleBookmark: []
+  toggleBookmark: [boolean]
 }>()
 </script>

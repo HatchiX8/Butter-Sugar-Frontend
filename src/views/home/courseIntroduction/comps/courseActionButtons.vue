@@ -15,19 +15,21 @@
       @mousedown="handleBookmarkMouseDown"
       @mouseup="handleBookmarkMouseUp"
     >
-      {{ courseData.is_bookmark ? '已收藏' : '收藏' }}
-      <bookmarkIcon class="ml-2" :isBookmarked="courseData.is_bookmark"/>
+      {{ isBookmarked ? '已收藏' : '收藏' }}
+      <bookmarkIcon class="ml-2" :isBookmarked="isBookmarked"/>
     </n-button>
   </div>
 </template>
 
 <script setup lang="ts">
-import { ref, computed } from 'vue'
+import { ref, computed, onMounted } from 'vue'
 import bookmarkIcon from '@/components/layout/bookmarkIcon.vue'
 import arrowRightIcon from '@/components/layout/arrowRightIcon.vue'
+import { useBookmarkStore } from '@/stores/models'
 interface CourseData {
   link: string
   id: number
+  uuid: string
   img: string
   title: string
   teacher: string
@@ -49,10 +51,16 @@ const props = withDefaults(defineProps<{
 
 const emit = defineEmits<{
   purchase: []
-  toggleBookmark: []
+  toggleBookmark: [boolean]
 }>()
 
 const isMouseDown = ref(false)
+
+// 使用 Pinia store 管理收藏狀態
+const bookmarkStore = useBookmarkStore()
+
+// 使用計算屬性來獲取最新的收藏狀態
+const isBookmarked = computed(() => bookmarkStore.isBookmarked(props.courseData.uuid))
 
 const containerClass = computed(() =>
   props.buttonStyle === 'mobile' ? 'flex gap-2' : 'flex gap-2 flex-wrap'
@@ -71,7 +79,7 @@ const bookmarkButtonClass = computed(() => {
   const styleClass = props.buttonStyle === 'mobile'
     ? 'hero-btn-mobile flex-shrink-0'
     : 'hero-btn'
-  const bookmarkState = props.courseData.is_bookmark ? 'bookmarked' : 'not-bookmarked'
+  const bookmarkState = isBookmarked.value ? 'bookmarked' : 'not-bookmarked'
   return `${baseClass} ${styleClass} ${bookmarkState}`
 })
 
@@ -87,10 +95,23 @@ const handleBookmarkMouseDown = (event: Event) => {
 
 const handleBookmarkMouseUp = () => {
   if (isMouseDown.value) {
-    emit('toggleBookmark')
+    // 使用 store 的 toggleBookmark 函數切換收藏狀態
+    const newState = bookmarkStore.toggleBookmark(props.courseData.uuid)
+    
+    // 通知父元件更新狀態
+    emit('toggleBookmark', newState)
   }
   isMouseDown.value = false
 }
+
+// 初始化時從 store 載入收藏狀態
+onMounted(() => {
+  // 確保 store 中有此課程的收藏狀態
+  if (!bookmarkStore.isBookmarked(props.courseData.uuid) && props.courseData.is_bookmark) {
+    // 如果 props 中標記為已收藏但 store 中沒有，則更新 store
+    bookmarkStore.setBookmarkState(props.courseData.uuid, true)
+  }
+})
 </script>
 
 <style scoped>
