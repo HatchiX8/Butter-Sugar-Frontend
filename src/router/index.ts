@@ -2,6 +2,10 @@ import { createRouter, createWebHistory } from 'vue-router';
 
 const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
+  scrollBehavior() {
+    // 始終平滑滾動到頂部
+    return { top: 0, behavior: 'smooth' } as ScrollToOptions
+  },
   routes: [
     {
       path: '/',
@@ -22,7 +26,7 @@ const router = createRouter({
           component: () => import('@/views/home/courseIntroduction/index.vue'), // 課程介紹
         },
         {
-          path: 'course/course-page',
+          path: 'course/course-page/:id',
           name: 'CourseVideo',
           component: () => import('@/views/home/coursePage/index.vue'), // 課程影片
         },
@@ -156,7 +160,7 @@ router.beforeEach((to) => {
     'CompTest',
     'Course',
     'CourseInfoList',
-    'HighlightedInstructor',
+    'highlightedInstructor',
   ]; // 不用驗證的 route name
   const token = localStorage.getItem('access_token');
 

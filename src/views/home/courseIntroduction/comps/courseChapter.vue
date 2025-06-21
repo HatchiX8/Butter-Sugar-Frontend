@@ -4,43 +4,43 @@
 
       <n-collapse arrow-placement="right">
         <n-collapse-item title="章節一：課前準備與講義下載" name="1">
-          <router-link to="/">
+          <!-- <router-link to="/"> -->
             <typography variant="paragraph-medium" font-type="content" class="text-white mb-2 px-3 py-2">1-1 | 歐式麵包風格概論：從長棍到拖鞋麵包 (5:12)</typography>
-          </router-link>
+          <!-- </router-link> -->
         </n-collapse-item>
         <n-collapse-item title="章節二：理解歐式麵包與高水量麵糰的基礎理論" name="2">
           <div class="text-white">
-            <router-link to="/">
+            <!-- <router-link to="/"> -->
               <typography variant="paragraph-medium" font-type="content" class="text-white mb-2 px-3 py-2">1-1 | 歐式麵包風格概論：從長棍到拖鞋麵包 (5:12)</typography>
-            </router-link>
-            <router-link to="/">
+            <!-- </router-link> -->
+            <!-- <router-link to="/"> -->
               <typography variant="paragraph-medium" font-type="content" class="text-white mb-2 px-3 py-2">1-2 | 何謂高水量麵糰？水量比例與操作差異解析 (12:37)</typography>
-            </router-link>
-            <router-link to="/">
+            <!-- </router-link> -->
+            <!-- <router-link to="/"> -->
               <typography variant="paragraph-medium" font-type="content" class="text-white mb-2 px-3 py-2">1-3 | 麵粉與酵母的選擇對最終麵包的影響 (3:23)</typography>
-            </router-link>
-            <router-link to="/">
+            <!-- </router-link> -->
+            <!-- <router-link to="/"> -->
               <typography variant="paragraph-medium" font-type="content" class="text-white mb-2 px-3 py-2">1-4 | 基本麵筋結構與延展性理論 (8:11)</typography>
-            </router-link>
-            <router-link to="/">
+            <!-- </router-link> -->
+            <!-- <router-link to="/"> -->
               <typography variant="paragraph-medium" font-type="content" class="text-white mb-2 px-3 py-2">1-5 | 如何閱讀麵糰狀態（觀察黏性、溫度、氣泡）(2:53)</typography>
-            </router-link>
+            <!-- </router-link> -->
           </div>
         </n-collapse-item>
         <n-collapse-item title="章節三：發酵過程全解析（時間 × 酵母 × 環境）" name="3">
-          <router-link to="/">
+          <!-- <router-link to="/"> -->
             <typography variant="paragraph-medium" font-type="content" class="text-white mb-2 px-3 py-2">1-1 | 歐式麵包風格概論：從長棍到拖鞋麵包 (5:12)</typography>
-          </router-link>
+          <!-- </router-link> -->
         </n-collapse-item>
         <n-collapse-item title="章節四：經典高水量歐式麵包實作教學" name="4">
-          <router-link to="/">
+          <!-- <router-link to="/"> -->
             <typography variant="paragraph-medium" font-type="content" class="text-white mb-2 px-3 py-2">1-1 | 歐式麵包風格概論：從長棍到拖鞋麵包 (5:12)</typography>
-          </router-link>
+          <!-- </router-link> -->
         </n-collapse-item>
         <n-collapse-item title="章節五：進階實作與個人風格開發" name="5">
-          <router-link to="/">
+          <!-- <router-link to="/"> -->
             <typography variant="paragraph-medium" font-type="content" class="text-white mb-2 px-3 py-2">1-1 | 歐式麵包風格概論：從長棍到拖鞋麵包 (5:12)</typography>
-          </router-link>
+          <!-- </router-link> -->
         </n-collapse-item>
       </n-collapse>
   </div>

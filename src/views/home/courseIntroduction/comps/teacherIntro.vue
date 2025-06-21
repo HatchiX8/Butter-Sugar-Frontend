@@ -98,7 +98,6 @@ onMounted(() => {
   }
 });
 
-// const props = defineProps<{ teacher_id?: string }>();   // 由 tabs 傳入
 const emit = defineEmits(['go-to-teacher']);
 
 const goToTeacher = () => {

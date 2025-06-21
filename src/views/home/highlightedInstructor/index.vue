@@ -166,7 +166,6 @@ onMounted(() => {
 
   // 獲取講師資料
   fetchInstructorData();
-
 });
 </script>
 

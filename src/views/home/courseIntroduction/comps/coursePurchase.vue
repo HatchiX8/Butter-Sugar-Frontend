@@ -10,19 +10,30 @@
     </div>
 
     <div class="flex gap-3">
-      <n-button type="primary" size="large" class="text-base font-semibold flex-1 p-6 max-h-12 max-w-132px bg-primaryDefault border-none hover:bg-primaryLight" @click="handlePurchase">
+      <!-- 已購買課程顯示「立即上課」按鈕 -->
+      <n-button v-if="isPurchased" type="primary" size="large" class="text-base font-semibold flex-1 p-6 max-h-12 max-w-full bg-primaryDefault border-none hover:bg-primaryLight" @click="handleStartLearning">
         <div class="flex items-center justify-center gap-2">
-          <typography variant="paragraph-regular" font-type="content" class="text-neutral-100">立即購課</typography>
+          <typography variant="paragraph-regular" font-type="content" class="text-neutral-100">立即上課</typography>
           <div class="i-ion:arrow-forward-outline cursor-pointer w-5 h-5"></div>
         </div>
       </n-button>
 
-      <n-button size="large" class="text-base font-semibold flex-1 p-6 max-h-12 bg-transparent border border-white text-white max-w-146px" @click="handleAddToCart">
-        <div class="flex items-center justify-center gap-2">
-          <typography variant="paragraph-regular" font-type="content" class="text-neutral-100">加入購物車</typography>
-          <div class="i-ion:cart cursor-pointer w-5 h-5"></div>
-        </div>
-      </n-button>
+      <!-- 未購買課程顯示「立即購買」和「加入購物車」按鈕 -->
+      <template v-else>
+        <n-button type="primary" size="large" class="text-base font-semibold flex-1 p-6 max-h-12 max-w-132px bg-primaryDefault border-none hover:bg-primaryLight" @click="handlePurchase">
+          <div class="flex items-center justify-center gap-2">
+            <typography variant="paragraph-regular" font-type="content" class="text-neutral-100">立即購買</typography>
+            <div class="i-ion:arrow-forward-outline cursor-pointer w-5 h-5"></div>
+          </div>
+        </n-button>
+
+        <n-button size="large" class="text-base font-semibold flex-1 p-6 max-h-12 bg-transparent border border-white text-white max-w-146px" @click="handleAddToCart">
+          <div class="flex items-center justify-center gap-2">
+            <typography variant="paragraph-regular" font-type="content" class="text-neutral-100">加入購物車</typography>
+            <div class="i-ion:cart cursor-pointer w-5 h-5"></div>
+          </div>
+        </n-button>
+      </template>
     </div>
   </div>
 </template>
@@ -30,7 +41,10 @@
 <script setup lang="ts">
 import typography from '@/components/layout/typography.vue';
 import { NButton } from 'naive-ui';
+import { useRouter } from 'vue-router';
+import { computed } from 'vue';
 import type { CartItem } from '@/api/cart/types';
+import { useMyCourseStore } from '@/stores/models/course/myCourseStore';
 
 interface CourseData {
   link: string;
@@ -59,7 +73,7 @@ const props = defineProps<{
   courseData?: CourseData;
 }>();
 
-const emit = defineEmits(['purchase', 'add-to-cart']);
+const emit = defineEmits(['purchase', 'add-to-cart', 'start-learning']);
 
 const cartItem: CartItem = {
   course_id: props.courseData?.uuid ?? '',
@@ -74,6 +88,27 @@ const handlePurchase = () => {
 
 const handleAddToCart = () => {
   emit('add-to-cart', cartItem)
+};
+
+// 路由跳轉
+const router = useRouter();
+
+// 使用 myCourseStore 判斷課程是否已購買
+const myCourseStore = useMyCourseStore();
+const isPurchased = computed(() => {
+  if (!props.courseData?.uuid) return false;
+  return myCourseStore.isPurchased(props.courseData.uuid);
+});
+
+// 處理「立即上課」按鈕點擊事件
+const handleStartLearning = () => {
+  if (!props.courseData?.uuid) return;
+  
+  // 跳轉至課程影片頁面
+  router.push(`/home/course/course-page/${props.courseData.uuid}`);
+  
+  // 同時觸發事件通知父組件
+  emit('start-learning', props.courseData.uuid);
 };
 </script>
 

@@ -22,8 +22,14 @@
       :last-study-date="course.last_accessed_at"
     />
   </div>
-  <div v-if="!loading && !error && filteredCourses.length === 0" class="w-full flex justify-center items-center py-10 text-neutral_200">
-    無符合條件的課程
+  <div v-if="!loading && !error && filteredCourses.length === 0" class="w-full flex flex-col items-center py-10 text-neutral_200">
+    <div v-if="courseList.length === 0" class="text-center">
+      <typography variant="h5" font-type="title" class="text-white mb-4">尚未購買課程</typography>
+      <typography variant="h5" font-type="title" class="text-white">立即探索課程，開始您的學習之旅!</typography>
+    </div>
+    <div v-else>
+      <typography variant="h5" font-type="title" class="text-white">無符合條件的課程</typography>無符合條件的課程
+    </div>
   </div>
 
   <!-- 分頁元件 -->
@@ -45,6 +51,7 @@ import { useRoute, useRouter } from 'vue-router';
 import MyCourseCard from './myCourseCard.vue';
 import PaginationComps from '@/components/layout/paginationComps.vue';
 import { getMyCourseList } from '../api';
+import Typography from '@/components/layout/typography.vue';
 import type { courseListInfo } from '../api/type';
 
 // 定義屬性
