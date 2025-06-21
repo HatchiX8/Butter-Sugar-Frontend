@@ -26,7 +26,7 @@ interface MenuOption {
 }
 
 const studentOptions: MenuOption[] = [
-  { label: '我的課程', key: 'course' },
+  { label: '我的課程', key: 'myCourse' },
   { label: '學生資料管理', key: 'studentProfile' },
   { label: '訂單紀錄', key: 'orders' },
   { label: '登出', key: 'logout' },
@@ -48,7 +48,7 @@ const userOptions = computed(() =>
 const handleSelect = (key: string) => {
   switch (key) {
     case 'course':
-      router.push('/home/course');
+      router.push('/home/my-course');
       break;
     case 'studentProfile':
       router.push('/home/memberCenter/profile');
