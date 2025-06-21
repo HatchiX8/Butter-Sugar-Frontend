@@ -161,10 +161,11 @@ const handleAddTitle = async (title: string) => {
 // -----------------------------
 
 // -----------下拉選單-----------
+// 這邊後續建議抓取API類別會比較準確
 const options = [
-  { label: '麵包', value: 1 },
-  { label: '蛋糕', value: 2 },
+  { label: '麵包', value: 2 },
   { label: '餅乾', value: 3 },
+  { label: '蛋糕', value: 4 },
 ];
 const optionsValue = ref();
 
@@ -180,15 +181,28 @@ const handleAddCategory = async (categoryId: number) => {
   });
 };
 
-watch(optionsValue, (newVal, oldVal) => {
-  if (newVal && newVal !== oldVal) {
-    console.log('觸發存檔請求API', newVal);
+const hasCategoryChanged = ref(false);
 
-    // handleAddCategory(optionsValue.value);
-  } else {
-    return;
+watch(
+  optionsValue,
+  (newVal, oldVal) => {
+    if (!hasCategoryChanged.value) {
+      hasCategoryChanged.value = true;
+      return; // 第一次監聽不觸發更新
+    }
+
+    if (newVal && newVal !== oldVal) {
+      console.log('觸發存檔請求API', newVal);
+      handleAddCategory(optionsValue.value);
+    } else {
+      return;
+    }
+  },
+  {
+    flush: 'post',
+    immediate: false,
   }
-});
+);
 // -----------------------------
 
 // -----------影片上傳-----------
