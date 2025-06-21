@@ -86,7 +86,7 @@
 import { ref, onMounted, onUnmounted } from 'vue';
 import cartSidebar from './cartSidebar.vue';
 import baseInput from '@/components/layout/baseInput.vue';
-import { userAction } from '@/components/index';
+import userAction from './userAction.vue';
 import { useCartStore } from '@/stores/models/cart/store';
 import { useCartUIStore } from '@/stores/models/cart/uiStore';
 import { useUserStore } from '@/stores/models/index';
