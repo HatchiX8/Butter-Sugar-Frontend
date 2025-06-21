@@ -41,6 +41,7 @@ interface CourseData {
   price: number
   originPrice: number
   is_bookmark: boolean
+  uuid: string
 }
 
 const props = defineProps<{
