@@ -11,7 +11,7 @@
     <my-course-card
       v-for="course in paginatedCourses"
       :key="course.id"
-      :link="`/home/course-chapter/${course.id}`"
+      :link="`/home/course/course-page/${course.id}`"
       :img="course.course_banner_imageUrl || '/src/assets/images/course/course1.jpg'"
       :title="course.course_name"
       :teacher="'講師'"
