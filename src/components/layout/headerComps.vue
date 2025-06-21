@@ -1,5 +1,5 @@
 <template>
-  <div :class="['fixed top-0 left-0 w-full z-50 transition-all duration-300', isScrolled ? 'bg-neutral_600/90 backdrop-blur' : 'bg-neutral_600']">
+  <div :class="['fixed top-0 left-0 w-full z-50 transition-all duration-300', isScrolled ? 'bg-neutral_600/90 backdrop-blur' : 'bg-neutral_600']">Add commentMore actions
     <header class="font-['Noto Serif TC'] border-b-1 border-b-solid border-white/25% flex h-20 items-center px-6 z-20 relative">
       <div class="mx-auto flex w-full max-w-7xl items-center justify-between">
         <!-- LOGO -->
@@ -45,7 +45,7 @@
     </header>
 
     <!-- 手機版選單區 -->
-    <template v-if="isMobileMenuOpen">
+    <template v-if="isMobileMenuOpen">Add commentMore actions
       <!-- ★ 透明遮罩：覆蓋整頁；點它就關閉 -->
       <div class="fixed inset-0 z-40 md:hidden bg-black/20" @click="isMobileMenuOpen = false"></div>
       <!-- 選單本體：加定位 & @click.stop -->
@@ -54,7 +54,6 @@
               px-6 pb-4 space-y-4 z-50 md:hidden"
         @click.stop
       >
-    <!-- <div v-if="isMobileMenuOpen" class="md:hidden w-90% bg-neutral_600 text-white px-6 pb-4 space-y-4"> -->
         <!-- 搜尋列 -->
         <div class="relative px-6 border-b-1 border-b-solid border-b-white/20 py-4">
           <baseInput type="text" placeholder="輸入關鍵字搜尋" class="w-full h-12 leading-12" />
@@ -63,7 +62,6 @@
 
         <!-- 選單項目 -->
         <a href="#" class="block border-b-1 border-b-solid border-b-white/20 px-6 py-6 text-white no-underline">探索課程</a>
-
         <template v-if="userStore.isLoggedIn">
           <!-- 登入後展開選單 -->
           <div @click="toggleUserDropdown" class="flex items-center justify-between px-6 py-6 cursor-pointer">
@@ -72,12 +70,12 @@
             <div :class="[isUserDropdownOpen ? 'i-ion:chevron-up' : 'i-ion:chevron-down','text-primaryDefault',]"></div>
           </div>
           <div v-if="isUserDropdownOpen" class="pl-8 space-y-2">
-            <userDropdownMenu />
+            <UserDropdownMenu />
           </div>
         </template>
 
         <template v-else>
-          <a href="/login" class="block border-b border-white/20 pb-2">登入 / 註冊</a>
+          <div class="py-5 px-6 pb-2 no-underline text-white"><userAction /></div>
         </template>
       </div>
     </template>
@@ -92,7 +90,7 @@ import { userAction } from '@/components/index';
 import { useCartStore } from '@/stores/models/cart/store';
 import { useCartUIStore } from '@/stores/models/cart/uiStore';
 import { useUserStore } from '@/stores/models/index';
-import userDropdownMenu from './userDropdownMenu.vue';
+import UserDropdownMenu from './UserDropdownMenu.vue';
 
 // 狀態
 const isScrolled = ref(false);
