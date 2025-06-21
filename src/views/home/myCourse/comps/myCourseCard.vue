@@ -1,7 +1,7 @@
 <template>
   <a :href="link">
     <n-card
-      class="w-[352px] sm:w-[280px] md:w-[280px] lg:w-[280px] h-[420px] relative bg-neutral_600 overflow-hidden"
+      class="w-[352px] sm:w-[280px] md:w-[270px] lg:w-[270px] h-[420px] relative bg-neutral_600 overflow-hidden"
       content-style="padding: 0;"
       :bordered="false"
     >
@@ -89,7 +89,7 @@ const props = defineProps<{
 const progressStyle = computed(() => {
   const progress = Number(props.learningProgress)
   if (progress === 0) return 'background-color: #9CA3AF;' // neutral_400 的實際顏色值
-  if (progress < 100) return 'background: linear-gradient(to right, #86EFAC, #4ADE80);' // green-200 到 green-300
-  return 'background: linear-gradient(to right, #22C55E, #16A34A);' // green-500 到 green-600
+  if (progress < 100) return 'background: linear-gradient(to right, #E2BD7D, #D68E39);' // primaryDefault 到 primaryLight
+  return 'background: linear-gradient(to right, #CE6F45, #E2BD7D);' // secondaryLight 到 primaryDefault
 })
 </script>

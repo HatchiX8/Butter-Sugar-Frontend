@@ -44,6 +44,7 @@ export interface CourseData {
   img: string;
   title: string;
   teacher: string;
+  teacher_id: string; // 教師 ID，用於獲取教師詳細資料
   description: string;
   rating: number;
   students: number;
@@ -57,5 +58,4 @@ export interface CourseData {
   course_goal: string | null;
   course_description_imageUrl: string | null;
   course_small_imageUrl: string | null;
-  teacher_id: string;
 }

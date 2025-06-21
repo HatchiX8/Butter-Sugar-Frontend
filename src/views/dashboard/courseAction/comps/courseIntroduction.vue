@@ -1,220 +1,207 @@
 <template>
   <div>
     <div class="mb-5">
-      <p>「撰寫一個吸引人的課程簡介」</p>
+      <p class="fw-bold text-primaryDefault">「撰寫一個吸引人的課程簡介」</p>
       <br />
-      <ul>
-        <li>
-          <p>課程名稱：簡單明瞭，能夠立即傳達課程主題。</p>
-        </li>
-        <li>
-          <p>課程簡介：用幾句話概述課程內容，強調獨特價值</p>
-        </li>
-        <li>
-          <p>適合對象：明確說明此課程適合哪些學員，如初學者、進階學員或專業人士。</p>
-        </li>
-        <li>
-          <p>課程長度與章節：說明學習時間，幫助學生規劃學習進度。</p>
-        </li>
-        <li>
-          <p>學習收穫：告知學生完成課程後能夠掌握的技能與應用。</p>
-        </li>
-        <li>
-          <p>課程圖片：視覺是學生對課程的第一印象，請選擇一張專屬於課程的封面</p>
-        </li>
+      <ul class="introDesc line-height-5 pl-6">
+        <li>課程名稱：簡單明瞭，能夠立即傳達課程主題。</li>
+        <li>課程簡介：用幾句話概述課程內容，強調獨特價值。</li>
+        <li>適合對象：明確說明此課程適合哪些學員，如初學者、進階學員或專業人士。</li>
+        <li>課程長度與章節：說明學習時間，幫助學生規劃學習進度。</li>
+        <li>學習收穫：告知學生完成課程後能夠掌握的技能與應用。</li>
+        <li>課程圖片：視覺是學生對課程的第一印象，請選擇一張專屬於課程的封面</li>
       </ul>
     </div>
-    <!--  -->
     <div v-if="canShowForm">
-      <div class="w-40% mb-5">
+      <div class="w-100% mb-5">
         <div class="mb-5">
-          <p>課程名稱</p>
+          <p class="fw-bold text-primaryDefault mb-3">課程名稱</p>
           <baseInput type="text" placeholder="請輸入課程名稱" v-model="courseTitle" />
         </div>
-        <div class="w-40% mb-5">
-          <p>課程類別</p>
+        <div class="w-100% mb-5">
+          <p class="fw-bold text-primaryDefault mb-3">課程類別</p>
           <n-space vertical>
             <n-select v-model:value="optionsValue" :options="options" placeholder="請選擇類別" />
           </n-space>
         </div>
       </div>
-      <!--  -->
-      <div v-show="courseTitle && optionsValue" class="w-40%">
-        <div class="mb-5">
-          <p>課程描述</p>
-          <n-input
-            v-model:value="course_banner_description"
-            type="text"
-            placeholder="請輸入課程描述"
-            class="bg-black focus:outline-none"
-          />
-        </div>
-        <div class="mb-5">
-          <!-- banner圖片 -->
-          <p>Banner圖片</p>
-          <div class="flex flex-col">
-            <!-- 左邊：已上傳影片 (這邊你之後可以放影片預覽 或 file name 等) -->
-            <div v-if="imgBannerUrl !== ''">
-              <img :src="imgBannerUrl" alt="課程圖片預覽" class="w-50 h-auto rounded-lg shadow" />
-            </div>
-            <div class="flex items-center justify-between">
-              <div v-show="isImgBanner" class="mr-4 flex-1">
-                <n-upload
-                  ref="imgBannerUploadRef"
-                  accept="image/*"
-                  :max="1"
-                  :custom-request="customImgBannerUpload"
-                  :show-file-list="true"
-                  :show-trigger="false"
-                  @remove="handleImgBannerRemove"
-                />
-              </div>
-              <div v-show="!isImg">尚未選擇Banner圖片</div>
-              <!-- 右邊：上傳按鈕 -->
-              <div>
-                <n-button @click="triggerImgBannerUpload">上傳Banner圖片</n-button>
-              </div>
-            </div>
-          </div>
-        </div>
-        <!-- 課程封面圖片 -->
-        <div class="mb-5">
-          <p>課程圖片</p>
-          <div class="flex flex-col">
-            <!-- 左邊：已上傳影片 (這邊你之後可以放影片預覽 或 file name 等) -->
-            <div v-if="imgUrl !== ''">
-              <img :src="imgUrl" alt="課程圖片預覽" class="w-50 h-auto rounded-lg shadow" />
-            </div>
-            <div class="flex items-center justify-between">
-              <div v-show="isImg" class="mr-4 flex-1">
-                <n-upload
-                  ref="imgUploadRef"
-                  accept="image/*"
-                  :max="1"
-                  :custom-request="customImgUpload"
-                  :show-file-list="true"
-                  :show-trigger="false"
-                  @remove="handleImgRemove"
-                />
-              </div>
-              <div v-show="!isImg">尚未選擇圖片</div>
-              <!-- 右邊：上傳按鈕 -->
-              <div>
-                <n-button @click="triggerImgUpload">上傳圖片</n-button>
-              </div>
-            </div>
-          </div>
-        </div>
-        <!-- 課程簡介 -->
-        <div class="mb-5">
-          <p>課程簡介</p>
-          <n-input
-            v-model:value="course_description"
-            type="text"
-            placeholder="請輸入課程簡介"
-            class="bg-black focus:outline-none"
-          />
-        </div>
-        <!-- 課程簡介圖片 -->
-        <div class="mb-5">
-          <p>課程簡介說明圖片</p>
-          <div class="mb-5 flex gap-3">
-            <div class="flex flex-col">
-              <!-- 左邊：已上傳影片 (這邊你之後可以放影片預覽 或 file name 等) -->
-              <div v-if="imgDescriptionUrl !== ''">
-                <img
-                  :src="imgDescriptionUrl"
-                  alt="課程簡介圖片預覽"
-                  class="w-50 h-auto rounded-lg shadow"
-                />
-              </div>
-              <div class="flex items-center justify-between">
-                <div v-show="isImgDescription" class="mr-4 flex-1">
-                  <n-upload
-                    ref="imgDescriptionUploadRef"
-                    accept="image/*"
-                    :max="1"
-                    :custom-request="customImgDescriptionUpload"
-                    :show-file-list="true"
-                    :show-trigger="false"
-                    @remove="handleImgDescriptionRemove"
-                  />
-                </div>
-                <div v-show="!isImgDescription">尚未選擇簡介圖片</div>
-                <!-- 右邊：上傳按鈕 -->
-                <div>
-                  <n-button @click="triggerImgDescriptionUpload">上傳簡介圖片</n-button>
-                </div>
-              </div>
-            </div>
-          </div>
-        </div>
-        <!-- 預告片 -->
-        <div class="mb-5">
-          <p>課前準備</p>
-          <p>預告片</p>
-          <div class="flex items-center justify-between">
-            <!-- 左邊：已上傳影片 (這邊你之後可以放影片預覽 或 file name 等) -->
-            <div v-show="isVideo" class="mr-4 flex-1">
-              <n-upload
-                ref="videoUploadRef"
-                accept="video/mp4"
-                :max="1"
-                :custom-request="customVideoUpload"
-                :show-file-list="true"
-                :show-trigger="false"
-                @remove="handleVideoRemove"
-              />
-            </div>
-            <div v-show="!isVideo">尚未選擇影片</div>
-            <!-- 右邊：上傳按鈕 -->
-            <div>
-              <n-button @click="triggerVideoUpload">上傳影片</n-button>
-            </div>
-          </div>
-        </div>
-        <!-- 課程講義 -->
-        <div class="mb-5">
-          <p>課程講義</p>
-          <div class="flex items-center justify-between">
-            <!-- 左邊：已上傳影片 (這邊你之後可以放影片預覽 或 file name 等) -->
-            <div v-show="isFile" class="mr-4 flex-1">
-              <n-upload
-                ref="fileUploadRef"
-                accept="video/mp4,application/pdf,application/vnd.ms-powerpoint,application/vnd.openxmlformats-officedocument.presentationml.presentation,application/msword,application/vnd.openxmlformats-officedocument.wordprocessingml.document"
-                :max="1"
-                :custom-request="customFileUpload"
-                :show-file-list="true"
-                :show-trigger="false"
-                @remove="handleFileRemove"
-              />
-            </div>
-            <div v-show="!isFile">尚未選擇檔案</div>
-            <!-- 右邊：上傳按鈕 -->
-            <div>
-              <n-button @click="triggerFileUpload">上傳檔案</n-button>
-            </div>
-          </div>
-        </div>
+    </div>
 
-        <div class="mb-5">
-          <p>適合對象</p>
-          <n-input
-            v-model:value="suitable_for"
-            type="text"
-            placeholder="請輸入適合對象"
-            class="bg-black focus:outline-none"
-          />
+    <div v-show="courseTitle && optionsValue" class="w-40%">
+      <div class="mb-5">
+        <p class="fw-bold text-primaryDefault mb-3">課程描述</p>
+        <n-input
+          v-model:value="course_banner_description"
+          type="text"
+          placeholder="請輸入課程描述"
+          class="bg-black focus:outline-none"
+        />
+      </div>
+      <div class="mb-5">
+        <!-- banner圖片 -->
+        <p class="fw-bold text-primaryDefault mb-3">Banner圖片</p>
+        <div class="flex flex-col">
+          <!-- 左邊：已上傳影片 (這邊你之後可以放影片預覽 或 file name 等) -->
+          <div v-if="imgBannerUrl !== ''">
+            <img :src="imgBannerUrl" alt="課程圖片預覽" class="w-50 h-auto rounded-lg shadow" />
+          </div>
+          <div class="flex items-center justify-between">
+            <div v-show="isImgBanner" class="mr-4 flex-1">
+              <n-upload
+                ref="imgBannerUploadRef"
+                accept="image/*"
+                :max="1"
+                :custom-request="customImgBannerUpload"
+                :show-file-list="true"
+                :show-trigger="false"
+                @remove="handleImgBannerRemove"
+              />
+            </div>
+            <div v-show="!isImg">尚未選擇Banner圖片</div>
+            <!-- 右邊：上傳按鈕 -->
+            <div>
+              <n-button @click="triggerImgBannerUpload">上傳Banner圖片</n-button>
+            </div>
+          </div>
         </div>
-        <div class="mb-5">
-          <p>課程目標</p>
-          <n-input
-            v-model:value="course_goal"
-            type="text"
-            placeholder="請輸入課程目標"
-            class="bg-black focus:outline-none"
-          />
+      </div>
+      <!-- 課程封面圖片 -->
+      <div class="mb-5">
+        <p class="fw-bold text-primaryDefault mb-3">課程圖片</p>
+        <div class="flex flex-col">
+          <!-- 左邊：已上傳影片 (這邊你之後可以放影片預覽 或 file name 等) -->
+          <div v-if="imgUrl !== ''">
+            <img :src="imgUrl" alt="課程圖片預覽" class="w-50 h-auto rounded-lg shadow" />
+          </div>
+          <div class="flex items-center justify-between">
+            <div v-show="isImg" class="mr-4 flex-1">
+              <n-upload
+                ref="imgUploadRef"
+                accept="image/*"
+                :max="1"
+                :custom-request="customImgUpload"
+                :show-file-list="true"
+                :show-trigger="false"
+                @remove="handleImgRemove"
+              />
+            </div>
+            <div v-show="!isImg">尚未選擇圖片</div>
+            <!-- 右邊：上傳按鈕 -->
+            <div>
+              <n-button @click="triggerImgUpload">上傳圖片</n-button>
+            </div>
+          </div>
         </div>
+      </div>
+      <!-- 課程簡介 -->
+      <div class="mb-5">
+        <p class="fw-bold text-primaryDefault mb-3">課程簡介</p>
+        <n-input
+          v-model:value="course_description"
+          type="text"
+          placeholder="請輸入課程簡介"
+          class="bg-black focus:outline-none"
+        />
+      </div>
+      <!-- 課程簡介圖片 -->
+      <div class="mb-5">
+        <p class="fw-bold text-primaryDefault mb-3">課程簡介說明圖片</p>
+        <div class="mb-5 flex gap-3">
+          <div class="flex flex-col">
+            <!-- 左邊：已上傳影片 (這邊你之後可以放影片預覽 或 file name 等) -->
+            <div v-if="imgDescriptionUrl !== ''">
+              <img
+                :src="imgDescriptionUrl"
+                alt="課程簡介圖片預覽"
+                class="w-50 h-auto rounded-lg shadow"
+              />
+            </div>
+            <div class="flex items-center justify-between">
+              <div v-show="isImgDescription" class="mr-4 flex-1">
+                <n-upload
+                  ref="imgDescriptionUploadRef"
+                  accept="image/*"
+                  :max="1"
+                  :custom-request="customImgDescriptionUpload"
+                  :show-file-list="true"
+                  :show-trigger="false"
+                  @remove="handleImgDescriptionRemove"
+                />
+              </div>
+              <div v-show="!isImgDescription">尚未選擇簡介圖片</div>
+              <!-- 右邊：上傳按鈕 -->
+              <div>
+                <n-button @click="triggerImgDescriptionUpload">上傳簡介圖片</n-button>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <!-- 預告片 -->
+      <div class="mb-5">
+        <p class="fw-bold text-primaryDefault mb-3">課前準備</p>
+        <p>預告片</p>
+        <div class="flex items-center justify-between">
+          <!-- 左邊：已上傳影片 (這邊你之後可以放影片預覽 或 file name 等) -->
+          <div v-show="isVideo" class="mr-4 flex-1">
+            <n-upload
+              ref="videoUploadRef"
+              accept="video/mp4"
+              :max="1"
+              :custom-request="customVideoUpload"
+              :show-file-list="true"
+              :show-trigger="false"
+              @remove="handleVideoRemove"
+            />
+          </div>
+          <div v-show="!isVideo">尚未選擇影片</div>
+          <!-- 右邊：上傳按鈕 -->
+          <div>
+            <n-button @click="triggerVideoUpload">上傳影片</n-button>
+          </div>
+        </div>
+      </div>
+      <!-- 課程講義 -->
+      <div class="mb-5">
+        <p>課程講義</p>
+        <div class="flex items-center justify-between">
+          <!-- 左邊：已上傳影片 (這邊你之後可以放影片預覽 或 file name 等) -->
+          <div v-show="isFile" class="mr-4 flex-1">
+            <n-upload
+              ref="fileUploadRef"
+              accept="video/mp4,application/pdf,application/vnd.ms-powerpoint,application/vnd.openxmlformats-officedocument.presentationml.presentation,application/msword,application/vnd.openxmlformats-officedocument.wordprocessingml.document"
+              :max="1"
+              :custom-request="customFileUpload"
+              :show-file-list="true"
+              :show-trigger="false"
+              @remove="handleFileRemove"
+            />
+          </div>
+          <div v-show="!isFile">尚未選擇檔案</div>
+          <!-- 右邊：上傳按鈕 -->
+          <div>
+            <n-button @click="triggerFileUpload">上傳檔案</n-button>
+          </div>
+        </div>
+      </div>
+
+      <div class="mb-5">
+        <p class="fw-bold text-primaryDefault mb-3">適合對象</p>
+        <n-input
+          v-model:value="suitable_for"
+          type="text"
+          placeholder="請輸入適合對象"
+          class="bg-black focus:outline-none"
+        />
+      </div>
+      <div class="mb-5">
+        <p class="fw-bold text-primaryDefault mb-3">課程目標</p>
+        <n-input
+          v-model:value="course_goal"
+          type="text"
+          placeholder="請輸入課程目標"
+          class="bg-black focus:outline-none"
+        />
       </div>
     </div>
 
@@ -604,3 +591,9 @@ const submitFormApi = async (titleId: string, postData: courseSaveFormPostData) 
 };
 // -----------------------------
 </script>
+<style scoped>
+.introDesc li {
+  padding: 10px 0;
+  list-style: disc;
+}
+</style>

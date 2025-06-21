@@ -8,7 +8,7 @@ export const useBookmarkStore = defineStore('bookmark', {
   state: (): BookmarkState => ({
     bookmarkedCourses: {}
   }),
-  
+
   actions: {
     // 初始化從 localStorage 載入收藏狀態
     initializeFromLocalStorage() {
@@ -34,14 +34,12 @@ export const useBookmarkStore = defineStore('bookmark', {
     toggleBookmark(courseUuid: string): boolean {
       const currentState = this.isBookmarked(courseUuid)
       const newState = !currentState
-      
+
       this.bookmarkedCourses[courseUuid] = newState
-      
+
       // 保存到 localStorage
       localStorage.setItem(`bookmark_${courseUuid}`, newState.toString())
-      
-      console.log(`切換收藏: ${courseUuid}, 新狀態: ${newState}`)
-      
+
       return newState
     },
 
@@ -49,8 +47,6 @@ export const useBookmarkStore = defineStore('bookmark', {
     setBookmarkState(courseUuid: string, state: boolean) {
       this.bookmarkedCourses[courseUuid] = state
       localStorage.setItem(`bookmark_${courseUuid}`, state.toString())
-      
-      console.log(`設置收藏狀態: ${courseUuid} => ${state}`)
     }
   }
 })

@@ -9,7 +9,7 @@
         aria-modal="true"
         closable
         @close="show = false"
-        class="w-150"
+        class="w-[80%] my-0 mx-auto md:w-[450px] md:m-auto"
       >
         <div class="text-4 max-h-[60vh] overflow-y-auto leading-normal">
           <slot />
