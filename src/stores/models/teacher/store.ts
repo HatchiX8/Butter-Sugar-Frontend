@@ -32,7 +32,7 @@ export const useTeacherStore = defineStore('teacherStore', () => {
   const teachers = ref<Record<string, Teacher>>({});
   const loading = ref<boolean>(false);
   const error = ref<string | null>(null);
-  
+
   // 用於調試
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   const lastApiResponse = ref<any>(null);
@@ -52,21 +52,21 @@ export const useTeacherStore = defineStore('teacherStore', () => {
 
       // 從 API 獲取資料
       const response = await fetch(`https://buttersugar-backend.zeabur.app/api/v1/teacher/${teacherId}`)
-      
+
       if (!response.ok) {
         throw new Error(`獲取講師資料失敗：${response.status}`)
       }
 
       const responseData = await response.json()
       lastApiResponse.value = responseData
-      
+
       if (!responseData || !responseData.status || !responseData.data || !responseData.data.teacher) {
         throw new Error('講師資料格式錯誤或資料為空')
       }
 
       // API 返回的資料結構是 { status: true, message: "取得資料成功", data: { teacher: {...} } }
       const teacherData = responseData.data.teacher as TeacherApiResponse
-      
+
       // 保存到 store 中，轉換 API 欄位為前端使用的欄位名稱
       const teacher: Teacher = {
         id: teacherData.teacher_id,

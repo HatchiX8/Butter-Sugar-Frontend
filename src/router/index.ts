@@ -80,7 +80,7 @@ const router = createRouter({
           ],
         },
         {
-          path: 'highlighted-instructor',
+          path: 'highlighted-instructor/:id?',
           name: 'highlightedInstructor',
           component: () => import('@/views/home/highlightedInstructor/index.vue'), // 精選講師
         },

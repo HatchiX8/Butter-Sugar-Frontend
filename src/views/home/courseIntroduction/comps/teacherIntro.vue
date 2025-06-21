@@ -36,15 +36,13 @@
       </div>
     </div>
 
-    <div class="mb-4">
-      <typography v-if="teacherData.slogan" variant="h6" font-type="title" class="text-white mb-3">
-        「{{ teacherData.slogan }}」
-      </typography>
+    <typography v-if="teacherData.slogan" variant="h6" font-type="title" class="text-white mb-4">
+      「{{ teacherData.slogan }}」
+    </typography>
 
-      <typography variant="paragraph-regular" font-type="content" class="text-neutral-100">
-        {{ teacherData.introduction }}
+    <typography variant="paragraph-regular" font-type="content" class="text-neutral-100">
+      {{ teacherData.introduction }}
       </typography>
-    </div>
 
     <router-link :to="`/Home/highlighted-instructor/${props.teacherId}`" v-if="props.teacherId">
       <n-button size="large" class="px-3 py-6 max-w-164px">
@@ -58,8 +56,7 @@
 </template>
 
 <script setup lang="ts">
-import { ref, computed, onMounted, watch } from 'vue';
-import { useRouter } from 'vue-router';
+import { ref, computed, onMounted } from 'vue';
 import { useTeacherStore } from '@/stores/models/teacher/store';
 import typography from '@/components/layout/typography.vue';
 import { NButton } from 'naive-ui';
@@ -73,7 +70,6 @@ const props = defineProps({
   }
 });
 
-const router = useRouter();
 const teacherStore = useTeacherStore();
 const isLoading = ref(false);
 const teacherData = computed(() => {
@@ -95,26 +91,10 @@ const loadTeacherData = async () => {
   isLoading.value = false;
 };
 
-// 前往講師頁面
-const goToTeacherPage = () => {
-  if (teacherData.value) {
-    router.push({
-      name: 'highlightedInstructor',
-      params: { teacherId: props.teacherId }
-    });
-  }
-};
-
 // 當組件掛載或 teacherId 變化時，加載講師資料
 onMounted(() => {
   if (props.teacherId) {
     loadTeacherData();
   }
 });
-
-watch(() => props.teacherId, (newId, oldId) => {
-  if (newId) {
-    loadTeacherData();
-  }
-}, { immediate: true });
 </script>
