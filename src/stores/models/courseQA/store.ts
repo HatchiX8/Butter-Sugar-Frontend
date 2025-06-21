@@ -1,7 +1,9 @@
 import { defineStore } from 'pinia';
 import { ref, computed } from 'vue';
+import axios from 'axios';
 import type { QA, Answer, QuestionResponse } from '@/api/courseQa/type';
 import { fetchCourseQuestions, submitQuestion as apiSubmitQuestion } from '@/api/courseQa/index';
+import { useUserStore } from '@/stores/models/index';
 
 export const useCourseQAStore = defineStore('courseQA', () => {
   // 狀態
@@ -31,6 +33,21 @@ export const useCourseQAStore = defineStore('courseQA', () => {
       return `${date.getFullYear()}/${String(date.getMonth() + 1).padStart(2, '0')}/${String(date.getDate()).padStart(2, '0')} ${String(date.getHours()).padStart(2, '0')}:${String(date.getMinutes()).padStart(2, '0')}:${String(date.getSeconds()).padStart(2, '0')}`;
     } catch {
       return dateString;
+    }
+  };
+
+  // 獲取當前使用者資訊
+  const getUserInfo = async () => {
+    const userStore = useUserStore();
+    if (!userStore.userToken) return null;
+
+    try {
+      const res = await axios.get(`${import.meta.env.VITE_API_URL}/api/v1/users/info`, {
+        headers: { Authorization: `Bearer ${userStore.userToken}` },
+      });
+      return res.data.data;
+    } catch (err) {
+      return null;
     }
   };
 
@@ -75,14 +92,14 @@ export const useCourseQAStore = defineStore('courseQA', () => {
         // 返回格式化後的問答數據
         return {
           user: {
-            name: item.user_name || '提問者',
+            name: item.user_name || '作者',  // 改為「作者」而非「提問者」
             date: formatDate(item.created_at)
           },
           question: item.question_text,
           answer: formattedAnswers
         } as QA;
       });
-      
+
       // 更新到狀態中，使用新的數組引用確保反應性更新
       qaList.value[courseId] = formattedData;
     } catch (error) {
@@ -111,15 +128,19 @@ export const useCourseQAStore = defineStore('courseQA', () => {
       // 備份當前問答列表，確保不會丟失現有數據
       const currentQAList = [...(qaList.value[courseId] || [])];
 
+      // 獲取當前使用者資訊
+      const userInfo = await getUserInfo();
+      const userName = userInfo?.name || userInfo?.nickname || '';
+
       // 調用 API 提交問題
       const newQuestion = await apiSubmitQuestion(courseId, content);
 
       // 將新問題格式化並添加到現有列表中
       if (newQuestion) {
-        // 格式化新問題
+        // 格式化新問題，優先使用 API 返回的使用者名稱，如果沒有則使用從使用者資訊中獲取的名稱
         const formattedQuestion: QA = {
           user: {
-            name: newQuestion.user_name || '提問者',
+            name: newQuestion.user_name || userName || '作者',  // 優先使用 API 返回的名稱，其次使用使用者資訊中的名稱，最後使用「作者」
             date: formatDate(newQuestion.created_at)
           },
           question: newQuestion.question_text,
