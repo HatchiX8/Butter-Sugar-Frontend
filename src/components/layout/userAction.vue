@@ -7,13 +7,13 @@
   <div v-else ref="dropdownRef" class="relative inline-block" @click.stop>
     <n-avatar round :size="40" class="cursor-pointer" :src="userImage" @click="toggleDropdown" />
     <div v-if="showDropdown" class="w-150px absolute right-0 bg-black text-white shadow rounded z-50 mt-5">
-      <userDropdownMenu />
+      <userDropdownMenu :options="userOptions" @select="handleSelect"/>
     </div>
   </div>
 </template>
 
 <script setup lang="ts">
-import { onMounted, onUnmounted, ref } from 'vue';
+import { onMounted, onUnmounted, ref, computed } from 'vue';
 import { useUserStore } from '@/stores/models/index';
 import axios from 'axios';
 import userDropdownMenu from './userDropdownMenu.vue';
@@ -88,10 +88,6 @@ const fetchData = async () => {
   }
 };
 
-const onGoogleLogin = () => {
-  window.location.href = `${API_BASE}/api/v1/users/auth/google`;
-};
-
 const showDropdown = ref(false);
 const toggleDropdown = () => (showDropdown.value = !showDropdown.value);
 
@@ -103,7 +99,6 @@ const handleClickOutside = (e: MouseEvent) => {
     showDropdown.value = false;                      // 點到外部 → 收合
   }
 };
-
 onMounted(() => {
   fetchData();
   document.addEventListener('click', handleClickOutside);
