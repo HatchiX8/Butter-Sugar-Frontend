@@ -45,7 +45,7 @@
     </n-collapse>
     <div>
       <div class="w-40% mb-5">
-        <button @click="preToggle" class="bg-secondaryDefault text-white border-none rounded-md px-4 py-3 mr-4">新增章節</button>
+        <button class="bg-secondaryDefault text-white border-none rounded-md px-4 py-3 mr-4">新增章節</button>
       </div>
     </div>
   </div>
