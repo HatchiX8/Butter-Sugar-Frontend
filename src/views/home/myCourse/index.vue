@@ -4,7 +4,6 @@
       class="mt-30"
       :items="[
         { label: '首頁', to: '/' },
-        { label: '學員', to: '/home' },
         { label: '我的課程' },
       ]"
     />

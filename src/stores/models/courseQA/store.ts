@@ -41,14 +41,10 @@ export const useCourseQAStore = defineStore('courseQA', () => {
     const userStore = useUserStore();
     if (!userStore.userToken) return null;
 
-    try {
-      const res = await axios.get(`${import.meta.env.VITE_API_URL}/api/v1/users/info`, {
-        headers: { Authorization: `Bearer ${userStore.userToken}` },
-      });
-      return res.data.data;
-    } catch (err) {
-      return null;
-    }
+    const res = await axios.get(`${import.meta.env.VITE_API_URL}/api/v1/users/info`, {
+      headers: { Authorization: `Bearer ${userStore.userToken}` },
+    });
+    return res.data.data;
   };
 
   // 從 API 獲取課程問答數據
