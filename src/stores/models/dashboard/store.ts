@@ -2,6 +2,7 @@ import { ref } from 'vue';
 import { defineStore } from 'pinia';
 import { apiPost_AddCategory, apiPost_AddTitle } from '@/views/dashboard/api/index';
 import type { courseAddCategoryPostData, courseAddTitlePostData } from '@/views/dashboard/type';
+import { apiErrorMessage } from '@/utils/api/apiErrorMsg';
 
 export const useDashboardStore = defineStore('dashboardStore', () => {
   const loading = ref(false);
@@ -19,7 +20,9 @@ export const useDashboardStore = defineStore('dashboardStore', () => {
       courseId.value = res.data.course.id;
       return courseId.value;
     } catch (err) {
-      console.log('storeLog:新增title錯誤', err);
+      const message = apiErrorMessage(err);
+      error.value = message;
+      console.log('storeLog:新增title發生錯誤，可使用此錯誤訊息處理UI', error.value);
     } finally {
       loading.value = false;
     }
