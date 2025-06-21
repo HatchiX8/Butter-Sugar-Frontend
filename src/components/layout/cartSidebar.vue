@@ -76,7 +76,8 @@
 <script setup lang="ts">
 import { useCartStore } from '@/stores/models/cart/store';
 import { useCartUIStore } from '@/stores/models/cart/uiStore';
-import { useRouter } from 'vue-router';
+import { useRouter, useRoute } from 'vue-router';
+import { watch } from 'vue';
 import baseButton from '@/components/layout/baseButton.vue';
 import { useMessage } from 'naive-ui';
 
@@ -84,15 +85,28 @@ const message = useMessage();
 
 const cartStore = useCartStore();
 const uiCartStore = useCartUIStore();
-
+const route = useRoute();
 const router = useRouter();
+
+/**
+ * 只要路由的完整路徑（含 query/hash）改變就關閉購物車
+ * 注意：第一次載入元件時也會觸發一次 watch，
+ *      因為不想讓那一次把購物車側邊欄關掉（使用者可能剛點開），
+ *      所以用 immediate: false 避免初始執行。
+ */
+watch(
+  () => route.fullPath,
+  () => {
+    uiCartStore.closeCart();
+  },
+  { immediate: false }
+);
+
 const goToCart = () => {
-  uiCartStore.isCartOpen = false;
   router.push({ name: 'Cart' });
 };
 const goToCourse = (id: string) => {
-  uiCartStore.isCartOpen = false
-  router.push({ name: 'Course', params: { id } })
+  router.push({ name: 'Course', params: { id } });
 }
 
 const formatCurrency = (value?: number, currency = 'NT$'): string => `${currency} ${value?.toLocaleString('en-US')}`;
