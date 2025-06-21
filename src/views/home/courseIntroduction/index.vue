@@ -23,6 +23,7 @@
           @add-to-cart="handleAddToCart"
           @toggle-bookmark="handleToggleBookmark"
           @go-to-teacher="goToTeacherPage"
+          @start-learning="handleStartLearning"
         />
       </div>
     </template>
@@ -201,6 +202,13 @@ const handlePurchase = async () => {
 // 前往講師頁面
 const goToTeacherPage = () => {
   router.push({ name: 'HighlightedInstructor', params: { teacher_id: courseData.value?.teacher_id ?? '' } });
+}
+
+// 處理立即上課按鈕點擊事件 (已購買課程)
+const handleStartLearning = (courseId: string) => {
+  if (!courseId) return;
+  // 跳轉至課程影片頁面
+  router.push(`/home/course/course-page/${courseId}`);
 }
 
 // 處理收藏切換事件

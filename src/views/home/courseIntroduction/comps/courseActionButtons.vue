@@ -5,7 +5,7 @@
       :class="purchaseButtonClass"
       @mousedown="handlePurchaseMouseDown"
     >
-      立即購買 NT$ {{ courseData.price.toLocaleString() }}
+      {{ isPurchased ? '立即上課' : `立即購買 NT$ ${courseData.price.toLocaleString()}` }}
       <arrowRightIcon class="ml-2"/>
     </n-button>
 
@@ -26,6 +26,8 @@ import { ref, computed, onMounted } from 'vue'
 import bookmarkIcon from '@/components/layout/bookmarkIcon.vue'
 import arrowRightIcon from '@/components/layout/arrowRightIcon.vue'
 import { useBookmarkStore } from '@/stores/models'
+import { useMyCourseStore } from '@/stores/models/course/myCourseStore'
+import { useRouter } from 'vue-router'
 interface CourseData {
   link: string
   id: number
@@ -52,6 +54,7 @@ const props = withDefaults(defineProps<{
 const emit = defineEmits<{
   purchase: []
   toggleBookmark: [boolean]
+  startLearning: [string]
 }>()
 
 const isMouseDown = ref(false)
@@ -61,6 +64,16 @@ const bookmarkStore = useBookmarkStore()
 
 // 使用計算屬性來獲取最新的收藏狀態
 const isBookmarked = computed(() => bookmarkStore.isBookmarked(props.courseData.uuid))
+
+// 使用 myCourseStore 判斷課程是否已購買
+const myCourseStore = useMyCourseStore()
+const isPurchased = computed(() => {
+  if (!props.courseData?.uuid) return false
+  return myCourseStore.isPurchased(props.courseData.uuid)
+})
+
+// 使用 router 進行頁面導航
+const router = useRouter()
 
 const containerClass = computed(() =>
   props.buttonStyle === 'mobile' ? 'flex gap-2' : 'flex gap-2 flex-wrap'
@@ -85,7 +98,21 @@ const bookmarkButtonClass = computed(() => {
 
 const handlePurchaseMouseDown = (event: Event) => {
   event.preventDefault()
-  emit('purchase')
+  
+  // 根據購買狀態決定行為
+  if (isPurchased.value) {
+    // 如果已購買，跳轉至課程頁面
+    if (props.courseData?.uuid) {
+      // 直接使用 router 導航至課程頁面
+      router.push(`/home/course/course-page/${props.courseData.uuid}`)
+      
+      // 同時觸發開始學習事件（保留向上通知的能力）
+      emit('startLearning', props.courseData.uuid)
+    }
+  } else {
+    // 未購買則執行購買流程
+    emit('purchase')
+  }
 }
 
 const handleBookmarkMouseDown = (event: Event) => {
