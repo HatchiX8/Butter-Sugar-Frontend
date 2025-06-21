@@ -15,11 +15,11 @@
     <div v-if="canShowForm">
       <div class="w-100% mb-5">
         <div class="mb-5">
-          <p class="mb-3 fw-bold text-primaryDefault">課程名稱</p>
+          <p class="fw-bold text-primaryDefault mb-3">課程名稱</p>
           <baseInput type="text" placeholder="請輸入課程名稱" v-model="courseTitle" />
         </div>
         <div class="w-100% mb-5">
-          <p class="mb-3 fw-bold text-primaryDefault">課程類別</p>
+          <p class="fw-bold text-primaryDefault mb-3">課程類別</p>
           <n-space vertical>
             <n-select v-model:value="optionsValue" :options="options" placeholder="請選擇類別" />
           </n-space>
@@ -29,17 +29,17 @@
 
     <div v-show="courseTitle && optionsValue" class="w-40%">
       <div class="mb-5">
-        <p class="mb-3 fw-bold text-primaryDefault">課程描述</p>
+        <p class="fw-bold text-primaryDefault mb-3">課程描述</p>
         <n-input
-            v-model:value="course_banner_description"
-            type="text"
-            placeholder="請輸入課程描述"
-            class="bg-black focus:outline-none"
-          />
+          v-model:value="course_banner_description"
+          type="text"
+          placeholder="請輸入課程描述"
+          class="bg-black focus:outline-none"
+        />
       </div>
       <div class="mb-5">
         <!-- banner圖片 -->
-        <p class="mb-3 fw-bold text-primaryDefault">Banner圖片</p>
+        <p class="fw-bold text-primaryDefault mb-3">Banner圖片</p>
         <div class="flex flex-col">
           <!-- 左邊：已上傳影片 (這邊你之後可以放影片預覽 或 file name 等) -->
           <div v-if="imgBannerUrl !== ''">
@@ -67,7 +67,7 @@
       </div>
       <!-- 課程封面圖片 -->
       <div class="mb-5">
-        <p class="mb-3 fw-bold text-primaryDefault">課程圖片</p>
+        <p class="fw-bold text-primaryDefault mb-3">課程圖片</p>
         <div class="flex flex-col">
           <!-- 左邊：已上傳影片 (這邊你之後可以放影片預覽 或 file name 等) -->
           <div v-if="imgUrl !== ''">
@@ -95,7 +95,7 @@
       </div>
       <!-- 課程簡介 -->
       <div class="mb-5">
-        <p class="mb-3 fw-bold text-primaryDefault">課程簡介</p>
+        <p class="fw-bold text-primaryDefault mb-3">課程簡介</p>
         <n-input
           v-model:value="course_description"
           type="text"
@@ -105,7 +105,7 @@
       </div>
       <!-- 課程簡介圖片 -->
       <div class="mb-5">
-        <p class="mb-3 fw-bold text-primaryDefault">課程簡介說明圖片</p>
+        <p class="fw-bold text-primaryDefault mb-3">課程簡介說明圖片</p>
         <div class="mb-5 flex gap-3">
           <div class="flex flex-col">
             <!-- 左邊：已上傳影片 (這邊你之後可以放影片預覽 或 file name 等) -->
@@ -139,7 +139,7 @@
       </div>
       <!-- 預告片 -->
       <div class="mb-5">
-        <p class="mb-3 fw-bold text-primaryDefault">課前準備</p>
+        <p class="fw-bold text-primaryDefault mb-3">課前準備</p>
         <p>預告片</p>
         <div class="flex items-center justify-between">
           <!-- 左邊：已上傳影片 (這邊你之後可以放影片預覽 或 file name 等) -->
@@ -186,7 +186,7 @@
       </div>
 
       <div class="mb-5">
-        <p class="mb-3 fw-bold text-primaryDefault">適合對象</p>
+        <p class="fw-bold text-primaryDefault mb-3">適合對象</p>
         <n-input
           v-model:value="suitable_for"
           type="text"
@@ -195,7 +195,7 @@
         />
       </div>
       <div class="mb-5">
-        <p class="mb-3 fw-bold text-primaryDefault">課程目標</p>
+        <p class="fw-bold text-primaryDefault mb-3">課程目標</p>
         <n-input
           v-model:value="course_goal"
           type="text"
@@ -204,7 +204,7 @@
         />
       </div>
     </div>
-  
+
     <button v-if="!isSubmitCategory" @click="modelValue = true">建立課程</button>
     <button v-if="isSubmitCategory" @click="submitForm" :disabled="!isAllFilled">儲存</button>
   </div>
@@ -592,7 +592,7 @@ const submitFormApi = async (titleId: string, postData: courseSaveFormPostData) 
 // -----------------------------
 </script>
 <style scoped>
-.introDesc li{
+.introDesc li {
   padding: 10px 0;
   list-style: disc;
 }
