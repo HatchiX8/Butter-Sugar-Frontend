@@ -23,6 +23,9 @@ export function withNaiveProviders(App: Component) {
           NConfigProvider,
           {
             themeOverrides: {
+              Icon: {
+                color: colors.primaryDefault
+              },
               Input: {
                 border: `1px solid ${colors.black}`,
                 borderHover: `1px solid ${colors.black}`,
