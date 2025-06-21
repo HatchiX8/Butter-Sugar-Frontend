@@ -13,69 +13,17 @@
 </template>
 
 <script setup lang="ts">
-import { onMounted, onUnmounted, ref, computed } from 'vue';
+import { onMounted, onUnmounted, ref } from 'vue';
 import { useUserStore } from '@/stores/models/index';
 import axios from 'axios';
 import userDropdownMenu from './userDropdownMenu.vue';
-import { useRouter } from 'vue-router'
-const router = useRouter()
+// import { useRouter } from 'vue-router'
+// const router = useRouter()
 
 const userStore = useUserStore();
 const API_BASE = import.meta.env.VITE_API_URL;
 const onGoogleLogin = () => {
   window.location.href = `${API_BASE}/api/v1/users/auth/google`;
-};
-
-// ----------登入後選單----------
-interface MenuOption {
-  label: string;
-  key: string;
-};
-const studentOptions: MenuOption[] = [
-  { label: '我的課程', key: 'myCourse' },
-  { label: '學生資料管理', key: 'studentProfile'  },
-  { label: '訂單紀錄', key: 'orders',  },
-  { label: '登出', key: 'logout' },
-];
-const teacherOptions: MenuOption[] = [
-  { label: '教師儀表板', key: 'revenue' },
-  { label: '課程管理', key: 'dashboard'  },
-  { label: '教師資料管理', key: 'teacherProfile'  },
-  { label: '登出', key: 'logout' },
-];
-
-// 根據角色取得選單
-const userOptions = computed<MenuOption[]>(() =>
-  userStore.role === 'teacher' ? teacherOptions : studentOptions
-);
-
-const handleSelect = (key: string) => {
-  switch (key) {
-    case 'myCourse':
-      router.push({ name: 'MyCourse' });
-      break;
-    case 'studentProfile':
-      router.push({ name: 'StudentProfile' });
-      break;
-    case 'orders':
-      router.push({ name: 'Orders' });
-      break;
-    case 'revenue':
-      router.push({ name: 'Revenue' });
-      break;
-    case 'dashboard':
-      router.push({ name: 'CourseInfo' });
-      break;
-    case 'teacherProfile':
-      router.push({ name: 'TeacherProfile' });
-      break;
-    case 'logout':
-      userStore.logout();
-      router.push({ name: 'HomeDashboard' });
-      break;
-    default:
-      router.push({ name: 'HomeDashboard' });
-  }
 };
 
 const userImage = ref('');
