@@ -11,7 +11,7 @@
     <n-select v-model:value="value" :options="options" placeholder="所有訂單" class="w-20% mb-6 ml-auto"/>
       <n-data-table
         :columns="columns"
-        :data="orders"
+        :data="filteredOrders"
         :bordered="true"
         :pagination="false"
       />
@@ -24,7 +24,6 @@ import { useOrderStore } from '@/stores/models/orders/store';
 import breadcrumbComps from '@/components/layout/breadcrumbComps.vue';
 import typography from '@/components/layout/typography.vue';
 import type { Orders } from '@/api/orders/types';
-const orders = ref<Orders[]>([]); 
 
 // 下拉選項
 const options = [

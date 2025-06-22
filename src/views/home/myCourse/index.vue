@@ -1,5 +1,5 @@
 <template>
-  <div class="w-full md:max-w-[1280px] mx-auto px-4 flex flex-col items-start">
+  <div class="w-full md:max-w-[1280px] mx-auto flex flex-col items-start">
     <div class="w-full">
       <breadcrumbComps
         class="mt-30 px-4"
@@ -44,8 +44,6 @@
         </div>
       </div>
     </div>
-  </div>
-
     <!-- 課程列表 -->
     <div class="w-full">
       <my-course-card-list
@@ -55,6 +53,7 @@
         @update-total-items="updateTotalItems"
       />
     </div>
+  </div>
 
 </template>
 

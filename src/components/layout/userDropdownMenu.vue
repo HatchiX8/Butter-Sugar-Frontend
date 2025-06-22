@@ -47,7 +47,7 @@ const userOptions = computed(() =>
 // 點選選項時導頁或登出
 const handleSelect = (key: string) => {
   switch (key) {
-    case 'course':
+    case 'myCourse':
       router.push('/home/my-course');
       break;
     case 'studentProfile':
