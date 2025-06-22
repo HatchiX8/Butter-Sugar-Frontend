@@ -49,10 +49,10 @@ const allCourses = computed(() => {
       return {
         link: `/home/course/${course.id}`,
         id: course.id,
-        img: course.course_banner_imageUrl || '/src/assets/images/course/course1.jpg', // 使用 API 返回的圖片
+        img: course.course_small_imageUrl || '',
         title: course.course_name,
         category_id: course.category_id,
-        teacher: '講師', // 這裡需要從 teacher_id 獲取講師名稱，暫時使用預設值
+        teacher: course.teacher || '講師', // 這裡需要從 teacher_id 獲取講師名稱，暫時使用預設值
         rating: 5.0, // API 中沒有評分欄位，使用預設值
         students: studentsCount.toLocaleString('zh-TW'), // 加上千分位顯示
         studentsCount, // 保存原始數字以便排序

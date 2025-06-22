@@ -11,10 +11,10 @@
     <my-course-card
       v-for="course in paginatedCourses"
       :key="course.id"
-      :link="`/home/course/course-page/${course.id}`"
-      :img="course.course_banner_imageUrl || '/src/assets/images/course/course1.jpg'"
+      :link="`/home/course/${course.id}`"
+      :img="course.course_small_imageUrl || ''"
       :title="course.course_name"
-      :teacher="'講師'"
+      :teacher="course.teacher || '講師'"
       :rating="course.rating || 5.0"
       :hours="course.course_hours || '0'"
       :total-users="course.total_users || '0'"

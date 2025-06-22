@@ -1,5 +1,6 @@
 import { defineStore } from 'pinia';
 import { ref } from 'vue';
+import instance from '@/api/axios';
 
 // 定義 API 回傳的講師資料介面
 export interface TeacherApiResponse {
@@ -51,13 +52,8 @@ export const useTeacherStore = defineStore('teacherStore', () => {
       error.value = null
 
       // 從 API 獲取資料
-      const response = await fetch(`https://buttersugar-backend.zeabur.app/api/v1/teacher/${teacherId}`)
-
-      if (!response.ok) {
-        throw new Error(`獲取講師資料失敗：${response.status}`)
-      }
-
-      const responseData = await response.json()
+      const response = await instance.get(`/api/v1/teacher/${teacherId}`)
+      const responseData = response.data
       lastApiResponse.value = responseData
 
       if (!responseData || !responseData.status || !responseData.data || !responseData.data.teacher) {
