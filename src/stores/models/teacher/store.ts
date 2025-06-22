@@ -7,6 +7,7 @@ export interface TeacherApiResponse {
   teacher_id: string
   user_id: string
   name: string
+  nickname?: string // 新增 nickname 欄位
   profile_image_url: string
   rating_score: string
   rating_users: string
@@ -67,7 +68,7 @@ export const useTeacherStore = defineStore('teacherStore', () => {
       const teacher: Teacher = {
         id: teacherData.teacher_id,
         name: teacherData.name || '',
-        nickname: teacherData.name || '', // 預設使用 name 作為 nickname
+        nickname: teacherData.nickname || teacherData.name || '', // 優先使用 nickname，如果沒有則使用 name
         avatar: teacherData.profile_image_url || '',
         rating: teacherData.rating_score || '0',
         reviews_count: parseInt(teacherData.rating_users || '0'),
