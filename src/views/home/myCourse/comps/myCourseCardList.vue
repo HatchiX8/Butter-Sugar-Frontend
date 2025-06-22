@@ -11,10 +11,10 @@
     <my-course-card
       v-for="course in paginatedCourses"
       :key="course.id"
-      :link="`/home/course/course-page/${course.id}`"
-      :img="course.course_banner_imageUrl || '/src/assets/images/course/course1.jpg'"
+      :link="`/home/course/${course.id}`"
+      :img="course.course_small_imageUrl || ''"
       :title="course.course_name"
-      :teacher="'講師'"
+      :teacher="course.teacher || '講師'"
       :rating="course.rating || 5.0"
       :hours="course.course_hours || '0'"
       :total-users="course.total_users || '0'"
@@ -53,6 +53,7 @@ import PaginationComps from '@/components/layout/paginationComps.vue';
 import { getMyCourseList } from '../api';
 import Typography from '@/components/layout/typography.vue';
 import type { courseListInfo } from '../api/type';
+import { useTeacherStore } from '@/stores/models/teacher/store';
 
 // 定義屬性
 const props = defineProps<{
@@ -73,6 +74,12 @@ const courseList = ref<courseListInfo[]>([]);
 // 取得路由與路由器
 const route = useRoute();
 const router = useRouter();
+
+// 使用講師 store
+const teacherStore = useTeacherStore();
+
+// 用於存儲已加載的講師資料
+const loadedTeachers = ref<Record<string, boolean>>({});
 
 // 分頁相關
 const pageSize = ref(12); // 每頁顯示12個項目
@@ -145,7 +152,29 @@ const totalPages = computed(() => Math.ceil(filteredCourses.value.length / pageS
 const paginatedCourses = computed(() => {
   const startIndex = (currentPage.value - 1) * pageSize.value;
   const endIndex = startIndex + pageSize.value;
-  return filteredCourses.value.slice(startIndex, endIndex);
+  
+  // 在返回分頁課程前，將課程資料轉換為包含講師暱稱的格式
+  return filteredCourses.value.slice(startIndex, endIndex).map(course => {
+    // 複製課程對象，以避免修改原始資料
+    const formattedCourse = { ...course };
+    
+    // 獲取講師資料，優先使用 nickname
+    const teacherId = course.teacher_id;
+    if (teacherId) {
+      const teacherData = teacherStore.getTeacherById(teacherId);
+      
+      if (teacherData) {
+        // 如果有講師資料，優先使用 nickname
+        formattedCourse.teacher = teacherData.nickname || teacherData.name || course.teacher || '講師';
+      } else if (!loadedTeachers.value[teacherId]) {
+        // 如果沒有講師資料且未加載過，則嘗試加載
+        loadedTeachers.value[teacherId] = true;
+        teacherStore.fetchTeacher(teacherId);
+      }
+    }
+    
+    return formattedCourse;
+  });
 });
 
 // 處理頁碼變化

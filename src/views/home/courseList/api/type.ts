@@ -35,4 +35,5 @@ export interface courseListInfo {
   updated_at: string;
   handouts: string[];
   category_name: string;
+  teacher?: string; // 講師名稱
 }
