@@ -2,53 +2,88 @@
   <div id="chapter-content" class="flex flex-col gap-6 w-full">
     <typography variant="h2" font-type="title" class="text-white" underline>章節內容</typography>
 
-      <n-collapse arrow-placement="right">
-        <n-collapse-item title="章節一：課前準備與講義下載" name="1">
-          <!-- <router-link to="/"> -->
-            <typography variant="paragraph-medium" font-type="content" class="text-white mb-2 px-3 py-2">1-1 | 歐式麵包風格概論：從長棍到拖鞋麵包 (5:12)</typography>
-          <!-- </router-link> -->
-        </n-collapse-item>
-        <n-collapse-item title="章節二：理解歐式麵包與高水量麵糰的基礎理論" name="2">
+    <n-spin :show="loading">
+      <n-collapse v-if="sections && sections.length > 0" arrow-placement="right" v-model:expanded-names="expandedNames" :accordion="false">
+        <n-collapse-item
+          v-for="section in sections"
+          :key="section.id"
+          :title="section.main_section_title"
+          :name="section.id"
+        >
           <div class="text-white">
-            <!-- <router-link to="/"> -->
-              <typography variant="paragraph-medium" font-type="content" class="text-white mb-2 px-3 py-2">1-1 | 歐式麵包風格概論：從長棍到拖鞋麵包 (5:12)</typography>
-            <!-- </router-link> -->
-            <!-- <router-link to="/"> -->
-              <typography variant="paragraph-medium" font-type="content" class="text-white mb-2 px-3 py-2">1-2 | 何謂高水量麵糰？水量比例與操作差異解析 (12:37)</typography>
-            <!-- </router-link> -->
-            <!-- <router-link to="/"> -->
-              <typography variant="paragraph-medium" font-type="content" class="text-white mb-2 px-3 py-2">1-3 | 麵粉與酵母的選擇對最終麵包的影響 (3:23)</typography>
-            <!-- </router-link> -->
-            <!-- <router-link to="/"> -->
-              <typography variant="paragraph-medium" font-type="content" class="text-white mb-2 px-3 py-2">1-4 | 基本麵筋結構與延展性理論 (8:11)</typography>
-            <!-- </router-link> -->
-            <!-- <router-link to="/"> -->
-              <typography variant="paragraph-medium" font-type="content" class="text-white mb-2 px-3 py-2">1-5 | 如何閱讀麵糰狀態（觀察黏性、溫度、氣泡）(2:53)</typography>
-            <!-- </router-link> -->
+            <typography
+              v-for="subsection in section.subsections"
+              :key="subsection.id"
+              variant="paragraph-medium"
+              font-type="content"
+              class="text-white mb-2 px-3 py-2"
+            >
+              {{ `章節${section.order_index+1}-${subsection.order_index} | ${subsection.subsection_title} ${subsection.video_duration ? `(${subsection.video_duration})` : ''}` }}
+            </typography>
           </div>
         </n-collapse-item>
-        <n-collapse-item title="章節三：發酵過程全解析（時間 × 酵母 × 環境）" name="3">
-          <!-- <router-link to="/"> -->
-            <typography variant="paragraph-medium" font-type="content" class="text-white mb-2 px-3 py-2">1-1 | 歐式麵包風格概論：從長棍到拖鞋麵包 (5:12)</typography>
-          <!-- </router-link> -->
-        </n-collapse-item>
-        <n-collapse-item title="章節四：經典高水量歐式麵包實作教學" name="4">
-          <!-- <router-link to="/"> -->
-            <typography variant="paragraph-medium" font-type="content" class="text-white mb-2 px-3 py-2">1-1 | 歐式麵包風格概論：從長棍到拖鞋麵包 (5:12)</typography>
-          <!-- </router-link> -->
-        </n-collapse-item>
-        <n-collapse-item title="章節五：進階實作與個人風格開發" name="5">
-          <!-- <router-link to="/"> -->
-            <typography variant="paragraph-medium" font-type="content" class="text-white mb-2 px-3 py-2">1-1 | 歐式麵包風格概論：從長棍到拖鞋麵包 (5:12)</typography>
-          <!-- </router-link> -->
-        </n-collapse-item>
       </n-collapse>
+
+      <n-empty v-else-if="!loading" description="沒有課程章節資料" class="text-white mt-4" />
+    </n-spin>
   </div>
 </template>
 
 <script setup lang="ts">
+import { watch, onMounted } from 'vue';
+import { useRoute } from 'vue-router';
+import { storeToRefs } from 'pinia';
 import typography from '@/components/layout/typography.vue';
-import {NCollapse,NCollapseItem} from 'naive-ui';
+import { NCollapse, NCollapseItem, NSpin, NEmpty } from 'naive-ui';
+import { useSectionStore } from '@/stores/models/courseChapter/sectionStore';
+
+// 獲取當前路由和章節 store
+const route = useRoute();
+const sectionStore = useSectionStore();
+
+// 從 store 中獲取狀態
+// 使用 storeToRefs 保持響應性
+const { sections, loading, error } = storeToRefs(sectionStore);
+
+// 用於追蹤展開的章節
+import { ref } from 'vue';
+const expandedNames = ref<string[]>([]);
+
+// 獲取課程章節的函數
+const fetchSections = (courseId: string) => {
+  console.log('fetchSections 被呼叫，courseId:', courseId);
+  if (courseId) {
+    sectionStore.fetchByCourse(courseId);
+  } else {
+    console.warn('fetchSections 收到空的 courseId');
+  }
+};
+
+// 調試當前路由信息
+console.log('當前路由參數:', route.params);
+console.log('完整路由路徑:', route.path);
+console.log('路由名稱:', route.name);
+
+// 監聽路由變化，當課程 ID 變化時重新獲取章節
+watch(() => route.params.id, (newId, oldId) => {
+  console.log('路由 id 變化:', oldId, '->', newId);
+  if (newId && typeof newId === 'string') {
+    fetchSections(newId);
+  } else {
+    console.warn('watch 監測到的 id 無效:', newId);
+  }
+}, { immediate: true });
+
+// 組件掛載時獲取章節
+onMounted(() => {
+  console.log('組件掛載，檢查 id:', route.params.id);
+  const courseId = route.params.id;
+  if (courseId && typeof courseId === 'string') {
+    fetchSections(courseId);
+  } else {
+    console.warn('onMounted 階段無法獲取有效的 id:', courseId);
+  }
+});
 </script>
 
 <style>
