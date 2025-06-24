@@ -22,11 +22,13 @@
 </template>
 
 <script setup lang="ts">
-import { ref, computed, onMounted } from 'vue'
+import { ref, computed, onMounted, watch } from 'vue'
 import bookmarkIcon from '@/components/layout/bookmarkIcon.vue'
 import arrowRightIcon from '@/components/layout/arrowRightIcon.vue'
 import { useBookmarkStore } from '@/stores/models'
 import { useMyCourseStore } from '@/stores/models/course/myCourseStore'
+import { useFavoriteCourseStore } from '@/stores/models/favoriteCourses/store'
+import { useUserStore } from '@/stores/models/user/store'
 import { useRouter } from 'vue-router'
 interface CourseData {
   link: string
@@ -59,11 +61,14 @@ const emit = defineEmits<{
 
 const isMouseDown = ref(false)
 
-// 使用 Pinia store 管理收藏狀態
+// 使用新的 Pinia store 管理收藏狀態
+const favoriteStore = useFavoriteCourseStore()
+const userStore = useUserStore()
+// 兼容原有的 bookmarkStore
 const bookmarkStore = useBookmarkStore()
 
 // 使用計算屬性來獲取最新的收藏狀態
-const isBookmarked = computed(() => bookmarkStore.isBookmarked(props.courseData.uuid))
+const isBookmarked = computed(() => favoriteStore.hasFavorite(props.courseData.uuid))
 
 // 使用 myCourseStore 判斷課程是否已購買
 const myCourseStore = useMyCourseStore()
@@ -120,25 +125,68 @@ const handleBookmarkMouseDown = (event: Event) => {
   isMouseDown.value = true
 }
 
-const handleBookmarkMouseUp = () => {
+const handleBookmarkMouseUp = async () => {
   if (isMouseDown.value) {
-    // 使用 store 的 toggleBookmark 函數切換收藏狀態
-    const newState = bookmarkStore.toggleBookmark(props.courseData.uuid)
+    // 在操作API前先保存當前狀態，用於發生錯誤時回滾
+    const wasBookmarked = isBookmarked.value;
+    const currentCourseId = props.courseData.uuid;
+    
+    // 使用新的 favoriteStore 切換收藏狀態
+    try {
+      if (wasBookmarked) {
+        // 如果已收藏，則移除收藏
+        await favoriteStore.removeFromFavorites(currentCourseId);
+      } else {
+        // 如果尚未收藏，則增加收藏
+        await favoriteStore.addToFavorites(currentCourseId);
+      }
 
-    // 通知父元件更新狀態
-    emit('toggleBookmark', newState)
+      // 為了兼容性，同步更新原有的 bookmarkStore
+      bookmarkStore.setBookmarkState(currentCourseId, isBookmarked.value);
+
+      // 通知父元件更新狀態
+      emit('toggleBookmark', isBookmarked.value);
+    } catch (error) {
+      // 顯示錯誤通知
+      if (window.$message) {
+        window.$message.error(`操作失敗: ${error instanceof Error ? error.message : '請稍後再試'}`);
+      }
+    }
   }
-  isMouseDown.value = false
+  isMouseDown.value = false;
 }
 
-// 初始化時從 store 載入收藏狀態
-onMounted(() => {
-  // 確保 store 中有此課程的收藏狀態
-  if (!bookmarkStore.isBookmarked(props.courseData.uuid) && props.courseData.is_bookmark) {
-    // 如果 props 中標記為已收藏但 store 中沒有，則更新 store
+// 初始化時載入收藏狀態
+onMounted(async () => {
+  // 如果用戶已登入，則從伺服器載入收藏列表
+  if (userStore.isLoggedIn) {
+    await favoriteStore.fetchFavorites()
+  }
+  
+  // 確保兼容性，同步到原有的 bookmarkStore
+  if (favoriteStore.hasFavorite(props.courseData.uuid) && !bookmarkStore.isBookmarked(props.courseData.uuid)) {
     bookmarkStore.setBookmarkState(props.courseData.uuid, true)
   }
+
+  // 如果 props 中標記為已收藏但 store 中沒有，則更新 store
+  if (!favoriteStore.hasFavorite(props.courseData.uuid) && props.courseData.is_bookmark) {
+    if (userStore.isLoggedIn) {
+      await favoriteStore.addToFavorites(props.courseData.uuid)
+    } else {
+      // 如未登入，添加到本地收藏
+      favoriteStore.addToFavorites(props.courseData.uuid)
+      bookmarkStore.setBookmarkState(props.courseData.uuid, true)
+    }
+  }
 })
+
+// 監聽登入狀態變化，登入後同步收藏課程
+watch(() => userStore.isLoggedIn, async (isLoggedIn) => {
+  if (isLoggedIn) {
+    // 登入後同步本地收藏到遠端
+    await favoriteStore.syncLocalWithRemote()
+  }
+}, { immediate: true })
 </script>
 
 <style scoped>
