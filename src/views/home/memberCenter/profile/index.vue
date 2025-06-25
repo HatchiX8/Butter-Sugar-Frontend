@@ -8,15 +8,20 @@
       ]"
     />
     <div class="flex items-center justify-between">
-      <typography variant="h2" font-type="title" underline class="mb-8 mt-2 text-white">學生資料管理</typography>
-      <baseButton v-if="!isEdit"
-        label="編輯資料"
-        type="primary"
-        @click="isEdit = true"
-      />
+      <typography variant="h2" font-type="title" underline class="mb-8 mt-2 text-white"
+        >學生資料管理</typography
+      >
+      <div>
+        <baseButton v-if="!isEdit" type="primary" class="mr-2" @click="applyTeacher"
+          >申請教師資格</baseButton
+        >
+        <baseButton v-if="!isEdit" label="編輯資料" type="primary" @click="isEdit = true" />
+      </div>
     </div>
     <!-- 編輯模式 -->
-    <baseForm v-if="isEdit" ref="formRef"
+    <baseForm
+      v-if="isEdit"
+      ref="formRef"
       :model="formData"
       :fields="fields"
       submit-label="儲存"
@@ -27,11 +32,7 @@
       :fieldProps="fieldProps"
     />
     <!-- 檢視模式 -->
-    <baseForm v-else
-      :model="formData"
-      :fields="fields"
-      read-only
-    />
+    <baseForm v-else :model="formData" :fields="fields" read-only />
   </div>
 </template>
 
@@ -44,6 +45,7 @@ import baseForm from '@/components/layout/baseForm.vue';
 import breadcrumbComps from '@/components/layout/breadcrumbComps.vue';
 import typography from '@/components/layout/typography.vue';
 import type { FormField } from '@/components/layout/baseForm.vue';
+import { uesRoute } from 'vue-router';
 
 const fieldProps = {
   profile_image_url: {
@@ -71,7 +73,7 @@ interface StudentData {
   phone: string;
   address: string;
   profile_image_url: string | File;
-};
+}
 
 const userStore = useUserStore();
 const isEdit = ref(false);
@@ -121,7 +123,7 @@ const handleSubmit = async () => {
     }
 
     //  API 請求
-    const url   = `${import.meta.env.VITE_API_URL}/api/v1/users/update`;
+    const url = `${import.meta.env.VITE_API_URL}/api/v1/users/update`;
     const headers: Record<string, string> = {
       Authorization: `Bearer ${userStore.userToken}`,
     };
@@ -171,8 +173,11 @@ onMounted(() => {
 });
 
 const formRef = ref();
+
+const route = uesRoute();
+const applyTeacher = () => {
+  route.push('/Teacher/BasicInfo');
+};
 </script>
 
-<style scoped>
-
-</style>
+<style scoped></style>
