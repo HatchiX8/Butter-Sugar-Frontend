@@ -11,11 +11,23 @@
       <typography variant="h2" font-type="title" underline class="mb-8 mt-2 text-white"
         >學生資料管理</typography
       >
-      <div>
-        <baseButton v-if="!isEdit" type="primary" class="mr-2" @click="applyTeacher"
+      <div v-if="!isEdit">
+        <baseButton
+          v-if="formData.role === 'student'"
+          type="primary"
+          class="mr-2"
+          @click="applyTeacher"
           >申請教師資格</baseButton
         >
-        <baseButton v-if="!isEdit" label="編輯資料" type="primary" @click="isEdit = true" />
+        <baseButton
+          v-else-if="formData.role === 'student2'"
+          type="primary"
+          class="mr-2"
+          @click="applyTeacher"
+          disabled
+          >教師審核中</baseButton
+        >
+        <baseButton label="編輯資料" type="primary" @click="isEdit = true" />
       </div>
     </div>
     <!-- 編輯模式 -->
@@ -45,7 +57,7 @@ import baseForm from '@/components/layout/baseForm.vue';
 import breadcrumbComps from '@/components/layout/breadcrumbComps.vue';
 import typography from '@/components/layout/typography.vue';
 import type { FormField } from '@/components/layout/baseForm.vue';
-import { uesRoute } from 'vue-router';
+import { useRouter } from 'vue-router';
 
 const fieldProps = {
   profile_image_url: {
@@ -73,6 +85,7 @@ interface StudentData {
   phone: string;
   address: string;
   profile_image_url: string | File;
+  role: string;
 }
 
 const userStore = useUserStore();
@@ -85,6 +98,7 @@ const formData = reactive<StudentData>({
   phone: '',
   address: '',
   profile_image_url: '',
+  role: '',
 });
 
 const originalData = reactive({ ...formData });
@@ -106,6 +120,7 @@ const fetchData = async () => {
     formData.phone = user.phone || '';
     formData.address = user.address || '';
     formData.profile_image_url = user.profile_image_url || '';
+    formData.role = user.role || '';
 
     // 更新備份
     Object.assign(originalData, formData);
@@ -174,9 +189,9 @@ onMounted(() => {
 
 const formRef = ref();
 
-const route = uesRoute();
+const router = useRouter();
 const applyTeacher = () => {
-  route.push('/Teacher/BasicInfo');
+  router.push('/Teacher/BasicInfo');
 };
 </script>
 

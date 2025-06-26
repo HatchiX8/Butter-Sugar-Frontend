@@ -1,11 +1,15 @@
 <template>
   <div class="flex min-h-screen flex-1 flex-col" :style="{ backgroundImage: `url(${bgImgUrl})` }">
     <headerComps />
-    <div class="w-full max-w-[1280px] mx-auto px-4 flex flex-col md:flex-row items-start box-border text-white">
-      <div class="flex flex-1 w-full mt-20">
+    <div
+      class="mx-auto box-border flex w-full max-w-[1280px] flex-col items-start px-4 text-white md:flex-row"
+    >
+      <div class="mt-20 flex w-full flex-1">
         <!-- 左側選單 -->
-        <div class="w-full md:w-1/5 md:sticky md:max-h-[calc(100vh-6rem)] md:overflow-y-auto mt-10 mobile-menu">
-          <typography variant="h3" font-type="title" class="text-white mb-5 ml-5" no-underline>
+        <div
+          class="mobile-menu mt-10 w-full md:sticky md:max-h-[calc(100vh-6rem)] md:w-1/5 md:overflow-y-auto"
+        >
+          <typography variant="h3" font-type="title" class="mb-5 ml-5 text-white" no-underline>
             講師頁面
           </typography>
           <n-config-provider>
@@ -19,7 +23,7 @@
           </n-config-provider>
         </div>
         <!-- 右側內容 -->
-        <div class="w-full md:w-4/5 flex-1 mt-10 pt-10 min-width-0 mobile-content">
+        <div class="min-width-0 mobile-content mt-10 w-full flex-1 pt-10 md:w-4/5">
           <router-view />
         </div>
       </div>
@@ -28,38 +32,61 @@
   </div>
 </template>
 <script setup lang="ts">
-import type { MenuOption } from 'naive-ui';
-import { ref } from 'vue';
+import { ref, onMounted, computed } from 'vue';
 import { useRouter } from 'vue-router';
 import headerComps from '@/components/layout/headerComps.vue';
 import footerComps from '@/components/layout/footerComps.vue';
 import typography from '@/components/layout/typography.vue';
+import { useUserStore } from '@/stores/models/index';
 
 const bgImgUrl = new URL('@/assets/images/home/bg-grey-wrinkle.png', import.meta.url).href;
 
 const router = useRouter();
 const activeKey = ref<string>('BasicInfo');
 
-const menuOptions: MenuOption[] = [
+interface MenuOption {
+  label: string;
+  key: string;
+  roles?: string[]; // 加上這一行
+}
+
+const fullMenuOptions: MenuOption[] = [
   {
     label: '基本資訊',
     key: 'BasicInfo',
+    roles: ['student', 'teacher', 'admin'],
   },
   {
     label: '課程資訊',
     key: 'CourseInfo',
+    roles: ['admin', 'teacher'],
   },
   {
     label: '建立新課程',
     key: 'courseAction/courseManage',
+    roles: ['admin', 'teacher'],
   },
 ];
+
+const menuOptions = computed(() =>
+  fullMenuOptions.filter((option) => option.roles?.includes(userStore.role))
+);
 
 const handleMenuSelect = (key: string) => {
   activeKey.value = key;
   router.push(`/Teacher/${key}`);
 };
+
+// ----------取得身分----------
+const userStore = useUserStore();
+
+onMounted(async () => {
+  await userStore.fetchUser();
+  console.log('確認權限', userStore.role);
+});
+// ---------------------------
 </script>
+
 <style scoped>
 /* 確保 Flex 項目不因內容限制寬度 */
 .min-width-0 {
