@@ -37,3 +37,18 @@ export interface courseListInfo {
   category_name: string;
   teacher?: string; // 講師名稱
 }
+
+// 課程分類的類型
+export interface CategoryResponse {
+  status: boolean;
+  message: string;
+  data: {
+    categories: Category[];
+  };
+}
+
+export interface Category {
+  id: number;
+  name: string;
+  created_at: string;
+}

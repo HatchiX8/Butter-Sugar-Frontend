@@ -21,8 +21,10 @@
 </template>
 
 <script lang="ts">
-import { defineComponent, ref, onMounted } from 'vue'
+import { defineComponent, ref, onMounted, computed } from 'vue'
 import { useRoute } from 'vue-router'
+import { useCategoryStore } from '@/stores/models/course/categoryStore'
+import type { Category } from '../api/type'
 
 export default defineComponent({
   name: 'CourseTag',
@@ -30,21 +32,29 @@ export default defineComponent({
   setup() {
     const route = useRoute()
     const currentTag = ref<string | null>(null)
+    const categoryStore = useCategoryStore()
 
-    const tags = [
-      { label: '麵包', value: '2' },
-      { label: '蛋糕', value: '3' },
-      { label: '餅乾', value: '4' },
-    ]
+    // 從 store 計算得到標籤數據
+    const tags = computed(() => categoryStore.categories.map((category: Category) => ({
+      label: category.name,
+      value: String(category.id)
+    })))
+
+    // 獲取課程分類數據
+    const fetchCategories = async () => {
+      await categoryStore.fetchCategories()
+    }
 
     // 從路由參數中獲取當前選中的標籤
     onMounted(() => {
       currentTag.value = route.query.tag as string || null
+      fetchCategories() // 組件掛載時獲取分類數據
     })
 
     return {
       tags,
-      currentTag
+      currentTag,
+      loading: computed(() => categoryStore.loading)
     }
   }
 })

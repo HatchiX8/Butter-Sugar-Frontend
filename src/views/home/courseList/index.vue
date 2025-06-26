@@ -12,7 +12,13 @@
     <typography class="text-white mt-10" variant="h2" font-type="title" underline>所有課程</typography>
 
     <div class="mt-10 pr-8 flex flex-col md:flex-row items-center justify-between self-stretch">
-      <selectComps class="w-full md:w-50 h-12 px-3 py-4" :default-value="selectedCategoryId" @change="handleCategoryChange" />
+      <selectComps 
+        class="w-full md:w-50 h-12 px-3 py-4" 
+        :default-value="selectedCategoryId" 
+        :options="categoryStore.categoryOptions"
+        :loading="categoryStore.loading"
+        @change="handleCategoryChange" 
+      />
       <sort-tab
         :items="sortItems"
         :active="currentSort"
@@ -45,6 +51,7 @@ import paginationComps from '@/components/layout/paginationComps.vue';
 import courseTag from './comps/courseTag.vue';
 import { ref, computed, onMounted, watch } from 'vue';
 import { useRoute, useRouter } from 'vue-router';
+import { useCategoryStore } from '@/stores/models/course/categoryStore';
 
 const route = useRoute();
 const router = useRouter();
@@ -53,6 +60,12 @@ const currentPage = ref(1);
 const pageSize = ref(12); // 每頁顯示 12 筆課程
 const totalItems = ref(0); // 總課程數
 const selectedCategoryId = ref<number | null>(null);
+const categoryStore = useCategoryStore(); // 使用課程分類 store
+
+// 從 store 獲取課程分類數據
+const fetchCategories = async () => {
+  await categoryStore.fetchCategories();
+};
 
 // 讀取 URL 參數並設置類別 ID 和頁碼
 const updateParamsFromRoute = () => {
@@ -79,9 +92,10 @@ const updateParamsFromRoute = () => {
   }
 };
 
-// 在元件掛載時讀取 URL 參數
+// 在元件掛載時讀取 URL 參數並獲取課程分類
 onMounted(() => {
   updateParamsFromRoute();
+  fetchCategories();
 });
 
 // 監聽路由參數變化
@@ -146,7 +160,14 @@ const handleSortChange = (value: string) => {
 };
 
 const handleCategoryChange = (categoryId: number | null) => {
-  selectedCategoryId.value = categoryId;
+  // 處理 category_id=1 的情況，這代表「所有課程」
+  // 在 UI 上顯示為 category_id=1，但實際 API 請求時應該使用 null
+  if (categoryId === 1) {
+    selectedCategoryId.value = null;
+  } else {
+    selectedCategoryId.value = categoryId;
+  }
+  
   // 切換類別時重置為第一頁
   currentPage.value = 1;
 
@@ -155,7 +176,12 @@ const handleCategoryChange = (categoryId: number | null) => {
 
   // 設置或移除類別 ID
   if (categoryId !== null) {
-    query.category_id = categoryId.toString();
+    if (categoryId === 1) {
+      // 如果是「所有課程」，移除 category_id 參數
+      delete query.category_id;
+    } else {
+      query.category_id = categoryId.toString();
+    }
   } else {
     delete query.category_id;
   }

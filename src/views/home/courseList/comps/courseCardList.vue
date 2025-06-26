@@ -71,7 +71,7 @@ const allCourses = computed(() => {
         img: course.course_small_imageUrl || '',
         title: course.course_name,
         category_id: course.category_id,
-        teacher: teacherName, 
+        teacher: teacherName,
         rating: 5.0, // API 中沒有評分欄位，使用預設值
         students: studentsCount.toLocaleString('zh-TW'), // 加上千分位顯示
         studentsCount, // 保存原始數字以便排序
