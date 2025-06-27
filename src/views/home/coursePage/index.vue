@@ -8,7 +8,7 @@
         { label: courseName },
       ]"
     />
-    <courseVideo />
+    <courseVideo :courseName="courseName"/>
     <qaModule />
     <router-view />
   </div>
@@ -16,20 +16,33 @@
 <script lang="ts" setup>
 import breadcrumbComps from '@/components/layout/breadcrumbComps.vue';
 import courseVideo from './comps/courseVideo.vue';
-import { computed } from 'vue';
+import { ref, computed, onMounted } from 'vue';
 import { useRoute } from 'vue-router';
 import { useCourseStore } from '@/stores/models/course/store';
 
 // 使用 store
 const courseStore = useCourseStore();
+const loaded = ref(false);
 
 // 獲取課程 ID
 const route = useRoute();
 const courseId = computed(() => route.params.id?.toString() || '1');
 
+// 載入課程資料
+const loadCourse = async () => {
+  if (!courseStore.courseList.length) {
+    await courseStore.fetchCourses();
+  }
+  loaded.value = true;
+};
+
+// 組件掛載時載入課程資料
+onMounted(loadCourse);
+
 // 獲取課程名稱
 const courseName = computed(() => {
+  if (!loaded.value) return '';
   const course = courseStore.getCourseById(courseId.value);
-  return course?.course_name || '載入課程中...';
+  return course?.course_name || '';
 });
 </script>
