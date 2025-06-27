@@ -120,8 +120,11 @@
     </div>
 
     <div class="mb-15">
-      <n-button class="mr-2">送出</n-button>
-      <n-button type="warning">審核中</n-button>
+      <n-button v-if="userStore.role === 'teacher'" class="mr-2" type="primary">儲存</n-button>
+      <n-button v-else-if="userStore.role === 'student'" class="mr-2" type="primary"
+        >送出審核</n-button
+      >
+      <n-button v-else-if="userStore.role === 'student2'" type="warning">審核中</n-button>
     </div>
   </div>
 </template>
@@ -129,6 +132,12 @@
 <script setup lang="ts">
 import { ref } from 'vue';
 import typography from '@/components/layout/typography.vue';
+import { useUserStore } from '@/stores/models/index';
+
+// ----------取得身分----------
+const userStore = useUserStore();
+
+// ---------------------------
 
 const options = [
   { label: '玉山銀行', value: 'bank01' },

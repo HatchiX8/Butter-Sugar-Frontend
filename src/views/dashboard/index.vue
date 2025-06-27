@@ -59,12 +59,12 @@ const fullMenuOptions: MenuOption[] = [
   {
     label: '課程資訊',
     key: 'CourseInfo',
-    roles: ['admin', 'teacher'],
+    roles: ['student', 'admin', 'teacher'],
   },
   {
     label: '建立新課程',
     key: 'courseAction/courseManage',
-    roles: ['admin', 'teacher'],
+    roles: ['student', 'admin', 'teacher'],
   },
 ];
 
