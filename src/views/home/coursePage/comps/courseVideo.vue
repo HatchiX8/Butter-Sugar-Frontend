@@ -17,7 +17,7 @@
           </video>
         </div>
 
-        <typography variant="h3" font-type="title" no-underline>
+        <typography variant="h3" font-type="title" class="mt-4" no-underline>
           {{ currentVideoLabel }}
         </typography>
         <div class="video-title mt-5">
