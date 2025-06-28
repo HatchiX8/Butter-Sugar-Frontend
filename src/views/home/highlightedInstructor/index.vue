@@ -45,7 +45,7 @@
       <!-- 精選課程 -->
       <div class="sm:w-full md:max-w-[90%] mx-auto">
         <typography variant="h3" font-type="title" underline class="text-white my-8 mt-5">精選課程</typography>
-        <div v-if="courses.length > 0" class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 xl:grid-cols-4 gap-6">
+        <div v-if="courses.length > 0" class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 xl:grid-cols-4 gap-6">
           <courseCard v-for="course in courses" :key="course.id" v-bind="course" />
         </div>
         <div v-else class="text-center py-10 text-neutral_300">
