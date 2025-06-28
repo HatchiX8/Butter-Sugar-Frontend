@@ -59,12 +59,12 @@ const fullMenuOptions: MenuOption[] = [
   {
     label: '課程資訊',
     key: 'CourseInfo',
-    roles: ['student', 'admin', 'teacher'],
+    roles: ['admin', 'teacher'],
   },
   {
     label: '建立新課程',
     key: 'courseAction/courseManage',
-    roles: ['student', 'admin', 'teacher'],
+    roles: ['admin', 'teacher'],
   },
 ];
 
@@ -80,8 +80,7 @@ const handleMenuSelect = (key: string) => {
 // ----------取得身分----------
 const userStore = useUserStore();
 
-onMounted(async () => {
-  await userStore.fetchUser();
+onMounted(() => {
   console.log('確認權限', userStore.role);
 });
 // ---------------------------

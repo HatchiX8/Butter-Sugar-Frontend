@@ -65,7 +65,7 @@ const handleSelect = (key: string) => {
       router.push('/teacher/courseInfo');
       break;
     case 'teacherProfile':
-      router.push('/teacher/memberCenter/profile');
+      router.push('/teacher/basicInfo');
       break;
     case 'logout':
       userStore.logout();
