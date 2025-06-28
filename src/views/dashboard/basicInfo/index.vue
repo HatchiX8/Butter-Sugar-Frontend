@@ -178,11 +178,11 @@ const rules: FormRules = {
 };
 
 const options = [
-  { label: '台灣銀行', value: '004 台灣銀行' },
-  { label: '華南銀行', value: '008 華南銀行' },
-  { label: '台北富邦銀行', value: '012 台北富邦銀行' },
-  { label: '中華郵政', value: '700 中華郵政' },
-  { label: '中國信託', value: '822 中國信託' },
+  { label: '004 台灣銀行', value: '004 台灣銀行' },
+  { label: '008 華南銀行', value: '008 華南銀行' },
+  { label: '012 台北富邦銀行', value: '012 台北富邦銀行' },
+  { label: '700 中華郵政', value: '700 中華郵政' },
+  { label: '822 中國信託', value: '822 中國信託' },
 ];
 
 // 預覽圖片用

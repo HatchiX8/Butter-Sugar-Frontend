@@ -103,6 +103,14 @@ export type AddChildRequestPayload = AddTitlePayload | AddCategoryPayload;
 
 // ------------------------------
 
-export interface handoutsResponse {
+// 取得課程講義
+export interface handoutsResponse{
   id: string;
+  course_id: string;
+  name: string;
+  url: string;
+  size: string;
+  type: string;
+  created_at: string;
+  updated_at: string;
 }

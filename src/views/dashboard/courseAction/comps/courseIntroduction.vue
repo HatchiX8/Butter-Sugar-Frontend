@@ -16,12 +16,12 @@
       <div class="w-100% mb-5">
         <div class="mb-5">
           <p class="fw-bold text-primaryDefault mb-3">課程名稱</p>
-          <baseInput type="text" placeholder="請輸入課程名稱" v-model="courseTitle" />
+          <baseInput type="text" placeholder="請輸入課程名稱" v-model="courseTitle" disabled />
         </div>
         <div class="w-100% mb-5">
           <p class="fw-bold text-primaryDefault mb-3">課程類別</p>
           <n-space vertical>
-            <n-select v-model:value="optionsValue" :options="options" placeholder="請選擇類別" />
+            <n-select v-model:value="optionsValue" :options="options" placeholder="請選擇類別" disabled />
           </n-space>
         </div>
       </div>
@@ -179,12 +179,14 @@
               <div v-show="isFile" class="mr-4 flex-1">
                 <n-upload
                   ref="fileUploadRef"
+                  v-model:file-list="fileList"
                   accept="video/mp4,application/pdf,application/vnd.ms-powerpoint,application/vnd.openxmlformats-officedocument.presentationml.presentation,application/msword,application/vnd.openxmlformats-officedocument.wordprocessingml.document"
-                  :max="1"
+                  :max="5"
                   :custom-request="customFileUpload"
                   :show-file-list="true"
                   :show-trigger="false"
                   @remove="handleFileRemove"
+                  multiple
                 />
               </div>
               <div v-show="!isFile" class="mr-2">尚未選擇檔案</div>
@@ -246,10 +248,12 @@ import {
   apiDelete_DeleteTrailer,
   apiPost_AddHandouts,
   apiDelete_DeleteHandouts,
+  apiGet_handoutsDetail,
   apiPost_SaveForm,
 } from '@/views/dashboard/api/index';
 import { useDashboardStore } from '@/stores/models/dashboard/store';
 import { useMessage } from 'naive-ui';
+import type { UploadFileInfo } from 'naive-ui'
 
 const message = useMessage();
 const dashboardStore = useDashboardStore();
@@ -387,7 +391,8 @@ const triggerFileUpload = () => {
     console.warn('找不到 input element');
   }
 };
-const handoutsId = ref();
+
+const fileList = ref<UploadFileInfo[]>([]);
 const customFileUpload = async ({
   file,
   onFinish,
@@ -397,10 +402,26 @@ const customFileUpload = async ({
   onFinish: () => void;
   onError: (err: Error) => void;
 }) => {
+  console.log('使用者上傳的檔案名稱:', file.file.name);
   try {
-    const result = await apiPost_AddHandouts(titleId.value, file.file); // 你前面存好的課程 id
-    handoutsId.value = result.data.handouts[0].id;
-    console.log('檢視寫入', handoutsId.value); // 暫時只刪一筆
+    const result = await apiPost_AddHandouts(titleId.value, [file.file]);
+    const handout = result.data.handouts[0];
+
+    console.log('後端回傳的 handout 名稱:', handout.name);
+    console.log('更新前fileList.value: ', fileList.value)
+    // 找到 Naive UI 自動加進 fileList 的那一筆，更新它
+    const targetIndex = fileList.value.findIndex(f => f.name === file.file.name && f.status !== 'finished');
+    if (targetIndex !== -1) {
+      fileList.value[targetIndex] = {
+        ...fileList.value[targetIndex],
+        id: handout.id,
+        name: handout.name,
+        status: 'finished',
+        url: handout.url,
+      };
+    }
+    console.log('更新後fileList.value: ', fileList.value)
+
     isFile.value = true;
     onFinish(); // 通知 n-upload 成功
   } catch (err) {
@@ -408,14 +429,20 @@ const customFileUpload = async ({
   }
 };
 
-const handleFileRemove = () => {
+const handleFileRemove = ({ file }: { file: UploadFileInfo }) => {
   console.log('使用者移除檔案');
-  deleteHandouts();
-  isFile.value = false;
+
+  // 刪除後端講義
+  deleteHandouts(file.id);
+
+  // 若清空了所有檔案，設定 isFile 為 false
+  if (fileList.value.length === 0) {
+    isFile.value = false;
+  }
 };
 
-const deleteHandouts = async () => {
-  const res = await apiDelete_DeleteHandouts(handoutsId.value);
+const deleteHandouts = async (id: string) => {
+  const res = await apiDelete_DeleteHandouts(id);
   console.log('刪除講義成功', res);
 };
 // -----------------------------
@@ -621,57 +648,68 @@ const submitFormApi = async (titleId: string, postData: courseSaveFormPostData) 
 
 onMounted(async () => {
   const courseId = props.courseData.id;
-  if (courseId !== '') {
-    try{
-      await dashboardStore.fetchCourseDetail(courseId);
-      const courseDetail = dashboardStore.courseDetail;
-      if (courseDetail) {
+  if (!courseId) return;
 
-        if (!!courseDetail.course_name && !!courseDetail.category_id && !!courseDetail.id){
-          courseTitle.value = courseDetail.course_name;
-          optionsValue.value = courseDetail.category_id;
-          titleId.value = courseDetail.id;
-          isSubmitCategory.value = true;
-        }
+  try{
+    await dashboardStore.fetchCourseDetail(courseId);
+    const courseDetail = dashboardStore.courseDetail;
+    if (!courseDetail) return;
 
-        course_description.value = courseDetail.course_description;
-        course_banner_description.value = courseDetail.course_banner_description;
-        suitable_for.value = courseDetail.suitable_for;
-        course_goal.value = courseDetail.course_goal;
-
-        // Banner圖片
-        if (courseDetail.course_banner_imageUrl){
-          imgBannerUrl.value = courseDetail.course_banner_imageUrl;
-          isImgBanner.value = true;
-        }
-        // 課程圖片
-        if (courseDetail.course_small_imageUrl){
-          imgUrl.value = courseDetail.course_small_imageUrl;
-          isImg.value = true;
-        }
-        // 課程簡介說明圖片
-        if (courseDetail.course_description_imageUrl){
-          imgDescriptionUrl.value = courseDetail.course_description_imageUrl;
-          isImgDescription.value = true;
-        }
-        // 預告片
-        // if (courseDetail.trailer_url){
-        //   trailerUrl.value = courseDetail.trailer_url;
-        //   trailerName.value = courseDetail.trailer_name;
-        //   isVideo.value = true;
-        // }
-        // 課程講義
-        // if (courseHandouts){
-        //   handoutUrl.value = ;
-        //   isFile.value = true;
-        // }
-
-        // 標記後端資料已完成載入
-        isLoaded.value = true;
-      }
-    } catch (err) {
-      console.error('載入課程資料失敗', err);
+    // 判斷是否為有效課程基本資料
+    const hasBasicInfo = !!courseDetail.course_name && !!courseDetail.category_id && !!courseDetail.id;
+    if (hasBasicInfo){
+      courseTitle.value = courseDetail.course_name;
+      optionsValue.value = courseDetail.category_id;
+      titleId.value = courseDetail.id;
+      isSubmitCategory.value = true;
     }
+
+    // 文字內容
+    course_description.value = courseDetail.course_description;
+    course_banner_description.value = courseDetail.course_banner_description;
+    suitable_for.value = courseDetail.suitable_for;
+    course_goal.value = courseDetail.course_goal;
+
+    // Banner圖片
+    if (courseDetail.course_banner_imageUrl){
+      imgBannerUrl.value = courseDetail.course_banner_imageUrl;
+      isImgBanner.value = true;
+    }
+    // 課程圖片
+    if (courseDetail.course_small_imageUrl){
+      imgUrl.value = courseDetail.course_small_imageUrl;
+      isImg.value = true;
+    }
+    // 課程簡介說明圖片
+    if (courseDetail.course_description_imageUrl){
+      imgDescriptionUrl.value = courseDetail.course_description_imageUrl;
+      isImgDescription.value = true;
+    }
+
+    // 預告片
+    // if (courseDetail.trailer_url){
+    //   trailerUrl.value = courseDetail.trailer_url;
+    //   trailerName.value = courseDetail.trailer_name;
+    //   isVideo.value = true;
+    // }
+
+    // 課程講義
+    const res = await apiGet_handoutsDetail(courseId);
+    const handouts = res.data?.handouts ?? [];
+    if (handouts.length > 0) {
+      fileList.value = handouts.map(handout => ({
+        id: handout.id,
+        name: handout.name,
+        status: 'finished',
+        url: handout.url,
+      }));
+      isFile.value = true;
+    }
+
+    // 標記後端資料已完成載入
+    isLoaded.value = true;
+  } catch (err) {
+    console.error('載入課程資料失敗', err);
   }
 });
 </script>

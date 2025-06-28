@@ -97,6 +97,7 @@ export function withNaiveProviders(App: Component) {
                     textColor: '#FFFDFA',
                     fontWeight: '400',
                     color: '#0D0B07', // 預設黑背景色
+                    colorDisabled: colors.neutral_500,
                     boxShadowFocus: '0 0 0 2px rgba(255, 255, 255, 0.2)',
                     border: '1px solid #FFFDFA',
                     colorActive: '#1D1810',
@@ -145,6 +146,7 @@ export function withNaiveProviders(App: Component) {
               },
               Upload:{
                 itemTextColor: colors.white,
+                itemTextColorSuccess: colors.primaryDefault,
               }
             },
           },

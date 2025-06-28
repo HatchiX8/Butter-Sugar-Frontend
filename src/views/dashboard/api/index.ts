@@ -145,9 +145,12 @@ export const apiDelete_DeleteTrailer = async (courseId: string) => {
 
 // ----------講義API----------
 // 新增
-export const apiPost_AddHandouts = async (courseId: string, file: File) => {
+export const apiPost_AddHandouts = async (courseId: string, files: File[]) => {
   const formData = new FormData();
-  formData.append('handout', file);
+
+  for (const file of files) {
+    formData.append('handout', file);
+  }
 
   const res = await axiosInstance.post<{ data: { handouts: Array<handoutsResponse> } }>(
     `/api/v1/course/${courseId}/upload/course-handouts`,
@@ -162,6 +165,13 @@ export const apiPost_AddHandouts = async (courseId: string, file: File) => {
 // 刪除
 export const apiDelete_DeleteHandouts = async (courseId: string) => {
   const res = await axiosInstance.delete(`/api/v1/course/${courseId}/upload/course-handouts`);
+  return res.data;
+};
+// 取得課程講義
+export const apiGet_handoutsDetail = async (courseId: string) => {
+  const res = await axiosInstance.get<{ data: { handouts: Array<handoutsResponse> } }>(
+    `/api/v1/course/${courseId}/handouts`
+  );
   return res.data;
 };
 // ----------------------------------

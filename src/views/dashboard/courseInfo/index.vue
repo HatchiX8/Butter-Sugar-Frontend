@@ -61,6 +61,7 @@ const edit = (row: Song) => {
 };
 
 const remove = (row: Song) => {
+  if (row.course_status !== '上架') return message.error('已上架課程才可下架');
   message.info(`下架 ${row.course_name}`);
   openOffTheShelfModal({ course_id: row.course_id, course_name: row.course_name });
 };
