@@ -1,5 +1,5 @@
 <template>
-  <div class="w-full max-w-[1280px] mx-auto px-4 flex flex-col items-start">
+  <div class="w-[80%] md:w-full max-w-[1280px] mx-auto px-4 flex flex-col items-start">
     <breadcrumbComps
       class="mt-30"
       :items="[
