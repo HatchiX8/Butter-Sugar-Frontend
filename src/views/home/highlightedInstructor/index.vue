@@ -15,12 +15,12 @@
 
     <!-- 講師資料 -->
     <template v-else-if="instructor">
-      <div class="flex flex-col sm:flex-row items-center sm:items-start px-8 py-10 gap-6 mt-14 text-white"
+      <div class="max-w-[90%] mx-auto flex flex-col sm:flex-row sm:items-start md:items-center px-8 py-10 gap-6 mt-14 text-white"
       :style="{ backgroundImage: `url(${bgImgUrl})` }">
         <!-- 講師左側 -->
         <div class="flex-shrink-0 w-60 bg-black p-4 text-center">
           <div class="teacher-avatar p-3 [background:url('@/assets/images/home/teacher-flower-lace.png')_center_center/contain_no-repeat]">
-            <img :src="instructor.avatar" alt="講師頭像" class="w-24 h-24 mx-auto rounded-full object-cover" />
+            <img :src="instructor.avatar" alt="講師頭像" class="w-24 h-24 mx-auto rounded-full [object-fit:cover]" />
           </div>
           <div class="text-sm text-black mt-4 py-2px [background:url('@/assets/images/home/teacher-flag.png')_center_center/contain_no-repeat]">精選講師</div>
           <div class="text-lg font-bold mt-2">{{ instructor.name }}</div>
@@ -32,9 +32,9 @@
           </div>
         </div>
         <!-- 講師右側 -->
-        <div class="flex gap-4 py-6 text-sm leading-relaxed">
+        <div class="flex gap-4 py-6 text-sm leading-relaxed item-center">
           <img :src="quoteImg" alt="講師引號" class="w-10 h-10 object-contain" />
-          <div class="flex flex-row md:flex-col align-middle">
+          <div class="flex flex-col align-middle ">
             <p class="text-4 mb-4">
               {{ instructor.slogan }}
             </p>
@@ -43,12 +43,14 @@
         </div>
       </div>
       <!-- 精選課程 -->
-      <typography variant="h3" font-type="title" underline class="text-white my-8 mt-5">精選課程</typography>
-      <div v-if="courses.length > 0" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
-        <courseCard v-for="course in courses" :key="course.id" v-bind="course" />
-      </div>
-      <div v-else class="text-center py-10 text-neutral_300">
-        暫無精選課程
+      <div class="sm:w-full md:max-w-[90%] mx-auto">
+        <typography variant="h3" font-type="title" underline class="text-white my-8 mt-5">精選課程</typography>
+        <div v-if="courses.length > 0" class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 xl:grid-cols-4 gap-6">
+          <courseCard v-for="course in courses" :key="course.id" v-bind="course" />
+        </div>
+        <div v-else class="text-center py-10 text-neutral_300">
+          暫無精選課程
+        </div>
       </div>
     </template>
 
