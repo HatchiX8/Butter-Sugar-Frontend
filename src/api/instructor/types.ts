@@ -36,3 +36,17 @@ export interface CourseRating {
   avg_rating_score: string;
   course_rating_users: string;
 }
+
+export interface TeacherProfile {
+  name: string;
+  nickname: string;
+  phone: string;
+  birthday: string;
+  address: string;
+  profile_image_url: string;
+  bank_name: string;
+  bank_account: string;
+  slogan: string;
+  description: string;
+  specialization: string;
+}

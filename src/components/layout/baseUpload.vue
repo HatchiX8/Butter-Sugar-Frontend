@@ -10,6 +10,7 @@
       :show-file-list="false"
       accept="image/*"
       :before-upload="handleBeforeUpload"
+      :custom-request="() => {}"
     >
       <baseButton :label="uploadButtonText" icon="i-ion:cloud-upload-outline" iconPosition="right" class="m-4" />
     </n-upload>
@@ -47,6 +48,7 @@ const lastBlobUrl = ref<string | null>(null);
 watch(
   () => props.value, (val) => {
     console.log('props.value changed:', val)
+
     // 清除上一個 blob URL
     if (lastBlobUrl.value) {
       URL.revokeObjectURL(lastBlobUrl.value);
@@ -72,6 +74,8 @@ watch(
 
 // 攔截檔案，不自動上傳
 const handleBeforeUpload = (data: { file: File }) => {
+  console.log('選到檔案：', data.file);
+
   // 回傳 File 給父層
   emit('update:value', data.file);
   // return false 讓 n-upload 停止內建的自動上傳流程

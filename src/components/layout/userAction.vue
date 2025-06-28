@@ -35,7 +35,7 @@ const fetchData = async () => {
     const res = await axios.get(`${API_BASE}/api/v1/users/info`, {
       headers: { Authorization: `Bearer ${userStore.userToken}` },
     });
-    userImage.value = res.data.data.profile_image_url;
+    userImage.value = userStore.profileImageUrl || res.data.data.profile_image_url;
   } catch (err) {
     console.error('取得學生資料失敗', err);
   }

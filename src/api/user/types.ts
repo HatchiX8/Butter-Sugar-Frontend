@@ -1,3 +1,9 @@
+export interface ApiResponse<T> {
+  status: boolean;
+  message: string;
+  data?: T | null;
+};
+
 export interface User {
   id: number;
   name: string;

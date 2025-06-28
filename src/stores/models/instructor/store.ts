@@ -1,14 +1,22 @@
 import { defineStore } from 'pinia';
 import { ref} from 'vue';
-import { getInstructor } from '@/api/instructor/index';
-import type { ApiResponse, InstructorDataModel, Teacher, Course } from '@/api/instructor/types';
+import { getInstructor, getTeacherProfile, updateTeacherProfile } from '@/api/instructor/index';
+import type { ApiResponse, InstructorDataModel, Teacher, Course, TeacherProfile } from '@/api/instructor/types';
 import axios from 'axios';
 
-export const useInstructorStore = defineStore('instructorStore', () => {
+export const useInstructorStore = defineStore('instructor', () => {
   const dataModel = ref<InstructorDataModel>();
   const teacher = ref<Teacher>();
   const courses = ref<Course[]>([]);
+  const teacherProfile = ref<TeacherProfile>();
+
+  const loading = ref(false);
   const error = ref<string | null>(null);
+
+  interface ActionResult {
+    success: boolean;
+    message: string;
+  }
 
   // 錯誤訊息
   const getErrorMessage = (err: unknown): string => {
@@ -38,13 +46,46 @@ export const useInstructorStore = defineStore('instructorStore', () => {
     }
   };
 
+  // 取得教師資料
+  const fetchTeacherProfile = async () => {
+    error.value = null;
+
+    try {
+      const res: ApiResponse<TeacherProfile> = await getTeacherProfile();
+      if (res.data) teacherProfile.value = res.data;
+      else error.value = '取得教師資料失敗';
+    } catch (err) {
+      error.value = getErrorMessage(err);
+    }
+  };
+
+  // 更新教師資料
+  const saveTeacherProfile = async (formData: FormData): Promise<ActionResult> => {
+    loading.value = true;
+    error.value = null;
+    try {
+      const res: ApiResponse<TeacherProfile> = await updateTeacherProfile(formData);
+      if (res.data) teacherProfile.value = res.data
+      return { success: res.status, message: res.message };
+    } catch (err) {
+      const msg = getErrorMessage(err);
+      error.value = msg;
+      return { success: false, message: msg };
+    } finally {
+      loading.value = false;
+    }
+  };
+
   return {
     // state
     error,
     teacher,
     courses,
+    teacherProfile,
 
     // actions
     fetchInstructor,
+    fetchTeacherProfile,
+    saveTeacherProfile,
   };
 });
