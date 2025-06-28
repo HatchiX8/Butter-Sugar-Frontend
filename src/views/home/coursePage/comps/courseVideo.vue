@@ -25,7 +25,7 @@
         </div>
         <div class="mt-5 w-full text-center md:flex-[2]">
           <n-spin :show="sectionStore.loading">
-            <n-button type="warning"> 完成課程 </n-button>
+            <n-button type="warning" @click="goToNextSubsection" :loading="false"> 完成課程 </n-button>
           </n-spin>
         </div>
       </div>
@@ -60,6 +60,7 @@ import { ref, onMounted, h, computed } from 'vue';
 import { useRoute } from 'vue-router';
 import { storeToRefs } from 'pinia';
 import type { MenuOption } from 'naive-ui';
+import { useMessage } from 'naive-ui';
 import typography from '@/components/layout/typography.vue';
 import { useSectionStore } from '@/stores/models/courseChapter/sectionStore';
 import type { Section, Subsection } from '@/views/home/courseIntroduction/api/type';
@@ -114,6 +115,9 @@ const chapters = computed<Chapter[]>(() => {
 // 預設影片 URL
 const DEFAULT_VIDEO_URL = 'https://butter-sugar-teacher-video.s3.ap-northeast-1.amazonaws.com/videos/cdefe418-56be-4c98-9a3d-a9e4016b532f.mp4';
 const DEFAULT_VIDEO_LABEL = '預設影片';
+
+// 初始化消息提示
+const message = useMessage();
 
 const menuOptions = ref<MenuOption[]>([]);
 const selectedKey = ref<string>(DEFAULT_VIDEO_URL); // 預設為預設影片 URL
@@ -255,6 +259,90 @@ const switchVideo = (key: string): void => {
     v.play().catch(() => {});
   }
 };
+
+// 6. 完成課程按鈕點擊，前往下一章節
+const goToNextSubsection = (): void => {
+  // message.info('正在處理章節切換...');
+
+  if (sectionStore.loading || chapters.value.length === 0) {
+    // message.warning('課程內容加載中，請稍候再試');
+    return;
+  }
+
+  const currentKey = selectedKey.value;
+
+  // 如果是預設視頻，則直接前往第一個章節的第一個視頻
+  if (currentKey === DEFAULT_VIDEO_URL) {
+    if (chapters.value.length > 0 && chapters.value[0].videos.length > 0) {
+      const firstChapterKey = `${chapters.value[0].name}-0`;
+      switchVideo(firstChapterKey);
+      // message.success('已切換到第一章節');
+    } else {
+      // message.warning('找不到可用的章節內容');
+    }
+    return;
+  }
+
+  // 修正：使用 lastIndexOf 來正確分割 key
+  // 假設格式為 "chapterName-videoIndex"，其中 chapterName 可能包含 "-"
+  const lastDashIndex = currentKey.lastIndexOf('-');
+  if (lastDashIndex === -1) {
+    // message.error('視頻選擇格式錯誤');
+    return;
+  }
+
+  const currentChapterName = currentKey.substring(0, lastDashIndex);
+  const currentVideoIndexStr = currentKey.substring(lastDashIndex + 1);
+  const currentVideoIndex = parseInt(currentVideoIndexStr);
+
+  if (isNaN(currentVideoIndex)) {
+    // message.error('視頻索引格式錯誤');
+    return;
+  }
+
+  // 找到當前章節在 chapters 陣列中的索引
+  const currentChapterIndex = chapters.value.findIndex(c => c.name === currentChapterName);
+
+  if (currentChapterIndex === -1) {
+    // message.error('找不到當前章節');
+    return;
+  }
+
+  const currentChapter = chapters.value[currentChapterIndex];
+
+  // 判斷是否有下一個子章節
+  if (currentVideoIndex < currentChapter.videos.length - 1) {
+    // 前往同一章節的下一個子章節
+    const nextVideoKey = `${currentChapterName}-${currentVideoIndex + 1}`;
+    switchVideo(nextVideoKey);
+    // message.success(`已切換到 ${currentChapter.title} 的下一個子章節`);
+    return;
+  }
+
+  // 如果當前已是最後一個子章節，檢查是否有下一章節
+  if (currentChapterIndex < chapters.value.length - 1) {
+    const nextChapter = chapters.value[currentChapterIndex + 1];
+    if (nextChapter.videos.length > 0) {
+      // 前往下一章節的第一個子章節
+      const nextVideoKey = `${nextChapter.name}-0`;
+
+      // 展開下一章節的選單
+      if (!expandedKeys.value.includes(nextChapter.name)) {
+        expandedKeys.value.push(nextChapter.name);
+      }
+
+      switchVideo(nextVideoKey);
+      // message.success(`已切換到 ${nextChapter.title} 的第一個子章節`);
+      return;
+    } else {
+      // message.warning('下一章節無視頻內容');
+    }
+  }
+
+  // 如果已經是最後一章的最後一個子章節
+  message.success('恭喜您完成所有課程內容！');
+};
+
 </script>
 <style scoped>
 .video-menu :deep(.n-menu-item-content--selected)::before {
