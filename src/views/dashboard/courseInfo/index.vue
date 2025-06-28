@@ -48,15 +48,16 @@ interface Song {
   course_id: string;
 }
 
-const goToCourseManage = () => {
-  router.push({ name: 'CourseManage' });
+const goToCourseManage = (courseId?: string) => {
+  if (courseId) router.push({ name: 'CourseManage', query: { id: courseId } });
+  else router.push({ name: 'CourseManage' });
 };
 
 const message = useMessage();
 
 const edit = (row: Song) => {
   message.info(`編輯 ${row.course_name}`);
-  goToCourseManage();
+  goToCourseManage(row.course_id);
 };
 
 const remove = (row: Song) => {

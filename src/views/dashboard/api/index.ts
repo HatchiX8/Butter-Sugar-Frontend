@@ -8,6 +8,7 @@ import type {
   courseAddCategoryResponse,
   courseSaveFormPostData,
   handoutsResponse,
+  courseDetailResponse,
 } from '../type';
 
 // ----------更改課程狀態(上架/下架)----------
@@ -15,6 +16,15 @@ export const apiPatch_changeCourseStatus = async (courseId: string, postData: co
   const res = await axiosInstance.patch<courseStatusResponse>(
     `/api/v1/course/${courseId}/status`,
     postData
+  );
+  return res.data;
+};
+// ----------------------------
+
+// ----------取得單一課程資料----------
+export const apiGet_courseDetail = async (courseId: string) => {
+  const res = await axiosInstance.get<courseDetailResponse>(
+    `/api/v1/course/${courseId}`
   );
   return res.data;
 };

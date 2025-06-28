@@ -14,6 +14,41 @@ export interface courseStatusResponse {
 }
 // ------------------------------
 
+// ----------取得單一課程資料----------
+export interface courseDetailResponse {
+  status: boolean;
+  message: string;
+  data: {
+    course: courseDetail;
+  };
+}
+export interface courseDetail {
+  id: string;
+  teacher_id: string;
+  category_id: string;
+  course_banner_imageUrl: string;
+  course_name: string;
+  course_banner_description: string;
+  course_description: string;
+  course_description_imageUrl: string;
+  course_hours: string;
+  course_small_imageUrl: string;
+  total_users: string;
+  trailer_name: string;
+  trailer_url: string;
+  trailer_status: string;
+  trailer_size: string;
+  trailer_type: string;
+  suitable_for: string;
+  course_goal: string;
+  origin_price: number;
+  sell_price: number;
+  course_status: string;
+  created_at: string;
+  updated_at: string;
+}
+// ------------------------------
+
 export interface courseAddTitlePostData {
   course_name: string;
 }

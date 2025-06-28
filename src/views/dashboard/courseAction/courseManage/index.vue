@@ -16,8 +16,8 @@
       <courseSubmit :course-data="courseSubmitData" />
     </div>
   </div>
-  <button @click="preToggle" class="bg-primaryDefault text-white border-none rounded-md px-4 py-3 mr-4">上一步</button>
-  <button @click="nextToggle" class="bg-primaryDefault text-white border-none rounded-md px-4 py-3">下一步</button>
+  <n-button type="primary" @click="preToggle" class="bg-primaryDefault text-white border-none rounded-md px-4 py-3 mr-4">上一步</n-button>
+  <n-button type="primary" @click="nextToggle" class="bg-primaryDefault text-white border-none rounded-md px-4 py-3">下一步</n-button>
 </template>
 <script setup lang="ts">
 import { ref, onMounted, computed } from 'vue';
@@ -33,12 +33,16 @@ import { useDashboardStore } from '@/stores/models/index';
 
 // 從表格頁面跳轉進來
 const route = useRoute();
-const isEditMode = computed(() => typeof route.query.id === 'string' && route.query.id !== ''); // 有 id 就代表是編輯
+const courseId = computed(() => {
+  const id = route.query.id;
+  return typeof id === 'string' ? id : '';
+});
+const isEditMode = computed(() => courseId.value !== ''); // 有 id 就代表是編輯
 const currentStep = ref(Number(route.query.step) || 1);
 
 const courseInfoData = ref({
   description: '',
-  id: '',
+  id: courseId.value,
   title: '',
 });
 

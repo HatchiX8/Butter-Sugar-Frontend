@@ -1,7 +1,7 @@
 import { ref } from 'vue';
 import { defineStore } from 'pinia';
-import { apiPatch_changeCourseStatus, apiPost_AddCategory, apiPost_AddTitle } from '@/views/dashboard/api/index';
-import type { courseStatusPostData, courseAddCategoryPostData, courseAddTitlePostData } from '@/views/dashboard/type';
+import { apiPatch_changeCourseStatus, apiGet_courseDetail, apiPost_AddCategory, apiPost_AddTitle } from '@/views/dashboard/api/index';
+import type { courseStatusPostData, courseAddCategoryPostData, courseAddTitlePostData, courseDetail } from '@/views/dashboard/type';
 import { apiErrorMessage } from '@/utils/api/apiErrorMsg';
 import axios from 'axios';
 
@@ -9,6 +9,7 @@ export const useDashboardStore = defineStore('dashboardStore', () => {
   const loading = ref(false);
   const error = ref<string | null>(null);
   const courseId = ref(); // 通用課程ID
+  const courseDetail = ref<courseDetail>();
 
   // 錯誤訊息
   const getErrorMessage = (err: unknown): string => {
@@ -39,6 +40,23 @@ export const useDashboardStore = defineStore('dashboardStore', () => {
       const msg = getErrorMessage(err);
       error.value = msg;
       return { success: false, message: msg };
+    } finally {
+      loading.value = false;
+    }
+  };
+  // -----------------------------------
+
+    // ----------取得單一課程資料API----------
+  const fetchCourseDetail = async (courseId: string) => {
+    loading.value = true;
+    error.value = null;
+
+    try {
+      const res = await apiGet_courseDetail(courseId);
+      if (res.data.course) courseDetail.value = res.data.course;
+      else error.value = '取得單一課程資料失敗';
+    } catch (err) {
+      error.value = getErrorMessage(err);
     } finally {
       loading.value = false;
     }
@@ -85,5 +103,12 @@ export const useDashboardStore = defineStore('dashboardStore', () => {
 
   // ----------------------------------
 
-  return { addTitle, addCategory, changeCourseStatus };
+  return {
+    courseDetail,
+
+    changeCourseStatus,
+    fetchCourseDetail,
+    addTitle,
+    addCategory
+  };
 });

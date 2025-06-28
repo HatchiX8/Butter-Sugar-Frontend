@@ -143,6 +143,9 @@ export function withNaiveProviders(App: Component) {
               Form: {
                 labelTextColor: colors.white,
               },
+              Upload:{
+                itemTextColor: colors.white,
+              }
             },
           },
           {
