@@ -89,7 +89,8 @@ export const useCourseQAStore = defineStore('courseQA', () => {
             // 僅當 is_instructor 為 true 時才顯示授課講師標籤
             role: answer.is_instructor === true ? '授課講師' : '',
             content: answer.answer_text,
-            avatar: answer.user_avatar || '' // 添加頭像
+            avatar: answer.user_avatar || '', // 添加頭像
+            profile_image_url: answer.profile_image_url || '' // 添加 Google 頭像 URL
           }));
         }
 
@@ -98,7 +99,8 @@ export const useCourseQAStore = defineStore('courseQA', () => {
           user: {
             name: item.user_nickname || item.user_name || '作者',  // 優先使用暱稱
             date: formatDate(item.created_at),
-            avatar: item.user_avatar || '' // 添加頭像
+            avatar: item.user_avatar || '', // 添加頭像
+            profile_image_url: item.profile_image_url || '' // 添加 Google 頭像 URL
           },
           question: item.question_text,
           question_id: item.id, // 確保問題 ID 被保存
@@ -151,7 +153,8 @@ export const useCourseQAStore = defineStore('courseQA', () => {
           user: {
             name: newQuestion.user_nickname || newQuestion.user_name || userName || '作者',
             date: formatDate(newQuestion.created_at),
-            avatar: newQuestion.user_avatar || userAvatar || '' // 添加頭像資料
+            avatar: newQuestion.user_avatar || userAvatar || '', // 添加頭像資料
+            profile_image_url: newQuestion.profile_image_url || userInfo?.profile_image_url || '' // 添加 Google 頭像 URL
           },
           question: newQuestion.question_text,
           question_id: newQuestion.id,
@@ -217,7 +220,8 @@ export const useCourseQAStore = defineStore('courseQA', () => {
           date: formatDate(newAnswer.created_at),
           role: newAnswer.user_role || '',  // 如果 API 返回的角色信息
           content: newAnswer.answer_text,
-          avatar: newAnswer.user_avatar || userAvatar || '' // 添加頭像
+          avatar: newAnswer.user_avatar || userAvatar || '', // 添加頭像
+          profile_image_url: newAnswer.profile_image_url || userInfo?.profile_image_url || '' // 添加 Google 頭像 URL
         };
 
         // 創建更新後的問答列表

@@ -45,7 +45,7 @@
           <!-- 問題 (提問者) -->
           <div class="flex items-start space-x-4">
             <img
-              :src="qa.user.avatar || defaultAvatar"
+              :src="qa.user.profile_image_url || qa.user.avatar || defaultAvatar"
               class="mr-3 h-12 w-12 flex-shrink-0 rounded-full object-cover"
               alt="用戶頭像"
             />
@@ -72,7 +72,7 @@
             class="ml-16 mt-4 flex items-start space-x-4"
           >
             <img
-              :src="answer.avatar || defaultAvatar"
+              :src="answer.profile_image_url || answer.avatar || defaultAvatar"
               class="h-12 w-12 flex-shrink-0 rounded-full object-cover mr-3"
               alt="用戶頭像"
             />
