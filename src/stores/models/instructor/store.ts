@@ -1,7 +1,7 @@
 import { defineStore } from 'pinia';
 import { ref} from 'vue';
-import { getInstructor, getTeacherProfile, updateTeacherProfile } from '@/api/instructor/index';
-import type { ApiResponse, InstructorDataModel, Teacher, Course, TeacherProfile } from '@/api/instructor/types';
+import { getInstructor, getTeacherProfile, updateTeacherProfile, getTeacherCourses } from '@/api/instructor/index';
+import type { ApiResponse, InstructorDataModel, Teacher, Course, TeacherProfile, TeacherCourse } from '@/api/instructor/types';
 import axios from 'axios';
 
 export const useInstructorStore = defineStore('instructor', () => {
@@ -9,6 +9,7 @@ export const useInstructorStore = defineStore('instructor', () => {
   const teacher = ref<Teacher>();
   const courses = ref<Course[]>([]);
   const teacherProfile = ref<TeacherProfile>();
+  const teacherCourses = ref<TeacherCourse[]>([]);
 
   const loading = ref(false);
   const error = ref<string | null>(null);
@@ -76,16 +77,30 @@ export const useInstructorStore = defineStore('instructor', () => {
     }
   };
 
+  // 取得教師課程列表
+  const fetchTeacherCourses = async (pageNum: number = 1) => {
+    error.value = null;
+
+    try {
+      const res: ApiResponse<TeacherCourse[]> = await getTeacherCourses(pageNum);
+      teacherCourses.value = res?.data ?? [];
+    } catch (err) {
+      error.value = getErrorMessage(err);
+    }
+  };
+
   return {
     // state
     error,
     teacher,
     courses,
     teacherProfile,
+    teacherCourses,
 
     // actions
     fetchInstructor,
     fetchTeacherProfile,
     saveTeacherProfile,
+    fetchTeacherCourses,
   };
 });

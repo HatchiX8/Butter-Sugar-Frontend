@@ -1,3 +1,19 @@
+// ----------更改課程狀態----------
+export interface courseStatusPostData {
+  course_status: string;
+};
+export interface courseStatusResponse {
+  status: boolean;
+  message: string;
+  data: {
+    course: {
+      id: string;
+      course_name: string;
+    };
+  };
+}
+// ------------------------------
+
 export interface courseAddTitlePostData {
   course_name: string;
 }

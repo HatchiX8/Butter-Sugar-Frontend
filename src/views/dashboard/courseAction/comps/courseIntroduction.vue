@@ -27,12 +27,12 @@
       </div>
     </div>
 
-    <div v-show="courseTitle && optionsValue" class="w-40%">
+    <div v-show="courseTitle && optionsValue" class="w-100%">
       <div class="mb-5">
         <p class="fw-bold text-primaryDefault mb-3">課程描述</p>
         <n-input
           v-model:value="course_banner_description"
-          type="text"
+          type="textarea"
           placeholder="請輸入課程描述"
           class="bg-black focus:outline-none"
         />
@@ -98,7 +98,7 @@
         <p class="fw-bold text-primaryDefault mb-3">課程簡介</p>
         <n-input
           v-model:value="course_description"
-          type="text"
+          type="textarea"
           placeholder="請輸入課程簡介"
           class="bg-black focus:outline-none"
         />
@@ -189,7 +189,7 @@
         <p class="fw-bold text-primaryDefault mb-3">適合對象</p>
         <n-input
           v-model:value="suitable_for"
-          type="text"
+          type="textarea"
           placeholder="請輸入適合對象"
           class="bg-black focus:outline-none"
         />
@@ -198,7 +198,7 @@
         <p class="fw-bold text-primaryDefault mb-3">課程目標</p>
         <n-input
           v-model:value="course_goal"
-          type="text"
+          type="textarea"
           placeholder="請輸入課程目標"
           class="bg-black focus:outline-none"
         />

@@ -50,3 +50,11 @@ export interface TeacherProfile {
   description: string;
   specialization: string;
 }
+
+export interface TeacherCourse {
+  course_id: string;
+  course_status: string;
+  teacher_id: string;
+  teacher_name: string;
+  course_name: string;
+}

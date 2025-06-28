@@ -1,5 +1,7 @@
 import axiosInstance from '@/api/axios';
 import type {
+  courseStatusPostData,
+  courseStatusResponse,
   courseAddTitlePostData,
   courseAddTitleResponse,
   courseAddCategoryPostData,
@@ -7,6 +9,16 @@ import type {
   courseSaveFormPostData,
   handoutsResponse,
 } from '../type';
+
+// ----------更改課程狀態(上架/下架)----------
+export const apiPatch_changeCourseStatus = async (courseId: string, postData: courseStatusPostData) => {
+  const res = await axiosInstance.patch<courseStatusResponse>(
+    `/api/v1/course/${courseId}/status`,
+    postData
+  );
+  return res.data;
+};
+// ----------------------------
 
 // ----------標題&類別----------
 export const apiPost_AddTitle = async (postData: courseAddTitlePostData) => {

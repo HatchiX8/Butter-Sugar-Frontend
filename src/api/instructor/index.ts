@@ -1,5 +1,5 @@
 import instance from '@/api/axios';
-import type { ApiResponse, InstructorDataModel, TeacherProfile  } from './types';
+import type { ApiResponse, InstructorDataModel, TeacherProfile, TeacherCourse  } from './types';
 
 // 取得單一精選教師
 export const getInstructor= async (teacherId: string): Promise<ApiResponse<InstructorDataModel>> => {
@@ -16,5 +16,13 @@ export const getTeacherProfile= async (): Promise<ApiResponse<TeacherProfile>> =
 // 更新教師資料
 export const updateTeacherProfile= async (formData: FormData): Promise<ApiResponse<TeacherProfile>> => {
   const res = await instance.patch<ApiResponse<TeacherProfile>>(`/api/v1/teacher/profile`, formData);
+  return res.data;
+};
+
+// 取得教師課程列表
+export const getTeacherCourses= async (pageNum: number): Promise<ApiResponse<TeacherCourse[]>> => {
+  const res = await instance.get<ApiResponse<TeacherCourse[]>>(`/api/v1/teacher/teacherCourse`, {
+    params: { page: pageNum }
+  });
   return res.data;
 };
