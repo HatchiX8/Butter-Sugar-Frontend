@@ -9,7 +9,7 @@
       ]"
     />
     <courseVideo :courseName="courseName"/>
-    <qaModule />
+    <qaModule :courseId="courseId" />
     <router-view />
   </div>
 </template>
