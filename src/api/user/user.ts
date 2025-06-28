@@ -1,8 +1,8 @@
 import instance from '../axios';
-import type { ApiResponse, User, UserRequest } from './types';
+import type { User, UserRequest, UserResponse } from './types';
 
 export const getUser = async () => {
-  const res = await instance.get<ApiResponse<User>>('/api/v1/users/info');
+  const res = await instance.get<UserResponse>('/api/v1/users/info');
   return res.data;
 };
 

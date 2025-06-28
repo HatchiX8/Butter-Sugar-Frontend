@@ -4,10 +4,10 @@
       v-for="option in userOptions"
       :key="option.key"
       @click="handleSelect(option.key)"
-      class="cursor-pointer text-white hover:nounderline hover:bg-primaryDefault px-4 py-3"
+      class="hover:nounderline hover:bg-primaryDefault cursor-pointer px-4 py-3 text-white"
     >
       {{ option.label }}
-  </li>
+    </li>
   </ul>
 </template>
 
@@ -33,9 +33,11 @@ const studentOptions: MenuOption[] = [
 ];
 
 const teacherOptions: MenuOption[] = [
-  { label: '教師儀表板', key: 'revenue' },
+  // { label: '教師儀表板', key: 'revenue' },
+  { label: '我的課程', key: 'myCourse' },
   { label: '課程管理', key: 'dashboard' },
   { label: '教師資料管理', key: 'teacherProfile' },
+  { label: '訂單紀錄', key: 'orders' },
   { label: '登出', key: 'logout' },
 ];
 
@@ -63,7 +65,7 @@ const handleSelect = (key: string) => {
       router.push('/teacher/courseInfo');
       break;
     case 'teacherProfile':
-      router.push('/teacher/memberCenter/profile');
+      router.push('/teacher/basicInfo');
       break;
     case 'logout':
       userStore.logout();
@@ -74,6 +76,4 @@ const handleSelect = (key: string) => {
   }
 };
 </script>
-<style>
-
-</style>
+<style></style>

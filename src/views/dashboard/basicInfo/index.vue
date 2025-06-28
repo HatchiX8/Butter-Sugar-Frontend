@@ -129,8 +129,11 @@
     </div>
 
     <div class="mb-15">
-      <n-button class="mr-2" @click="handleSaveProfile">送出</n-button>
-      <n-button type="warning">審核中</n-button>
+      <n-button v-if="userStore.role === 'teacher'" class="mr-2" type="primary" @click="handleSaveProfile">儲存</n-button>
+      <n-button v-else-if="userStore.role === 'student'" class="mr-2" type="primary"
+        >送出審核</n-button
+      >
+      <n-button v-else-if="userStore.role === 'student2'" type="warning">審核中</n-button>
     </div>
   </n-form>
 </template>
@@ -138,16 +141,19 @@
 <script setup lang="ts">
 import { ref, onMounted } from 'vue';
 import typography from '@/components/layout/typography.vue';
+import { useUserStore } from '@/stores/models/index';
 import { useInstructorStore } from '@/stores/models/instructor/store';
 import type { TeacherProfile } from '@/api/instructor/types';
 import { useMessage } from 'naive-ui';
 import type { FormRules } from 'naive-ui';
-import { useUserStore } from '@/stores/models/user/store';
 import baseButton from '@/components/layout/baseButton.vue';
 
 const message = useMessage();
 const instructorStore = useInstructorStore();
+// ----------取得身分----------
 const userStore = useUserStore();
+
+// ---------------------------
 
 const email = ref<string>('');
 const selectedFile = ref<File | string | null>(null);
