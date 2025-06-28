@@ -152,6 +152,7 @@
               <div v-show="isVideo" class="mr-4 flex-1">
                 <n-upload
                   ref="videoUploadRef"
+                  v-model:file-list="videoFileList"
                   accept="video/mp4"
                   :max="1"
                   :custom-request="customVideoUpload"
@@ -233,7 +234,7 @@
 </template>
 
 <script setup lang="ts">
-import { ref, computed, watch, onMounted } from 'vue';
+import { ref, computed, watch } from 'vue';
 import titleModal from './titleModal.vue';
 import { baseInput } from '@/components/index';
 import type { AddChildRequestPayload, courseSaveFormPostData } from '@/views/dashboard/type';
@@ -251,21 +252,28 @@ import {
   apiGet_handoutsDetail,
   apiPost_SaveForm,
 } from '@/views/dashboard/api/index';
-import { useDashboardStore } from '@/stores/models/dashboard/store';
 import { useMessage } from 'naive-ui';
 import type { UploadFileInfo } from 'naive-ui'
 
 const message = useMessage();
-const dashboardStore = useDashboardStore();
 
 // -----------emit&props-----------
 const props = defineProps<Props>();
 
 interface Props {
   courseData: {
-    description: string;
     id: string;
-    title: string;
+    course_name: string;
+    category_id: string;
+    course_description: string;
+    course_banner_description: string;
+    suitable_for: string;
+    course_goal: string;
+    course_banner_imageUrl: string;
+    course_small_imageUrl: string;
+    course_description_imageUrl: string;
+    trailer_url: string;
+    trailer_name: string;
   };
   isEdit: boolean;
   request: (args: AddChildRequestPayload) => Promise<unknown>;
@@ -336,6 +344,8 @@ watch(
 // -----------影片上傳-----------
 const videoUploadRef = ref();
 const isVideo = ref(false);
+const trailerUrl = ref<string>('');
+const videoFileList = ref<UploadFileInfo[]>([]);
 const triggerVideoUpload = () => {
   // 拿到內部 input element 手動 click
   const inputEl = videoUploadRef.value?.$el?.querySelector('input[type="file"]');
@@ -357,8 +367,15 @@ const customVideoUpload = async ({
 }) => {
   try {
     const result = await apiPost_AddTrailer(titleId.value, file.file); // 你前面存好的課程 id
-    // imgUrl.value = result.data.imageUrl; // 如果你想預覽可以設這個
+    trailerUrl.value = result.data.videoUrl; // 如果你想預覽可以設這個
     console.log('檢視寫入', result);
+
+    videoFileList.value = [{
+      id: titleId.value,
+      name: file.file.name || '預告片',
+      status: 'finished',
+      url: trailerUrl.value || '',
+    }];
 
     isVideo.value = true;
     onFinish(); // 通知 n-upload 成功
@@ -370,6 +387,7 @@ const customVideoUpload = async ({
 const handleVideoRemove = () => {
   console.log('使用者移除影片');
   deleteTrailer();
+  trailerUrl.value = '';
   isVideo.value = false;
 };
 
@@ -646,55 +664,62 @@ const submitFormApi = async (titleId: string, postData: courseSaveFormPostData) 
 };
 // -----------------------------
 
-onMounted(async () => {
-  const courseId = props.courseData.id;
-  if (!courseId) return;
+// -----------監聽 props.courseData 的變化，一旦資料變動就觸發初始化流程-----------
+const initForm = async (courseDetail: Props['courseData']) => {
+  if (!courseDetail || !courseDetail.id) {
+  courseTitle.value = '';
+  optionsValue.value = '';
+  titleId.value = '';
+  isLoaded.value = false;
+  return;
+}
 
   try{
-    await dashboardStore.fetchCourseDetail(courseId);
-    const courseDetail = dashboardStore.courseDetail;
-    if (!courseDetail) return;
-
     // 判斷是否為有效課程基本資料
     const hasBasicInfo = !!courseDetail.course_name && !!courseDetail.category_id && !!courseDetail.id;
     if (hasBasicInfo){
-      courseTitle.value = courseDetail.course_name;
-      optionsValue.value = courseDetail.category_id;
-      titleId.value = courseDetail.id;
+      courseTitle.value = courseDetail.course_name ?? '';
+      optionsValue.value = courseDetail.category_id ?? '';
+      titleId.value = courseDetail.id ?? '';
       isSubmitCategory.value = true;
     }
 
     // 文字內容
-    course_description.value = courseDetail.course_description;
-    course_banner_description.value = courseDetail.course_banner_description;
-    suitable_for.value = courseDetail.suitable_for;
-    course_goal.value = courseDetail.course_goal;
+    course_description.value = courseDetail.course_description ?? '';
+    course_banner_description.value = courseDetail.course_banner_description ?? '';
+    suitable_for.value = courseDetail.suitable_for ?? '';
+    course_goal.value = courseDetail.course_goal ?? '';
 
     // Banner圖片
     if (courseDetail.course_banner_imageUrl){
-      imgBannerUrl.value = courseDetail.course_banner_imageUrl;
+      imgBannerUrl.value = courseDetail.course_banner_imageUrl ?? '';
       isImgBanner.value = true;
     }
     // 課程圖片
     if (courseDetail.course_small_imageUrl){
-      imgUrl.value = courseDetail.course_small_imageUrl;
+      imgUrl.value = courseDetail.course_small_imageUrl ?? '';
       isImg.value = true;
     }
     // 課程簡介說明圖片
     if (courseDetail.course_description_imageUrl){
-      imgDescriptionUrl.value = courseDetail.course_description_imageUrl;
+      imgDescriptionUrl.value = courseDetail.course_description_imageUrl ?? '';
       isImgDescription.value = true;
     }
 
     // 預告片
-    // if (courseDetail.trailer_url){
-    //   trailerUrl.value = courseDetail.trailer_url;
-    //   trailerName.value = courseDetail.trailer_name;
-    //   isVideo.value = true;
-    // }
+    if (courseDetail.trailer_url){
+      trailerUrl.value = courseDetail.trailer_url ?? '';
+      isVideo.value = true;
+      videoFileList.value = [{
+        id: titleId.value,
+        name: '預告片',
+        status: 'finished',
+        url: trailerUrl.value || '',
+      }];
+    }
 
     // 課程講義
-    const res = await apiGet_handoutsDetail(courseId);
+    const res = await apiGet_handoutsDetail(courseDetail.id);
     const handouts = res.data?.handouts ?? [];
     if (handouts.length > 0) {
       fileList.value = handouts.map(handout => ({
@@ -711,7 +736,48 @@ onMounted(async () => {
   } catch (err) {
     console.error('載入課程資料失敗', err);
   }
-});
+};
+watch(
+  () => props.courseData,
+  (newVal) => {
+    if (!newVal || !newVal.id) {
+      // 如果是新增模式，要清空欄位
+      courseTitle.value = '';
+      optionsValue.value = '';
+      titleId.value = '';
+      isLoaded.value = false;
+
+      course_description.value = '';
+      course_banner_description.value = '';
+      suitable_for.value = '';
+      course_goal.value = '';
+
+      imgBannerUrl.value = '';
+      isImgBanner.value = false;
+
+      imgUrl.value = '';
+      isImg.value = false;
+
+      imgDescriptionUrl.value = '';
+      isImgDescription.value = false;
+
+      trailerUrl.value = '';
+      isVideo.value = false;
+
+      fileList.value = [];
+      isFile.value = false;
+
+      isSubmitCategory.value = false;
+
+      return;
+    }
+
+    // 有資料才初始化
+    initForm(newVal);
+  },
+  { immediate: true, deep: true } // immediate: 第一次也執行；deep: 避免淺層變動漏掉
+);
+// -----------------------------
 </script>
 <style scoped>
 .introDesc li {

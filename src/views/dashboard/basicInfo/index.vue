@@ -223,7 +223,6 @@ const customAvatarUpload = async ({
       avatarUrl.value = editableProfile.value.profile_image_url || '';
     }
     isAvatarUploaded.value = true;
-    message.success('上傳頭像成功');
     onFinish(); // 通知 n-upload 完成
   } catch (err) {
     message.error('上傳頭像失敗');

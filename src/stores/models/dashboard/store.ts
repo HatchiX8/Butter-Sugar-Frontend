@@ -1,7 +1,7 @@
 import { ref } from 'vue';
 import { defineStore } from 'pinia';
-import { apiPatch_changeCourseStatus, apiGet_courseDetail, apiPost_AddCategory, apiPost_AddTitle } from '@/views/dashboard/api/index';
-import type { courseStatusPostData, courseAddCategoryPostData, courseAddTitlePostData, courseDetail } from '@/views/dashboard/type';
+import { apiPatch_changeCourseStatus, apiGet_courseDetail, apiPost_AddCategory, apiPost_AddTitle, apiPatch_coursePrice } from '@/views/dashboard/api/index';
+import type { courseStatusPostData, courseAddCategoryPostData, courseAddTitlePostData, coursePricePostData } from '@/views/dashboard/type';
 import { apiErrorMessage } from '@/utils/api/apiErrorMsg';
 import axios from 'axios';
 
@@ -9,7 +9,6 @@ export const useDashboardStore = defineStore('dashboardStore', () => {
   const loading = ref(false);
   const error = ref<string | null>(null);
   const courseId = ref(); // 通用課程ID
-  const courseDetail = ref<courseDetail>();
 
   // 錯誤訊息
   const getErrorMessage = (err: unknown): string => {
@@ -46,14 +45,14 @@ export const useDashboardStore = defineStore('dashboardStore', () => {
   };
   // -----------------------------------
 
-    // ----------取得單一課程資料API----------
+  // ----------取得單一課程資料API----------
   const fetchCourseDetail = async (courseId: string) => {
     loading.value = true;
     error.value = null;
 
     try {
       const res = await apiGet_courseDetail(courseId);
-      if (res.data.course) courseDetail.value = res.data.course;
+      if (res.data.course) return res.data.course;
       else error.value = '取得單一課程資料失敗';
     } catch (err) {
       error.value = getErrorMessage(err);
@@ -103,12 +102,29 @@ export const useDashboardStore = defineStore('dashboardStore', () => {
 
   // ----------------------------------
 
-  return {
-    courseDetail,
+  // ----------課程價格API----------
+  const saveCoursePrice = async (courseId: string, postData: coursePricePostData): Promise<ActionResult> => {
+    loading.value = true;
+    error.value = null;
 
+    try {
+      const res = await apiPatch_coursePrice(courseId, postData);
+      return { success: true, message: res.message };
+    } catch (err) {
+      const msg = getErrorMessage(err);
+      error.value = msg;
+      return { success: false, message: msg };
+    } finally {
+      loading.value = false;
+    }
+  };
+  // ----------------------------------
+
+  return {
     changeCourseStatus,
     fetchCourseDetail,
     addTitle,
-    addCategory
+    addCategory,
+    saveCoursePrice
   };
 });

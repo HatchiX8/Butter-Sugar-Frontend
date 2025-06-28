@@ -64,6 +64,10 @@ export function withNaiveProviders(App: Component) {
                 borderPressed: `1px solid ${hexToRgba(colors.neutral_100, 0.25)}`,
                 borderFocus: `1px solid ${hexToRgba(colors.neutral_100, 0.25)}`,
                 rippleColor: hexToRgba(colors.neutral_100, 0.25),
+                // Disabled Default
+                colorDisabled: colors.neutral_200,
+                textColorDisabled: colors.white,
+                borderDisabled: `1px solid ${colors.neutral_200}`,
                 // Primary
                 colorPrimary: colors.primaryDefault,
                 colorHoverPrimary: colors.primaryLight,

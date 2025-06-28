@@ -48,8 +48,8 @@ interface Song {
   course_id: string;
 }
 
-const goToCourseManage = (courseId?: string) => {
-  if (courseId) router.push({ name: 'CourseManage', query: { id: courseId } });
+const goToCourseManage = (courseId?: string, currentStep: number = 1) => {
+  if (courseId) router.push({ name: 'CourseManage', query: { id: courseId, step: currentStep } });
   else router.push({ name: 'CourseManage' });
 };
 
@@ -58,6 +58,11 @@ const message = useMessage();
 const edit = (row: Song) => {
   message.info(`編輯 ${row.course_name}`);
   goToCourseManage(row.course_id);
+};
+
+const editPrice = (row: Song) => {
+  message.info(`編輯 ${row.course_name}`);
+  goToCourseManage(row.course_id, 3);
 };
 
 const remove = (row: Song) => {
@@ -124,7 +129,7 @@ const createColumns = (): DataTableColumns<Song> => [
           tertiary: true,
           size: 'small',
           type: 'warning',
-          onClick: () => edit(row),
+          onClick: () => editPrice(row),
         },
         { default: () => '編輯' }
       );

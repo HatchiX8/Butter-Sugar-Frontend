@@ -41,8 +41,8 @@ export interface courseDetail {
   trailer_type: string;
   suitable_for: string;
   course_goal: string;
-  origin_price: number;
-  sell_price: number;
+  origin_price: string;
+  sell_price: string;
   course_status: string;
   created_at: string;
   updated_at: string;
@@ -103,8 +103,8 @@ export type AddChildRequestPayload = AddTitlePayload | AddCategoryPayload;
 
 // ------------------------------
 
-// 取得課程講義
-export interface handoutsResponse{
+// ----------取得課程講義----------
+export interface handoutsResponse {
   id: string;
   course_id: string;
   name: string;
@@ -114,3 +114,23 @@ export interface handoutsResponse{
   created_at: string;
   updated_at: string;
 }
+// ------------------------------
+
+// ----------課程價格----------
+export interface coursePricePostData {
+  origin_price: number;
+  sell_price: number;
+}
+export interface coursePriceResponse {
+  status: boolean;
+  message: string;
+  data: {
+    course: {
+      id: string;
+      course_name: string;
+      origin_price: number;
+      sell_price: number;
+    };
+  };
+}
+// ------------------------------

@@ -9,6 +9,8 @@ import type {
   courseSaveFormPostData,
   handoutsResponse,
   courseDetailResponse,
+  coursePricePostData,
+  coursePriceResponse
 } from '../type';
 
 // ----------更改課程狀態(上架/下架)----------
@@ -126,14 +128,13 @@ export const apiPost_AddTrailer = async (courseId: string, file: File) => {
   const formData = new FormData();
   formData.append('trailer', file);
 
-  const res = await axiosInstance.post<{ data: { video: string } }>(
+  const res = await axiosInstance.post<{ data: { videoUrl: string } }>(
     `/api/v1/course/${courseId}/upload/course-trailer`,
     formData,
     {
       headers: { 'Content-Type': 'multipart/form-data' },
     }
   );
-
   return res.data;
 };
 // 刪除
@@ -179,6 +180,19 @@ export const apiGet_handoutsDetail = async (courseId: string) => {
 // ----------表單內容----------
 export const apiPost_SaveForm = async (courseId: string, postData: courseSaveFormPostData) => {
   const res = await axiosInstance.post(`/api/v1/course/${courseId}/save`, postData);
+  return res.data;
+};
+// ---------------------------
+
+// ----------課程價格----------
+export const apiPatch_coursePrice = async (
+  courseId: string,
+  postData: coursePricePostData
+) => {
+  const res = await axiosInstance.patch<coursePriceResponse>(
+    `/api/v1/course/${courseId}/price`,
+    postData
+  );
   return res.data;
 };
 // ---------------------------
