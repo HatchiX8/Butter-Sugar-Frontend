@@ -81,11 +81,7 @@
         </div>
 
         <!-- 選單項目 -->
-        <a
-          href="#"
-          class="border-b-1 border-b-solid block border-b-white/20 px-6 py-6 text-white no-underline"
-          >探索課程</a
-        >
+        <a href="/home/course-info" class="block border-b-1 border-b-solid border-b-white/20 px-6 py-6 text-white no-underline">探索課程</a>
         <template v-if="userStore.isLoggedIn">
           <!-- 登入後展開選單 -->
           <div

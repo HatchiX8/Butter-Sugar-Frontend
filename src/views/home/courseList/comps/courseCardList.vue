@@ -5,7 +5,7 @@
   <div v-else-if="error" class="w-full flex justify-center items-center py-10 text-red-500">
     {{ error }}
   </div>
-  <div v-else class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4 sm:gap-6 md:gap-8 justify-items-center w-full">
+  <div v-else class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-3 xl:grid-cols-4 gap-4 sm:gap-6 md:gap-8 justify-items-center w-full">
     <courseCard v-for="course in courses" :key="course.id" v-bind="course" />
   </div>
 </template>
