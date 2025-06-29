@@ -17,44 +17,50 @@
     <!-- 章節列表 -->
     <div v-if="chapters.length > 0">
       <n-collapse class="mb-3">
-        <n-collapse-item v-for="(chapter, index) in chapters" :key="chapter.id">
-          <template #header>
-            <div class="flex w-full items-center justify-around">
-              <p class="mr-3 font-bold text-white">第 {{ index + 1 }} 章</p>
-              <div class="w-40%"><baseInput type="text" v-model="chapter.title" @click.stop /></div>
+        <draggable v-model="chapters" item-key="id" :animation="200" @end="onChapterDragEnd">
+          <template #item="{ element: chapter, index }">
+            <n-collapse-item :key="chapter.id">
+              <template #header>
+                <div class="flex w-full items-center justify-around">
+                  <p class="mr-3 font-bold text-white">第 {{ index + 1 }} 章</p>
+                  <div class="w-40%">
+                    <baseInput type="text" v-model="chapter.title" @click.stop />
+                  </div>
+                  <div class="ml-auto">
+                    <n-button
+                      @click.stop="editChapter(chapter.order, chapter.title)"
+                      class="mr-4 rounded-md border-none px-4 py-2"
+                      type="primary"
+                    >
+                      編輯
+                    </n-button>
+                    <n-button
+                      @click.stop="deleteChapter(chapter.order)"
+                      class="mr-4 rounded-md border-none px-4 py-2"
+                      type="error"
+                    >
+                      移除
+                    </n-button>
+                  </div>
+                </div>
+              </template>
 
-              <div class="ml-auto">
-                <n-button
-                  @click.stop="editChapter(chapter.order, chapter.title)"
-                  class="mr-4 rounded-md border-none px-4 py-2"
-                  type="primary"
-                >
-                  編輯
-                </n-button>
-                <n-button
-                  @click.stop="deleteChapter(chapter.order)"
-                  class="mr-4 rounded-md border-none px-4 py-2"
-                  type="error"
-                >
-                  移除
-                </n-button>
-              </div>
-            </div>
+              <!-- 小節列表 -->
+              <draggable
+                v-model="chapter.sections"
+                item-key="id"
+                :group="{ name: 'sections' }"
+                animation="200"
+              >
+                <template #item="{ element }">
+                  <li class="mb-2 rounded border bg-gray-700 p-2 text-white">
+                    {{ element.title }}
+                  </li>
+                </template>
+              </draggable>
+            </n-collapse-item>
           </template>
-
-          <draggable
-            v-model="chapter.sections"
-            item-key="id"
-            :group="{ name: 'sections' }"
-            animation="200"
-          >
-            <template #item="{ element }">
-              <li class="mb-2 rounded border bg-gray-700 p-2 text-white">
-                {{ element.title }}
-              </li>
-            </template>
-          </draggable>
-        </n-collapse-item>
+        </draggable>
       </n-collapse>
     </div>
     <div v-show="isChange" class="text-red ml-5">資料尚未儲存，請注意</div>
@@ -84,7 +90,7 @@
 
 <script setup lang="ts">
 import { ref, watch } from 'vue';
-import { useDashboardStore } from '@/stores/models/index';
+// import { useDashboardStore } from '@/stores/models/index';
 import draggable from 'vuedraggable';
 import videoModal from './videoModal.vue';
 import { baseInput } from '@/components/index';
@@ -104,7 +110,7 @@ interface chapter {
 // ------------------------
 
 // ----------Store----------
-const dashboardStore = useDashboardStore();
+// const dashboardStore = useDashboardStore();
 // -------------------------
 
 // 模擬章節資料
@@ -121,6 +127,7 @@ watch(
   (newVal) => {
     console.log('小節順序發生變化', newVal);
     isChange.value = true;
+    updateChapterOrder();
   },
   { deep: true }
 );
@@ -136,6 +143,12 @@ const updateChapterOrder = () => {
   chapters.value.forEach((chapter, index) => {
     chapter.order = index + 1; // 從 1 開始編
   });
+};
+
+const onChapterDragEnd = () => {
+  updateChapterOrder();
+  isChange.value = true;
+  console.log('章節重新排序完畢', chapters.value);
 };
 // -----------------------
 
