@@ -155,17 +155,25 @@ onMounted(async () => {
   menuOptions.value = chapters.value.map((chap) => ({
     type: 'submenu',
     key: chap.name,
-    label: () =>
-      h(
+    label: () => {
+      // 檢查是否有任何子章節是 active 的
+      const hasActiveChild = chap.videos.some((_, idx) => {
+        const childKey = `${chap.name}-${idx}`;
+        return selectedKey.value === childKey;
+      });
+
+      return h(
         'div',
         {
           class: [
-            'px-2 py-2 rounded-sm text-15px font-semibold text-white',
+            'px-2 py-2 rounded-sm text-15px font-semibold',
             'hover:text-primaryDefault',
+            hasActiveChild ? 'text-primaryDefault' : 'text-white',
           ],
         },
         chap.title
-      ),
+      );
+    },
     children: chap.videos.map((vid, index) => {
       const uniqueKey = `${chap.name}-${index}`;
       // 建立唯一 key 與影片資訊的對應
@@ -183,7 +191,7 @@ onMounted(async () => {
                 'hover:text-neutral_500',
                 selectedKey.value === uniqueKey
                   ? 'bg-primaryDefault text-black'
-                  : 'text-primaryDefault hover:text-primaryDefault',
+                  : 'text-neutral-300 hover:text-primaryDefault',
               ],
             },
             vid.label
