@@ -41,6 +41,7 @@ export const useUserStore = defineStore('userStore', () => {
       role.value = response.data.role;
       profileImageUrl.value = response.data.avatar || '';
       id.value = response.data.id || '';
+      email.value = response.data.email || '';
       console.log('store權限', response.data);
     } catch (error) {
       console.error('Error fetching user data:', error);
