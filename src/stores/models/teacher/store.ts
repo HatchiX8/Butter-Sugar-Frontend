@@ -1,11 +1,13 @@
 import { defineStore } from 'pinia';
 import { ref } from 'vue';
+import instance from '@/api/axios';
 
 // 定義 API 回傳的講師資料介面
 export interface TeacherApiResponse {
   teacher_id: string
   user_id: string
   name: string
+  nickname?: string // 新增 nickname 欄位
   profile_image_url: string
   rating_score: string
   rating_users: string
@@ -51,13 +53,8 @@ export const useTeacherStore = defineStore('teacherStore', () => {
       error.value = null
 
       // 從 API 獲取資料
-      const response = await fetch(`https://buttersugar-backend.zeabur.app/api/v1/teacher/${teacherId}`)
-
-      if (!response.ok) {
-        throw new Error(`獲取講師資料失敗：${response.status}`)
-      }
-
-      const responseData = await response.json()
+      const response = await instance.get(`/api/v1/teacher/${teacherId}`)
+      const responseData = response.data
       lastApiResponse.value = responseData
 
       if (!responseData || !responseData.status || !responseData.data || !responseData.data.teacher) {
@@ -71,7 +68,7 @@ export const useTeacherStore = defineStore('teacherStore', () => {
       const teacher: Teacher = {
         id: teacherData.teacher_id,
         name: teacherData.name || '',
-        nickname: teacherData.name || '', // 預設使用 name 作為 nickname
+        nickname: teacherData.nickname || teacherData.name || '', // 優先使用 nickname，如果沒有則使用 name
         avatar: teacherData.profile_image_url || '',
         rating: teacherData.rating_score || '0',
         reviews_count: parseInt(teacherData.rating_users || '0'),
