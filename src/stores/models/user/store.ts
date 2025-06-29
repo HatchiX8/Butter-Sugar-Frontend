@@ -7,6 +7,14 @@ import { getUser } from '@/api/index';
 export const useUserStore = defineStore('userStore', () => {
   const userToken = ref<string | null>(localStorage.getItem('access_token'));
   const isLoggedIn = computed(() => !!userToken.value);
+  const id = ref<string>();
+  const email = ref<string>();
+  const profileImageUrl = ref<string>();
+
+  // 更新使用者頭像
+  const setProfileImageUrl = async (url: string) => {
+    profileImageUrl.value = url;
+  };
 
   // 使用者角色（預設 student）
   const role = ref<string>('');
@@ -31,6 +39,9 @@ export const useUserStore = defineStore('userStore', () => {
     try {
       const response = await getUser();
       role.value = response.data.role;
+      profileImageUrl.value = response.data.avatar || '';
+      id.value = response.data.id || '';
+      email.value = response.data.email || '';
       console.log('store權限', response.data);
     } catch (error) {
       console.error('Error fetching user data:', error);
@@ -43,11 +54,15 @@ export const useUserStore = defineStore('userStore', () => {
     userToken,
     role,
     name,
+    id,
+    email,
+    profileImageUrl,
     /** getters */
     isLoggedIn,
     /** actions */
     setToken,
     logout,
     fetchUser,
+    setProfileImageUrl,
   };
 });

@@ -16,23 +16,23 @@
       <div class="w-100% mb-5">
         <div class="mb-5">
           <p class="fw-bold text-primaryDefault mb-3">課程名稱</p>
-          <baseInput type="text" placeholder="請輸入課程名稱" v-model="courseTitle" />
+          <baseInput type="text" placeholder="請輸入課程名稱" v-model="courseTitle" disabled />
         </div>
         <div class="w-100% mb-5">
           <p class="fw-bold text-primaryDefault mb-3">課程類別</p>
           <n-space vertical>
-            <n-select v-model:value="optionsValue" :options="options" placeholder="請選擇類別" />
+            <n-select v-model:value="optionsValue" :options="options" placeholder="請選擇類別" disabled />
           </n-space>
         </div>
       </div>
     </div>
 
-    <div v-show="courseTitle && optionsValue" class="w-40%">
+    <div v-show="courseTitle && optionsValue" class="w-100%">
       <div class="mb-5">
         <p class="fw-bold text-primaryDefault mb-3">課程描述</p>
         <n-input
           v-model:value="course_banner_description"
-          type="text"
+          type="textarea"
           placeholder="請輸入課程描述"
           class="bg-black focus:outline-none"
         />
@@ -40,27 +40,29 @@
       <div class="mb-5">
         <!-- banner圖片 -->
         <p class="fw-bold text-primaryDefault mb-3">Banner圖片</p>
-        <div class="flex flex-col">
-          <!-- 左邊：已上傳影片 (這邊你之後可以放影片預覽 或 file name 等) -->
-          <div v-if="imgBannerUrl !== ''">
-            <img :src="imgBannerUrl" alt="課程圖片預覽" class="w-50 h-auto rounded-lg shadow" />
-          </div>
-          <div class="flex items-center justify-between">
-            <div v-show="isImgBanner" class="mr-4 flex-1">
-              <n-upload
-                ref="imgBannerUploadRef"
-                accept="image/*"
-                :max="1"
-                :custom-request="customImgBannerUpload"
-                :show-file-list="true"
-                :show-trigger="false"
-                @remove="handleImgBannerRemove"
-              />
+        <div class="mb-5 flex gap-3">
+          <div class="flex flex-col">
+            <!-- 左邊：已上傳影片 (這邊你之後可以放影片預覽 或 file name 等) -->
+            <div v-if="imgBannerUrl !== ''">
+              <img :src="imgBannerUrl" alt="Banner圖片預覽" class="w-50 h-auto rounded-lg shadow" />
             </div>
-            <div v-show="!isImg">尚未選擇Banner圖片</div>
-            <!-- 右邊：上傳按鈕 -->
-            <div>
-              <n-button @click="triggerImgBannerUpload">上傳Banner圖片</n-button>
+            <div class="flex items-center justify-between">
+              <div v-show="isImgBanner" class="mr-4 flex-1">
+                <n-upload
+                  ref="imgBannerUploadRef"
+                  accept="image/*"
+                  :max="1"
+                  :custom-request="customImgBannerUpload"
+                  :show-file-list="true"
+                  :show-trigger="false"
+                  @remove="handleImgBannerRemove"
+                />
+              </div>
+              <div v-show="!isImg" class="mr-2">尚未選擇Banner圖片</div>
+              <!-- 右邊：上傳按鈕 -->
+              <div>
+                <n-button @click="triggerImgBannerUpload">上傳Banner圖片</n-button>
+              </div>
             </div>
           </div>
         </div>
@@ -68,27 +70,29 @@
       <!-- 課程封面圖片 -->
       <div class="mb-5">
         <p class="fw-bold text-primaryDefault mb-3">課程圖片</p>
-        <div class="flex flex-col">
-          <!-- 左邊：已上傳影片 (這邊你之後可以放影片預覽 或 file name 等) -->
-          <div v-if="imgUrl !== ''">
-            <img :src="imgUrl" alt="課程圖片預覽" class="w-50 h-auto rounded-lg shadow" />
-          </div>
-          <div class="flex items-center justify-between">
-            <div v-show="isImg" class="mr-4 flex-1">
-              <n-upload
-                ref="imgUploadRef"
-                accept="image/*"
-                :max="1"
-                :custom-request="customImgUpload"
-                :show-file-list="true"
-                :show-trigger="false"
-                @remove="handleImgRemove"
-              />
+        <div class="mb-5 flex gap-3">
+          <div class="flex flex-col">
+            <!-- 左邊：已上傳影片 (這邊你之後可以放影片預覽 或 file name 等) -->
+            <div v-if="imgUrl !== ''">
+              <img :src="imgUrl" alt="課程圖片預覽" class="w-50 h-auto rounded-lg shadow" />
             </div>
-            <div v-show="!isImg">尚未選擇圖片</div>
-            <!-- 右邊：上傳按鈕 -->
-            <div>
-              <n-button @click="triggerImgUpload">上傳圖片</n-button>
+            <div class="flex items-center justify-between">
+              <div v-show="isImg" class="mr-4 flex-1">
+                <n-upload
+                  ref="imgUploadRef"
+                  accept="image/*"
+                  :max="1"
+                  :custom-request="customImgUpload"
+                  :show-file-list="true"
+                  :show-trigger="false"
+                  @remove="handleImgRemove"
+                />
+              </div>
+              <div v-show="!isImg" class="mr-2">尚未選擇圖片</div>
+              <!-- 右邊：上傳按鈕 -->
+              <div>
+                <n-button @click="triggerImgUpload">上傳圖片</n-button>
+              </div>
             </div>
           </div>
         </div>
@@ -98,7 +102,7 @@
         <p class="fw-bold text-primaryDefault mb-3">課程簡介</p>
         <n-input
           v-model:value="course_description"
-          type="text"
+          type="textarea"
           placeholder="請輸入課程簡介"
           class="bg-black focus:outline-none"
         />
@@ -128,7 +132,7 @@
                   @remove="handleImgDescriptionRemove"
                 />
               </div>
-              <div v-show="!isImgDescription">尚未選擇簡介圖片</div>
+              <div v-show="!isImgDescription" class="mr-2">尚未選擇簡介圖片</div>
               <!-- 右邊：上傳按鈕 -->
               <div>
                 <n-button @click="triggerImgDescriptionUpload">上傳簡介圖片</n-button>
@@ -140,47 +144,58 @@
       <!-- 預告片 -->
       <div class="mb-5">
         <p class="fw-bold text-primaryDefault mb-3">課前準備</p>
-        <p>預告片</p>
-        <div class="flex items-center justify-between">
-          <!-- 左邊：已上傳影片 (這邊你之後可以放影片預覽 或 file name 等) -->
-          <div v-show="isVideo" class="mr-4 flex-1">
-            <n-upload
-              ref="videoUploadRef"
-              accept="video/mp4"
-              :max="1"
-              :custom-request="customVideoUpload"
-              :show-file-list="true"
-              :show-trigger="false"
-              @remove="handleVideoRemove"
-            />
-          </div>
-          <div v-show="!isVideo">尚未選擇影片</div>
-          <!-- 右邊：上傳按鈕 -->
-          <div>
-            <n-button @click="triggerVideoUpload">上傳影片</n-button>
+        <div class="mb-5 flex gap-3">
+          <div class="flex flex-col">
+            <p>預告片</p>
+            <div class="flex items-center justify-between">
+              <!-- 左邊：已上傳影片 (這邊你之後可以放影片預覽 或 file name 等) -->
+              <div v-show="isVideo" class="mr-4 flex-1">
+                <n-upload
+                  ref="videoUploadRef"
+                  v-model:file-list="videoFileList"
+                  accept="video/mp4"
+                  :max="1"
+                  :custom-request="customVideoUpload"
+                  :show-file-list="true"
+                  :show-trigger="false"
+                  @remove="handleVideoRemove"
+                />
+              </div>
+              <div v-show="!isVideo" class="mr-2">尚未選擇影片</div>
+              <!-- 右邊：上傳按鈕 -->
+              <div>
+                <n-button @click="triggerVideoUpload">上傳影片</n-button>
+              </div>
+            </div>
           </div>
         </div>
       </div>
       <!-- 課程講義 -->
       <div class="mb-5">
-        <p>課程講義</p>
-        <div class="flex items-center justify-between">
-          <!-- 左邊：已上傳影片 (這邊你之後可以放影片預覽 或 file name 等) -->
-          <div v-show="isFile" class="mr-4 flex-1">
-            <n-upload
-              ref="fileUploadRef"
-              accept="video/mp4,application/pdf,application/vnd.ms-powerpoint,application/vnd.openxmlformats-officedocument.presentationml.presentation,application/msword,application/vnd.openxmlformats-officedocument.wordprocessingml.document"
-              :max="1"
-              :custom-request="customFileUpload"
-              :show-file-list="true"
-              :show-trigger="false"
-              @remove="handleFileRemove"
-            />
-          </div>
-          <div v-show="!isFile">尚未選擇檔案</div>
-          <!-- 右邊：上傳按鈕 -->
-          <div>
-            <n-button @click="triggerFileUpload">上傳檔案</n-button>
+        <div class="mb-5 flex gap-3">
+          <div class="flex flex-col">
+            <p>課程講義</p>
+            <div class="flex items-center justify-between">
+              <!-- 左邊：已上傳影片 (這邊你之後可以放影片預覽 或 file name 等) -->
+              <div v-show="isFile" class="mr-4 flex-1">
+                <n-upload
+                  ref="fileUploadRef"
+                  v-model:file-list="fileList"
+                  accept="video/mp4,application/pdf,application/vnd.ms-powerpoint,application/vnd.openxmlformats-officedocument.presentationml.presentation,application/msword,application/vnd.openxmlformats-officedocument.wordprocessingml.document"
+                  :max="5"
+                  :custom-request="customFileUpload"
+                  :show-file-list="true"
+                  :show-trigger="false"
+                  @remove="handleFileRemove"
+                  multiple
+                />
+              </div>
+              <div v-show="!isFile" class="mr-2">尚未選擇檔案</div>
+              <!-- 右邊：上傳按鈕 -->
+              <div>
+                <n-button @click="triggerFileUpload">上傳檔案</n-button>
+              </div>
+            </div>
           </div>
         </div>
       </div>
@@ -189,7 +204,7 @@
         <p class="fw-bold text-primaryDefault mb-3">適合對象</p>
         <n-input
           v-model:value="suitable_for"
-          type="text"
+          type="textarea"
           placeholder="請輸入適合對象"
           class="bg-black focus:outline-none"
         />
@@ -198,15 +213,15 @@
         <p class="fw-bold text-primaryDefault mb-3">課程目標</p>
         <n-input
           v-model:value="course_goal"
-          type="text"
+          type="textarea"
           placeholder="請輸入課程目標"
           class="bg-black focus:outline-none"
         />
       </div>
     </div>
 
-    <button v-if="!isSubmitCategory" @click="modelValue = true">建立課程</button>
-    <button v-if="isSubmitCategory" @click="submitForm" :disabled="!isAllFilled">儲存</button>
+    <n-button v-if="!isSubmitCategory" @click="modelValue = true" class="bg-secondaryDefault text-white border-none rounded-md px-4 py-3 mr-4 mb-4">建立課程</n-button>
+    <n-button v-if="isSubmitCategory" @click="submitForm" :disabled="!isAllFilled" class="bg-secondaryDefault text-white border-none rounded-md px-4 py-3 mr-4 mb-4">儲存</n-button>
   </div>
   <titleModal
     v-model:modelValue="modelValue"
@@ -234,13 +249,33 @@ import {
   apiDelete_DeleteTrailer,
   apiPost_AddHandouts,
   apiDelete_DeleteHandouts,
+  apiGet_handoutsDetail,
   apiPost_SaveForm,
 } from '@/views/dashboard/api/index';
+import { useMessage } from 'naive-ui';
+import type { UploadFileInfo } from 'naive-ui'
+
+const message = useMessage();
 
 // -----------emit&props-----------
 const props = defineProps<Props>();
 
 interface Props {
+  courseData: {
+    id: string;
+    course_name: string;
+    category_id: string;
+    course_description: string;
+    course_banner_description: string;
+    suitable_for: string;
+    course_goal: string;
+    course_banner_imageUrl: string;
+    course_small_imageUrl: string;
+    course_description_imageUrl: string;
+    trailer_url: string;
+    trailer_name: string;
+  };
+  isEdit: boolean;
   request: (args: AddChildRequestPayload) => Promise<unknown>;
 }
 
@@ -309,6 +344,8 @@ watch(
 // -----------影片上傳-----------
 const videoUploadRef = ref();
 const isVideo = ref(false);
+const trailerUrl = ref<string>('');
+const videoFileList = ref<UploadFileInfo[]>([]);
 const triggerVideoUpload = () => {
   // 拿到內部 input element 手動 click
   const inputEl = videoUploadRef.value?.$el?.querySelector('input[type="file"]');
@@ -330,8 +367,15 @@ const customVideoUpload = async ({
 }) => {
   try {
     const result = await apiPost_AddTrailer(titleId.value, file.file); // 你前面存好的課程 id
-    // imgUrl.value = result.data.imageUrl; // 如果你想預覽可以設這個
+    trailerUrl.value = result.data.videoUrl; // 如果你想預覽可以設這個
     console.log('檢視寫入', result);
+
+    videoFileList.value = [{
+      id: titleId.value,
+      name: file.file.name || '預告片',
+      status: 'finished',
+      url: trailerUrl.value || '',
+    }];
 
     isVideo.value = true;
     onFinish(); // 通知 n-upload 成功
@@ -343,6 +387,7 @@ const customVideoUpload = async ({
 const handleVideoRemove = () => {
   console.log('使用者移除影片');
   deleteTrailer();
+  trailerUrl.value = '';
   isVideo.value = false;
 };
 
@@ -364,7 +409,8 @@ const triggerFileUpload = () => {
     console.warn('找不到 input element');
   }
 };
-const handoutsId = ref();
+
+const fileList = ref<UploadFileInfo[]>([]);
 const customFileUpload = async ({
   file,
   onFinish,
@@ -374,10 +420,26 @@ const customFileUpload = async ({
   onFinish: () => void;
   onError: (err: Error) => void;
 }) => {
+  console.log('使用者上傳的檔案名稱:', file.file.name);
   try {
-    const result = await apiPost_AddHandouts(titleId.value, file.file); // 你前面存好的課程 id
-    handoutsId.value = result.data.handouts[0].id;
-    console.log('檢視寫入', handoutsId.value); // 暫時只刪一筆
+    const result = await apiPost_AddHandouts(titleId.value, [file.file]);
+    const handout = result.data.handouts[0];
+
+    console.log('後端回傳的 handout 名稱:', handout.name);
+    console.log('更新前fileList.value: ', fileList.value)
+    // 找到 Naive UI 自動加進 fileList 的那一筆，更新它
+    const targetIndex = fileList.value.findIndex(f => f.name === file.file.name && f.status !== 'finished');
+    if (targetIndex !== -1) {
+      fileList.value[targetIndex] = {
+        ...fileList.value[targetIndex],
+        id: handout.id,
+        name: handout.name,
+        status: 'finished',
+        url: handout.url,
+      };
+    }
+    console.log('更新後fileList.value: ', fileList.value)
+
     isFile.value = true;
     onFinish(); // 通知 n-upload 成功
   } catch (err) {
@@ -385,14 +447,20 @@ const customFileUpload = async ({
   }
 };
 
-const handleFileRemove = () => {
+const handleFileRemove = ({ file }: { file: UploadFileInfo }) => {
   console.log('使用者移除檔案');
-  deleteHandouts();
-  isFile.value = false;
+
+  // 刪除後端講義
+  deleteHandouts(file.id);
+
+  // 若清空了所有檔案，設定 isFile 為 false
+  if (fileList.value.length === 0) {
+    isFile.value = false;
+  }
 };
 
-const deleteHandouts = async () => {
-  const res = await apiDelete_DeleteHandouts(handoutsId.value);
+const deleteHandouts = async (id: string) => {
+  const res = await apiDelete_DeleteHandouts(id);
   console.log('刪除講義成功', res);
 };
 // -----------------------------
@@ -555,9 +623,12 @@ const deleteImgDescription = async () => {
 };
 // -----------------------------
 
+// 判斷後端資料是否已載入
+const isLoaded = ref(false);
+
 // -----------表單內容-----------
 // 當滿足三個值都有的時候才會顯示表單內容
-const canShowForm = computed(() => !!courseTitle.value && !!optionsValue.value && !!titleId.value);
+const canShowForm = computed(() => !!courseTitle.value && !!optionsValue.value && !!titleId.value && isLoaded.value);
 
 const suitable_for = ref<string>(''); // 適合對象
 const course_goal = ref<string>(''); // 課程目標
@@ -584,11 +655,128 @@ const submitForm = () => {
 const submitFormApi = async (titleId: string, postData: courseSaveFormPostData) => {
   try {
     const res = await apiPost_SaveForm(titleId, postData);
+    if (res.status) message.success(res.message);
+    else message.error(res.message);
     console.log('檢視寫入', res);
   } catch (err) {
     console.log('寫入失敗', err);
   }
 };
+// -----------------------------
+
+// -----------監聽 props.courseData 的變化，一旦資料變動就觸發初始化流程-----------
+const initForm = async (courseDetail: Props['courseData']) => {
+  if (!courseDetail || !courseDetail.id) {
+  courseTitle.value = '';
+  optionsValue.value = '';
+  titleId.value = '';
+  isLoaded.value = false;
+  return;
+}
+
+  try{
+    // 判斷是否為有效課程基本資料
+    const hasBasicInfo = !!courseDetail.course_name && !!courseDetail.category_id && !!courseDetail.id;
+    if (hasBasicInfo){
+      courseTitle.value = courseDetail.course_name ?? '';
+      optionsValue.value = courseDetail.category_id ?? '';
+      titleId.value = courseDetail.id ?? '';
+      isSubmitCategory.value = true;
+    }
+
+    // 文字內容
+    course_description.value = courseDetail.course_description ?? '';
+    course_banner_description.value = courseDetail.course_banner_description ?? '';
+    suitable_for.value = courseDetail.suitable_for ?? '';
+    course_goal.value = courseDetail.course_goal ?? '';
+
+    // Banner圖片
+    if (courseDetail.course_banner_imageUrl){
+      imgBannerUrl.value = courseDetail.course_banner_imageUrl ?? '';
+      isImgBanner.value = true;
+    }
+    // 課程圖片
+    if (courseDetail.course_small_imageUrl){
+      imgUrl.value = courseDetail.course_small_imageUrl ?? '';
+      isImg.value = true;
+    }
+    // 課程簡介說明圖片
+    if (courseDetail.course_description_imageUrl){
+      imgDescriptionUrl.value = courseDetail.course_description_imageUrl ?? '';
+      isImgDescription.value = true;
+    }
+
+    // 預告片
+    if (courseDetail.trailer_url){
+      trailerUrl.value = courseDetail.trailer_url ?? '';
+      isVideo.value = true;
+      videoFileList.value = [{
+        id: titleId.value,
+        name: '預告片',
+        status: 'finished',
+        url: trailerUrl.value || '',
+      }];
+    }
+
+    // 課程講義
+    const res = await apiGet_handoutsDetail(courseDetail.id);
+    const handouts = res.data?.handouts ?? [];
+    if (handouts.length > 0) {
+      fileList.value = handouts.map(handout => ({
+        id: handout.id,
+        name: handout.name,
+        status: 'finished',
+        url: handout.url,
+      }));
+      isFile.value = true;
+    }
+
+    // 標記後端資料已完成載入
+    isLoaded.value = true;
+  } catch (err) {
+    console.error('載入課程資料失敗', err);
+  }
+};
+watch(
+  () => props.courseData,
+  (newVal) => {
+    if (!newVal || !newVal.id) {
+      // 如果是新增模式，要清空欄位
+      courseTitle.value = '';
+      optionsValue.value = '';
+      titleId.value = '';
+      isLoaded.value = false;
+
+      course_description.value = '';
+      course_banner_description.value = '';
+      suitable_for.value = '';
+      course_goal.value = '';
+
+      imgBannerUrl.value = '';
+      isImgBanner.value = false;
+
+      imgUrl.value = '';
+      isImg.value = false;
+
+      imgDescriptionUrl.value = '';
+      isImgDescription.value = false;
+
+      trailerUrl.value = '';
+      isVideo.value = false;
+
+      fileList.value = [];
+      isFile.value = false;
+
+      isSubmitCategory.value = false;
+
+      return;
+    }
+
+    // 有資料才初始化
+    initForm(newVal);
+  },
+  { immediate: true, deep: true } // immediate: 第一次也執行；deep: 避免淺層變動漏掉
+);
 // -----------------------------
 </script>
 <style scoped>

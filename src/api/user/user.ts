@@ -7,6 +7,6 @@ export const getUser = async () => {
 };
 
 export const selectUserInfo = async (data: UserRequest) => {
-  const res = await instance.post<User>('/api/user/select_info', data);
+  const res = await instance.post<User>('/api/v1/user/select_info', data);
   return res.data;
 };
