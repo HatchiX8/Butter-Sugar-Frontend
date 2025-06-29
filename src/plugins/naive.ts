@@ -64,6 +64,10 @@ export function withNaiveProviders(App: Component) {
                 borderPressed: `1px solid ${hexToRgba(colors.neutral_100, 0.25)}`,
                 borderFocus: `1px solid ${hexToRgba(colors.neutral_100, 0.25)}`,
                 rippleColor: hexToRgba(colors.neutral_100, 0.25),
+                // Disabled Default
+                colorDisabled: colors.neutral_200,
+                textColorDisabled: colors.white,
+                borderDisabled: `1px solid ${colors.neutral_200}`,
                 // Primary
                 colorPrimary: colors.primaryDefault,
                 colorHoverPrimary: colors.primaryLight,
@@ -97,6 +101,7 @@ export function withNaiveProviders(App: Component) {
                     textColor: '#FFFDFA',
                     fontWeight: '400',
                     color: '#0D0B07', // 預設黑背景色
+                    colorDisabled: colors.neutral_500,
                     boxShadowFocus: '0 0 0 2px rgba(255, 255, 255, 0.2)',
                     border: '1px solid #FFFDFA',
                     colorActive: '#1D1810',
@@ -133,13 +138,20 @@ export function withNaiveProviders(App: Component) {
                 groupHeaderArrowColorActive: colors.primaryDefault,
                 groupHeaderArrowColorChildActive: colors.primaryDefault,
                 groupHeaderArrowColorChildActiveHover: colors.primaryDefault,
-                // 
+                //
                 itemColorHover: hexToRgba(colors.primaryDefault, 0.3),
                 itemColorActive: hexToRgba(colors.primaryDefault, 0.8),
               },
               Divider: {
                 color: hexToRgba(colors.primaryDefault, 1),
               },
+              Form: {
+                labelTextColor: colors.white,
+              },
+              Upload:{
+                itemTextColor: colors.white,
+                itemTextColorSuccess: colors.primaryDefault,
+              }
             },
           },
           {

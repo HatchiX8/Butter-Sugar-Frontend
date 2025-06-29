@@ -1,8 +1,15 @@
+export interface UserResponse {
+  message: string;
+  status: boolean;
+  data: User;
+}
+
 export interface User {
-  id: number;
+  id: string;
   name: string;
   email: string;
   avatar: string;
+  role: string;
 }
 
 export interface UserRequest {
