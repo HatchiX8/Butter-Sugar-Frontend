@@ -1,14 +1,14 @@
 <template>
   <div class="flex w-full flex-col items-start">
-    <!-- 頂部標題和麻米導航 -->
+    <!-- 標題和麵包屑 -->
     <course-chapter-banner :course-name="courseName" />
 
     <!-- 滿版兩欄區塊 -->
-    <course-chapter-hero 
-      :section="currentSection" 
-      :subsection="currentSubsection" 
-      :course-image-url="currentCourse?.course_banner_imageUrl" 
-      @start-learning="handleStartLearning" 
+    <course-chapter-hero
+      :section="currentSection"
+      :subsection="currentSubsection"
+      :course-image-url="currentCourse?.course_banner_imageUrl"
+      @start-learning="handleStartLearning"
     />
 
     <div class="mx-auto w-full max-w-[1280px] px-0 md:px-4 py-6">
@@ -21,8 +21,8 @@
       <div class="flex flex-col gap-6 md:flex-row">
         <!-- 左欄：課程章節 -->
         <div class="w-90% md:w-2/3 lg:w-3/4">
-          <course-chapter-menu 
-            :sections="sections" 
+          <course-chapter-menu
+            :sections="sections"
             :loading="sectionStore.loading"
             @select-subsection="handleSelectSubsection"
           />
@@ -48,6 +48,11 @@
         </div>
       </div>
     </div>
+
+    <!-- 課程評價 -->
+    <div class="mx-auto w-full max-w-[1280px] px-0 md:px-4 py-6">
+      <course-rating :course-id="courseId" />
+    </div>
   </div>
 </template>
 
@@ -61,6 +66,7 @@ import { useSectionStore } from '@/stores/models/courseChapter/sectionStore';
 import CourseChapterBanner from './comps/CourseChapterBanner.vue';
 import CourseChapterHero from './comps/CourseChapterHero.vue';
 import CourseChapterMenu from './comps/CourseChapterMenu.vue';
+import CourseRating from './comps/CourseRating.vue';
 import { storeToRefs } from 'pinia';
 
 const router = useRouter();
