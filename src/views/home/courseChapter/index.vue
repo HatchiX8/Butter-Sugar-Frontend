@@ -22,7 +22,7 @@
       <div class="flex flex-col gap-6 md:flex-row">
         <!-- 左欄：課程章節 -->
         <div class="w-full md:w-2/3 lg:w-3/4">
-          <div class="rounded-lg border border-white/20 p-6">
+          <div class="video-menu h-auto w-full overflow-y-auto rounded-lg border border-white/20 p-6">
             <n-spin :show="sectionStore.loading">
               <n-empty
                 v-if="!sectionStore.loading && sections.length === 0"
@@ -30,22 +30,15 @@
                 class="py-10"
               />
 
-              <n-collapse v-else accordion>
-                <n-collapse-item
-                  v-for="section in sections"
-                  :key="section.id"
-                  :title="`第 ${section.order_index + 1} 章：${section.main_section_title}`"
-                  :name="section.id"
-                  class="mb-2 last:mb-0"
-                >
-                  <div v-for="subsection in section.subsections" :key="subsection.id" class="py-2 pl-4 hover:bg-gray-700/50 rounded cursor-pointer transition-colors">
-                    <div class="flex items-center gap-2 text-white">
-                      <span class="text-blue-400 font-mono">{{ `${section.order_index + 1}-${subsection.order_index}` }}</span>
-                      <span>{{ subsection.subsection_title }}</span>
-                    </div>
-                  </div>
-                </n-collapse-item>
-              </n-collapse>
+              <n-menu
+                v-else
+                :options="menuOptions"
+                accordion
+                v-model:expanded-keys="expandedKeys"
+                @update:value="handleMenuClick"
+                :indent="12"
+                class="h-full bg-transparent"
+              />
             </n-spin>
           </div>
         </div>
@@ -74,9 +67,10 @@
 </template>
 
 <script lang="ts" setup>
-import { ref, computed, onMounted } from 'vue';
+import { ref, computed, onMounted, h } from 'vue';
 import { useRoute, useRouter } from 'vue-router';
-import { NCollapse, NCollapseItem, NSpin, NEmpty } from 'naive-ui';
+import { NSpin, NEmpty, NMenu } from 'naive-ui';
+import type { MenuOption } from 'naive-ui';
 import breadcrumbComps from '@/components/layout/breadcrumbComps.vue';
 import typography from '@/components/layout/typography.vue';
 import { useCourseStore } from '@/stores/models/course/store';
@@ -96,6 +90,23 @@ const goToTeacher = (teacherId: string) => {
   });
 };
 
+// 處理選單點擊事件
+const handleMenuClick = (key: string) => {
+  // 尋找點擊的是哪個子章節
+  for (const section of sections.value) {
+    const subsection = section.subsections.find(sub => sub.id === key);
+    if (subsection) {
+      // 跳轉到對應的上課頁面
+      router.push({
+        name: 'CourseVideo',
+        params: { id: courseId.value },
+        query: { section: section.id, subsection: subsection.id }
+      });
+      return;
+    }
+  }
+};
+
 const courseStore = useCourseStore();
 const sectionStore = useSectionStore();
 const { sections } = storeToRefs(sectionStore);
@@ -104,6 +115,45 @@ const loaded = ref(false);
 // 獲取課程 ID
 const route = useRoute();
 const courseId = computed(() => route.params.id?.toString() || '');
+
+// 定義章節選單相關變數
+const menuOptions = ref<MenuOption[]>([]);
+const expandedKeys = ref<string[]>([]);
+
+// 將 sections 轉換為 menu options 格式
+const generateMenuOptions = () => {
+  if (!sections.value || sections.value.length === 0) {
+    menuOptions.value = [];
+    return;
+  }
+
+  menuOptions.value = sections.value.map((section) => ({
+    type: 'submenu',
+    key: section.id,
+    label: () => h(
+      'div',
+      { class: 'flex items-center text-white' },
+      section.main_section_title
+    ),
+    children: section.subsections.map((subsection) => ({
+      type: 'item',
+      key: subsection.id,
+      label: () => h(
+        'div',
+        { class: 'flex items-center gap-2 text-white' },
+        [
+          h('span', { class: 'font-mono' }, `${section.order_index + 1}-${subsection.order_index}`),
+          h('span', {}, subsection.subsection_title)
+        ]
+      )
+    }))
+  })) as MenuOption[];
+
+  // 如果有章節，預設展開第一個章節
+  if (sections.value.length > 0) {
+    expandedKeys.value = [sections.value[0].id];
+  }
+};
 
 // 載入課程資料
 const loadCourse = async () => {
@@ -114,6 +164,8 @@ const loadCourse = async () => {
 
     if (courseId.value) {
       await sectionStore.fetchByCourse(courseId.value);
+      // 生成選單選項
+      generateMenuOptions();
     }
   } finally {
     loaded.value = true;
@@ -132,3 +184,12 @@ const currentCourse = computed(() => {
 // 獲取課程名稱
 const courseName = computed(() => currentCourse.value?.course_name || '載入中...');
 </script>
+
+<style scoped>
+.video-menu :deep(.n-menu-item-content--selected)::before {
+  background-color: transparent !important;
+}
+.video-menu :deep(.n-base-icon.n-menu-item-content__arrow svg) {
+  fill: yellow !important;
+}
+</style>

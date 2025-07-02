@@ -56,7 +56,7 @@
 </template>
 
 <script setup lang="ts">
-import { ref, onMounted, h, computed } from 'vue';
+import { ref, onMounted, h, computed, watch } from 'vue';
 import { useRoute } from 'vue-router';
 import { storeToRefs } from 'pinia';
 import type { MenuOption } from 'naive-ui';
@@ -69,6 +69,14 @@ const props = defineProps({
   courseName: {
     type: String,
     required: true,
+  },
+  sectionId: {
+    type: String,
+    default: '',
+  },
+  subsectionId: {
+    type: String,
+    default: '',
   },
 });
 
@@ -200,7 +208,45 @@ onMounted(async () => {
     }),
   })) as MenuOption[];
 
-  // 3. 修正預設播放邏輯
+  // 3. 檢查是否有指定的章節和子章節
+  if (props.sectionId && props.subsectionId && chapters.value.length > 0) {
+    // 尋找匹配的章節
+    const targetChapter = chapters.value.find(chap => chap.name === props.sectionId);
+    
+    if (targetChapter) {
+      // 展開目標章節
+      expandedKeys.value = [targetChapter.name];
+      
+      // 尋找匹配的子章節索引
+      // 從原始 sections 數據中查找對應的子章節
+      const section = sections.value.find(s => s.id === props.sectionId);
+      const targetSubsection = section?.subsections.find(sub => sub.id === props.subsectionId);
+      
+      // 如果找到子章節，尋找其在章節影片列表中的索引
+      let targetSubsectionIndex = -1;
+      if (targetSubsection) {
+        targetSubsectionIndex = targetChapter.videos.findIndex(vid => 
+          vid.label.includes(`${targetSubsection.order_index}`) && 
+          vid.label.includes(targetSubsection.subsection_title)
+        );
+      }
+      
+      if (targetSubsectionIndex !== -1) {
+        // 找到匹配的子章節，設置為當前選中項
+        const targetKey = `${targetChapter.name}-${targetSubsectionIndex}`;
+        const videoInfo = videoKeyMap.get(targetKey);
+        
+        if (videoInfo) {
+          selectedKey.value = targetKey;
+          currentVideoSrc.value = videoInfo.url;
+          currentVideoLabel.value = videoInfo.label;
+          return; // 已找到指定視頻，不需要繼續執行默認邏輯
+        }
+      }
+    }
+  }
+  
+  // 4. 如果沒有指定章節或找不到指定章節，使用默認邏輯
   if (chapters.value.length > 0) {
     const firstChapter = chapters.value[0];
     expandedKeys.value = [firstChapter.name];
@@ -247,6 +293,59 @@ onMounted(async () => {
     videoEl.addEventListener('ended', () => {
       localStorage.removeItem(STORAGE_KEY);
     });
+  }
+});
+
+// 監聽 sectionId 和 subsectionId 的變化
+const updateVideoByProps = () => {
+  if (props.sectionId && props.subsectionId && chapters.value.length > 0) {
+    // 尋找匹配的章節
+    const targetChapter = chapters.value.find(chap => chap.name === props.sectionId);
+    
+    if (targetChapter) {
+      // 展開目標章節
+      expandedKeys.value = [targetChapter.name];
+      
+      // 尋找匹配的子章節索引
+      // 從原始 sections 數據中查找對應的子章節
+      const section = sections.value.find(s => s.id === props.sectionId);
+      const targetSubsection = section?.subsections.find(sub => sub.id === props.subsectionId);
+      
+      // 如果找到子章節，尋找其在章節影片列表中的索引
+      let targetSubsectionIndex = -1;
+      if (targetSubsection) {
+        targetSubsectionIndex = targetChapter.videos.findIndex(vid => 
+          vid.label.includes(`${targetSubsection.order_index}`) && 
+          vid.label.includes(targetSubsection.subsection_title)
+        );
+      }
+      
+      if (targetSubsectionIndex !== -1) {
+        // 找到匹配的子章節，設置為當前選中項
+        const targetKey = `${targetChapter.name}-${targetSubsectionIndex}`;
+        const videoInfo = videoKeyMap.get(targetKey);
+        
+        if (videoInfo) {
+          selectedKey.value = targetKey;
+          currentVideoSrc.value = videoInfo.url;
+          currentVideoLabel.value = videoInfo.label;
+          
+          // 重新載入視頻
+          const v = videoRef.value;
+          if (v) {
+            v.load();
+            v.play().catch(() => {});
+          }
+        }
+      }
+    }
+  }
+};
+
+// 監聽 props 變化
+watch([() => props.sectionId, () => props.subsectionId], () => {
+  if (sections.value.length > 0) {
+    updateVideoByProps();
   }
 });
 
