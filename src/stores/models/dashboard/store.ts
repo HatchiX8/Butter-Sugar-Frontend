@@ -1,13 +1,66 @@
 import { ref } from 'vue';
 import { defineStore } from 'pinia';
-import { apiPost_AddCategory, apiPost_AddTitle } from '@/views/dashboard/api/index';
-import type { courseAddCategoryPostData, courseAddTitlePostData } from '@/views/dashboard/type';
+import { apiPatch_changeCourseStatus, apiGet_courseDetail, apiPost_AddCategory, apiPost_AddTitle, apiPatch_coursePrice } from '@/views/dashboard/api/index';
+import type { courseStatusPostData, courseAddCategoryPostData, courseAddTitlePostData, coursePricePostData } from '@/views/dashboard/type';
 import { apiErrorMessage } from '@/utils/api/apiErrorMsg';
+import axios from 'axios';
 
 export const useDashboardStore = defineStore('dashboardStore', () => {
   const loading = ref(false);
   const error = ref<string | null>(null);
   const courseId = ref(); // 通用課程ID
+
+  // 錯誤訊息
+  const getErrorMessage = (err: unknown): string => {
+    if (axios.isAxiosError(err)) {
+      // 優先取後端回傳的 message
+      const msg = err.response?.data?.message;
+      if (typeof msg === 'string') return msg;
+    }
+    if (typeof err === 'string') return err;
+    if (err instanceof Error) return err.message;
+    return '發生未知錯誤';
+  };
+
+  interface ActionResult {
+    success: boolean;
+    message: string;
+  }
+
+  // ----------更改課程狀態API----------
+  const changeCourseStatus = async (courseId: string, postData: courseStatusPostData): Promise<ActionResult> => {
+    loading.value = true;
+    error.value = null;
+
+    try {
+      const res = await apiPatch_changeCourseStatus(courseId, postData);
+      return { success: true, message: res.message };
+    } catch (err) {
+      const msg = getErrorMessage(err);
+      error.value = msg;
+      return { success: false, message: msg };
+    } finally {
+      loading.value = false;
+    }
+  };
+  // -----------------------------------
+
+  // ----------取得單一課程資料API----------
+  const fetchCourseDetail = async (courseId: string) => {
+    loading.value = true;
+    error.value = null;
+
+    try {
+      const res = await apiGet_courseDetail(courseId);
+      if (res.data.course) return res.data.course;
+      else error.value = '取得單一課程資料失敗';
+    } catch (err) {
+      error.value = getErrorMessage(err);
+    } finally {
+      loading.value = false;
+    }
+  };
+  // -----------------------------------
 
   // ----------新增標題API----------
   const addTitle = async (postData: courseAddTitlePostData) => {
@@ -49,5 +102,29 @@ export const useDashboardStore = defineStore('dashboardStore', () => {
 
   // ----------------------------------
 
-  return { addTitle, addCategory };
+  // ----------課程價格API----------
+  const saveCoursePrice = async (courseId: string, postData: coursePricePostData): Promise<ActionResult> => {
+    loading.value = true;
+    error.value = null;
+
+    try {
+      const res = await apiPatch_coursePrice(courseId, postData);
+      return { success: true, message: res.message };
+    } catch (err) {
+      const msg = getErrorMessage(err);
+      error.value = msg;
+      return { success: false, message: msg };
+    } finally {
+      loading.value = false;
+    }
+  };
+  // ----------------------------------
+
+  return {
+    changeCourseStatus,
+    fetchCourseDetail,
+    addTitle,
+    addCategory,
+    saveCoursePrice
+  };
 });

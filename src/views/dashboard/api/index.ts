@@ -1,12 +1,36 @@
 import axiosInstance from '@/api/axios';
 import type {
+  courseStatusPostData,
+  courseStatusResponse,
   courseAddTitlePostData,
   courseAddTitleResponse,
   courseAddCategoryPostData,
   courseAddCategoryResponse,
   courseSaveFormPostData,
   handoutsResponse,
+  courseDetailResponse,
+  coursePricePostData,
+  coursePriceResponse
 } from '../type';
+
+// ----------更改課程狀態(上架/下架)----------
+export const apiPatch_changeCourseStatus = async (courseId: string, postData: courseStatusPostData) => {
+  const res = await axiosInstance.patch<courseStatusResponse>(
+    `/api/v1/course/${courseId}/status`,
+    postData
+  );
+  return res.data;
+};
+// ----------------------------
+
+// ----------取得單一課程資料----------
+export const apiGet_courseDetail = async (courseId: string) => {
+  const res = await axiosInstance.get<courseDetailResponse>(
+    `/api/v1/course/${courseId}`
+  );
+  return res.data;
+};
+// ----------------------------
 
 // ----------標題&類別----------
 export const apiPost_AddTitle = async (postData: courseAddTitlePostData) => {
@@ -104,14 +128,13 @@ export const apiPost_AddTrailer = async (courseId: string, file: File) => {
   const formData = new FormData();
   formData.append('trailer', file);
 
-  const res = await axiosInstance.post<{ data: { video: string } }>(
+  const res = await axiosInstance.post<{ data: { videoUrl: string } }>(
     `/api/v1/course/${courseId}/upload/course-trailer`,
     formData,
     {
       headers: { 'Content-Type': 'multipart/form-data' },
     }
   );
-
   return res.data;
 };
 // 刪除
@@ -123,9 +146,12 @@ export const apiDelete_DeleteTrailer = async (courseId: string) => {
 
 // ----------講義API----------
 // 新增
-export const apiPost_AddHandouts = async (courseId: string, file: File) => {
+export const apiPost_AddHandouts = async (courseId: string, files: File[]) => {
   const formData = new FormData();
-  formData.append('handout', file);
+
+  for (const file of files) {
+    formData.append('handout', file);
+  }
 
   const res = await axiosInstance.post<{ data: { handouts: Array<handoutsResponse> } }>(
     `/api/v1/course/${courseId}/upload/course-handouts`,
@@ -142,11 +168,31 @@ export const apiDelete_DeleteHandouts = async (courseId: string) => {
   const res = await axiosInstance.delete(`/api/v1/course/${courseId}/upload/course-handouts`);
   return res.data;
 };
+// 取得課程講義
+export const apiGet_handoutsDetail = async (courseId: string) => {
+  const res = await axiosInstance.get<{ data: { handouts: Array<handoutsResponse> } }>(
+    `/api/v1/course/${courseId}/handouts`
+  );
+  return res.data;
+};
 // ----------------------------------
 
 // ----------表單內容----------
 export const apiPost_SaveForm = async (courseId: string, postData: courseSaveFormPostData) => {
   const res = await axiosInstance.post(`/api/v1/course/${courseId}/save`, postData);
+  return res.data;
+};
+// ---------------------------
+
+// ----------課程價格----------
+export const apiPatch_coursePrice = async (
+  courseId: string,
+  postData: coursePricePostData
+) => {
+  const res = await axiosInstance.patch<coursePriceResponse>(
+    `/api/v1/course/${courseId}/price`,
+    postData
+  );
   return res.data;
 };
 // ---------------------------

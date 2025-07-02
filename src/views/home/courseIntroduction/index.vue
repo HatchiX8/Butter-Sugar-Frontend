@@ -194,9 +194,7 @@ const handleAddToCart = async () => {
 }
 const handlePurchase = async () => {
   await handleAddToCart()
-  if (!cartStore.error) {
-    router.push({ name: 'Cart'});
-  }
+  router.push({ name: 'Cart'});
 }
 
 // 前往講師頁面

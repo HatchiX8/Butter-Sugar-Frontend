@@ -49,7 +49,7 @@ const props = defineProps<{
 const router = useRouter();
 
 const goToTeacherPage = () => {
-  router.push({ name: 'HighlightedInstructor', params: { teacher_id: props.teacherId } });
+  router.push({ name: 'highlightedInstructor', params: { id: props.teacherId } });
 };
 
 const goToCoursePage = () => {

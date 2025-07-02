@@ -5,36 +5,70 @@
         所有課程
       </typography>
       <p class="text-8"></p>
-      <button class="bg-primaryDefault text-white border-none rounded-md px-4 py-3">建立新課程</button>
+      <baseButton label="建立新課程" type="primary" @click="goToCourseManage"/>
     </div>
     <n-divider />
     <div class="w-full">
       <n-data-table :columns="columns" :data="data" :pagination :bordered="false"/>
     </div>
   </div>
+  <offTheShelfModal
+    v-if="itemToOff"
+    v-model:modelValue="showOffTheShelfModal"
+    :item="itemToOff"
+  />
 </template>
 
 <script setup lang="ts">
 import type { DataTableColumns } from 'naive-ui';
 import { NButton, useMessage } from 'naive-ui';
 import { h } from 'vue';
-import { ref } from 'vue';
+import { ref, onMounted } from 'vue';
 import typography from '@/components/layout/typography.vue';
+import { useInstructorStore } from '@/stores/models/instructor/store';
+import offTheShelfModal from '@/views/dashboard/courseAction/comps/offTheShelfModal.vue';
+import type { TeacherCourse } from '@/api/instructor/types';
+import { useRouter } from 'vue-router';
+import { baseButton } from '@/components';
+
+const router = useRouter();
+const instructorStore = useInstructorStore();
+
+const itemToOff = ref<{ course_id: string; course_name: string } | null>(null);
+const showOffTheShelfModal = ref(false);
+const openOffTheShelfModal = (item: { course_id: string; course_name: string }) => {
+  itemToOff.value = item
+  showOffTheShelfModal.value = true
+};
 
 interface Song {
   no: number;
-  title: string;
-  status: string;
+  course_name: string;
+  course_status: string;
+  course_id: string;
 }
+
+const goToCourseManage = (courseId?: string, currentStep: number = 1) => {
+  if (courseId) router.push({ name: 'CourseManage', query: { id: courseId, step: currentStep } });
+  else router.push({ name: 'CourseManage' });
+};
 
 const message = useMessage();
 
 const edit = (row: Song) => {
-  message.info(`編輯 ${row.title}`);
+  message.info(`編輯 ${row.course_name}`);
+  goToCourseManage(row.course_id);
+};
+
+const editPrice = (row: Song) => {
+  message.info(`編輯 ${row.course_name}`);
+  goToCourseManage(row.course_id, 3);
 };
 
 const remove = (row: Song) => {
-  message.info(`下架 ${row.title}`);
+  if (row.course_status !== '上架') return message.error('已上架課程才可下架');
+  message.info(`下架 ${row.course_name}`);
+  openOffTheShelfModal({ course_id: row.course_id, course_name: row.course_name });
 };
 
 const createColumns = (): DataTableColumns<Song> => [
@@ -44,11 +78,11 @@ const createColumns = (): DataTableColumns<Song> => [
   },
   {
     title: '課程名稱',
-    key: 'title',
+    key: 'course_name',
   },
   {
     title: '狀態',
-    key: 'status',
+    key: 'course_status',
   },
   {
     title: '編輯/下架',
@@ -95,7 +129,7 @@ const createColumns = (): DataTableColumns<Song> => [
           tertiary: true,
           size: 'small',
           type: 'warning',
-          onClick: () => edit(row),
+          onClick: () => editPrice(row),
         },
         { default: () => '編輯' }
       );
@@ -103,16 +137,17 @@ const createColumns = (): DataTableColumns<Song> => [
   },
 ];
 
-const data = ref<Song[]>([
-  { no: 1, title: '職人級！一次掌握歐式麵包的高水量與發酵秘訣', status: '未送出審核' },
-  { no: 2, title: '法式經典｜酥脆外皮、柔軟內裡的完美法國麵包', status: '審核中' },
-  { no: 3, title: '秒殺人氣！學會製作超鬆軟爆漿奶油', status: '已上架' },
-  { no: 4, title: '零基礎也能成功！手揉麵包入門全攻略', status: '未上架' },
-  { no: 5, title: '香濃﻿奶油香氣四溢！手作日式生吐司', status: '未上架' },
-]);
-
+const data = ref<TeacherCourse[]>([]);
 const columns = ref(createColumns());
 const pagination = false;
+
+onMounted(async () => {
+  await instructorStore.fetchTeacherCourses();
+  data.value = instructorStore.teacherCourses.map((item, index) => ({
+    ...item,
+    no: index + 1,
+  }));
+});
 </script>
 <style scoped>
 :deep(.n-data-table) {

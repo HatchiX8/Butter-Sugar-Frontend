@@ -140,6 +140,19 @@ const router = createRouter({
       ], // 講師後台
     },
     {
+      path: '/Admin',
+      name: 'AdminBackend',
+      component: () => import('@/views/admin/index.vue'), // 管理者後台
+      redirect: '/admin/teacherManage',
+      children: [
+        {
+          path: 'teacherManage',
+          name: 'TeacherManage',
+          component: () => import('@/views/admin/teacherManage/index.vue'),
+        },
+      ],
+    },
+    {
       path: '/login-success',
       name: 'loginSuccess',
       component: () => import('@/views/loginSuccess/index.vue'), // 登入

@@ -13,14 +13,19 @@
       <courseChapter :course-data="courseChapterData" />
     </div>
     <div v-show="currentStep === 3">
-      <courseSubmit :course-data="courseSubmitData" />
+      <courseSubmit
+        :course-data="courseSubmitData"
+        @save="onSavePrice"
+        @update:originPrice="val => courseSubmitData.origin_price = val"
+        @update:sellPrice="val => courseSubmitData.sell_price = val"
+      />
     </div>
   </div>
-  <button @click="preToggle" class="bg-primaryDefault text-white border-none rounded-md px-4 py-3 mr-4">上一步</button>
-  <button @click="nextToggle" class="bg-primaryDefault text-white border-none rounded-md px-4 py-3">下一步</button>
+  <n-button type="primary" @click="preToggle" class="bg-primaryDefault text-white border-none rounded-md px-4 py-3 mr-4">上一步</n-button>
+  <n-button type="primary" @click="nextToggle" class="bg-primaryDefault text-white border-none rounded-md px-4 py-3">下一步</n-button>
 </template>
 <script setup lang="ts">
-import { ref, onMounted, computed } from 'vue';
+import { ref, computed, watch } from 'vue';
 import { useRoute } from 'vue-router';
 import {
   courseChapter,
@@ -30,19 +35,33 @@ import {
 } from '../comps/index';
 import type { AddChildRequestPayload } from '@/views/dashboard/type';
 import { useDashboardStore } from '@/stores/models/index';
+import { useMessage } from 'naive-ui';
+
+const message = useMessage();
 
 // 從表格頁面跳轉進來
 const route = useRoute();
-const isEditMode = computed(() => typeof route.query.id === 'string' && route.query.id !== ''); // 有 id 就代表是編輯
+const courseId = computed(() => {
+  const id = route.query.id;
+  return typeof id === 'string' ? id : '';
+});
+const isEditMode = computed(() => courseId.value !== ''); // 有 id 就代表是編輯
 const currentStep = ref(Number(route.query.step) || 1);
 
 const courseInfoData = ref({
-  description: '',
   id: '',
-  title: '',
+  course_name: '',
+  category_id: '',
+  course_description: '',
+  course_banner_description: '',
+  suitable_for: '',
+  course_goal: '',
+  course_banner_imageUrl: '',
+  course_small_imageUrl: '',
+  course_description_imageUrl: '',
+  trailer_url: '',
+  trailer_name: '',
 });
-
-onMounted(() => {});
 
 // ----------Store----------
 const dashboardStore = useDashboardStore();
@@ -64,9 +83,9 @@ const preToggle = () => {
 };
 
 const courseSubmitData = ref({
-  description: '',
   id: '',
-  title: '',
+  origin_price: '',
+  sell_price: ''
 });
 
 const courseChapterData = ref({
@@ -102,5 +121,92 @@ const addChildRequest = async ({ type, payload }: AddChildRequestPayload): Promi
   }
   return Promise.resolve();
 };
+// -----------------------------
+
+// -----------儲存課程價格-----------
+const onSavePrice = async () => {
+  const data = courseSubmitData.value;
+  if (data.origin_price === null || data.sell_price === null) {
+    message.error('請輸入完整的價格資訊');
+    return;
+  }
+
+  const res = await dashboardStore.saveCoursePrice(data.id, {
+    origin_price: Number(data.origin_price),
+    sell_price: Number(data.sell_price)
+  });
+  message[res.success ? 'success' : 'error'](res.message);
+};
+// -----------------------------
+
+// -----------新增/編輯模式判斷是否重置資料-----------
+const emptyCourseInfoData = {
+  id: '',
+  course_name: '',
+  category_id: '',
+  course_description: '',
+  course_banner_description: '',
+  suitable_for: '',
+  course_goal: '',
+  course_banner_imageUrl: '',
+  course_small_imageUrl: '',
+  course_description_imageUrl: '',
+  trailer_url: '',
+  trailer_name: '',
+};
+
+const emptyCourseSubmitData = {
+  id: '',
+  origin_price: '',
+  sell_price: '',
+};
+
+const resetFormData = () => {
+  courseInfoData.value = { ...emptyCourseInfoData };
+  courseSubmitData.value = { ...emptyCourseSubmitData };
+};
+
+const fetchCourseDetailAndInit = async (id: string)=> {
+  try {
+    // 取得課程資料
+    const courseDetail = await dashboardStore.fetchCourseDetail(id);
+    if (!courseDetail) return;
+
+    // 同時初始化課程簡介資料
+    courseInfoData.value = {
+      id: courseDetail.id,
+      course_name: courseDetail.course_name,
+      category_id: courseDetail.category_id,
+      course_description: courseDetail.course_description,
+      course_banner_description: courseDetail.course_banner_description,
+      suitable_for: courseDetail.suitable_for,
+      course_goal: courseDetail.course_goal,
+      course_banner_imageUrl: courseDetail.course_banner_imageUrl,
+      course_small_imageUrl: courseDetail.course_small_imageUrl,
+      course_description_imageUrl: courseDetail.course_description_imageUrl,
+      trailer_url: courseDetail.trailer_url,
+      trailer_name: courseDetail.trailer_name
+    };
+
+    // 同時定價資料
+    courseSubmitData.value = {
+      id: courseDetail.id,
+      origin_price: courseDetail.origin_price?.toString() || '',
+      sell_price: courseDetail.sell_price?.toString() || '',
+    };
+  } catch (err) {
+    console.error('載入課程資料失敗', err);
+  }
+};
+
+watch(isEditMode, async (isEdit) => {
+  if (isEdit) {
+    // 編輯模式
+    await fetchCourseDetailAndInit(courseId.value);
+  } else {
+    // 新增模式
+    resetFormData();
+  }
+}, { immediate: true });
 // -----------------------------
 </script>

@@ -10,7 +10,7 @@
           class="mobile-menu mt-10 w-full md:sticky md:max-h-[calc(100vh-6rem)] md:w-1/5 md:overflow-y-auto"
         >
           <typography variant="h3" font-type="title" class="mb-5 ml-5 text-white" no-underline>
-            講師頁面
+            管理者頁面
           </typography>
           <n-config-provider>
             <n-menu
@@ -32,7 +32,7 @@
   </div>
 </template>
 <script setup lang="ts">
-import { ref, onMounted, computed } from 'vue';
+import { ref, onMounted, computed, watch } from 'vue';
 import { useRouter } from 'vue-router';
 import headerComps from '@/components/layout/headerComps.vue';
 import footerComps from '@/components/layout/footerComps.vue';
@@ -42,7 +42,20 @@ import { useUserStore } from '@/stores/models/index';
 const bgImgUrl = new URL('@/assets/images/home/bg-grey-wrinkle.png', import.meta.url).href;
 
 const router = useRouter();
-const activeKey = ref<string>('BasicInfo');
+const activeKey = ref<string>('teacherManage');
+
+// 監聽路由變化，更新 activeKey
+watch(
+  () => router.currentRoute.value.path,
+  (path) => {
+    // 使用不區分大小寫的比對，並移除路徑中的 /admin/ 前綴
+    const match = path.match(/\/(?:admin|Admin)\/([^/]+)/i);
+    if (match && match[1]) {
+      activeKey.value = match[1];
+    }
+  },
+  { immediate: true } // 立即執行一次以處理初始路由
+);
 
 interface MenuOption {
   label: string;
@@ -52,19 +65,9 @@ interface MenuOption {
 
 const fullMenuOptions: MenuOption[] = [
   {
-    label: '基本資訊',
-    key: 'BasicInfo',
-    roles: ['student', 'teacher', 'admin'],
-  },
-  {
-    label: '課程資訊',
-    key: 'CourseInfo',
-    roles: ['admin', 'teacher'],
-  },
-  {
-    label: '建立新課程',
-    key: 'courseAction/courseManage',
-    roles: ['admin', 'teacher'],
+    label: '教師管理',
+    key: 'teacherManage',
+    roles: ['admin'],
   },
 ];
 
@@ -74,7 +77,7 @@ const menuOptions = computed(() =>
 
 const handleMenuSelect = (key: string) => {
   activeKey.value = key;
-  router.push(`/Teacher/${key}`);
+  router.push(`/Admin/${key}`);
 };
 
 // ----------取得身分----------
@@ -82,6 +85,13 @@ const userStore = useUserStore();
 
 onMounted(() => {
   console.log('確認權限', userStore.role);
+  // 確保初始路由正確設置 activeKey
+  const path = router.currentRoute.value.path;
+  // 使用不區分大小寫的比對，並移除路徑中的 /admin/ 前綴
+  const match = path.match(/\/(?:admin|Admin)\/([^/]+)/i);
+  if (match && match[1]) {
+    activeKey.value = match[1];
+  }
 });
 // ---------------------------
 </script>
