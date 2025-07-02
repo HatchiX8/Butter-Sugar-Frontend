@@ -41,9 +41,10 @@ const router = createRouter({
           component: () => import('@/views/home/myCourse/index.vue'), // 我的課程列表
         },
         {
-          path: 'course-chapter',
+          path: 'course-chapter/:id',
           name: 'courseChapter',
           component: () => import('@/views/home/courseChapter/index.vue'), // 課程章節列表
+          props: true
         },
         {
           path: 'memberCenter',
