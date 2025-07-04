@@ -88,6 +88,28 @@ const router = createRouter({
           name: 'highlightedInstructor',
           component: () => import('@/views/home/highlightedInstructor/index.vue'), // 精選講師
         },
+        {
+          path: 'others',
+          redirect:  { name: 'AboutUs' },
+          component: () => import('@/views/home/others/index.vue'), // footer 連結三頁面
+          children: [
+            {
+              path: 'aboutUs',
+              name: 'AboutUs',
+              component: () => import('@/views/home/others/aboutUs/index.vue'),
+            },
+            {
+              path: 'faq',
+              name: 'QuestionAnswer',
+              component: () => import('@/views/home/others/faq/index.vue'),
+            },
+            {
+              path: 'terms-of-service',
+              name: 'TermsOfService',
+              component: () => import('@/views/home/others/termsOfService/index.vue'),
+            },
+          ]
+        },
       ],
     },
     // 其他路由（如講師後台）可放在外層

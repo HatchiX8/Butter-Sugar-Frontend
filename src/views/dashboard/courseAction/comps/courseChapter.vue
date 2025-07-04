@@ -65,16 +65,18 @@
     </div>
     <div v-show="isChange" class="text-red ml-5">資料尚未儲存，請注意</div>
     <div class="my-5 flex w-full">
-      <n-button class="mr-4 rounded-md border-none px-4 py-3" type="primary" @click="addChapter">
-        新增章節
-      </n-button>
       <n-button
-        class="ml-auto mr-4 rounded-md border-none px-4 py-3"
+        class="bg-secondaryLight ml-auto mr-4 rounded-md border-none px-4 py-3"
         @click="saveChapter"
         v-show="isChange"
         type="primary"
       >
         儲存編輯
+      </n-button>
+    </div>
+    <div class="my-5 flex w-full">
+      <n-button type="primary" class="bg-secondaryDefault mr-4 rounded-md border-none px-4 py-3" @click="addChapter">
+        新增章節
       </n-button>
     </div>
 

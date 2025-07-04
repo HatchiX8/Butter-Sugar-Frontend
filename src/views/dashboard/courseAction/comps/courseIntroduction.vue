@@ -29,7 +29,10 @@
 
     <div v-show="courseTitle && optionsValue" class="w-100%">
       <div class="mb-5">
-        <p class="fw-bold text-primaryDefault mb-3">課程描述</p>
+        <p class="fw-bold text-primaryDefault mb-3 flex">
+          <span class="i-ion:create-outline w-4.5 h-4.5 text-primaryDefault mr-2 inline-block"></span>
+          課程描述
+        </p>
         <n-input
           v-model:value="course_banner_description"
           type="textarea"
@@ -39,7 +42,10 @@
       </div>
       <div class="mb-5">
         <!-- banner圖片 -->
-        <p class="fw-bold text-primaryDefault mb-3">Banner圖片</p>
+        <p class="fw-bold text-primaryDefault mb-3 flex">
+          <span class="i-ion:create-outline w-4.5 h-4.5 text-primaryDefault mr-2 inline-block"></span>
+          Banner圖片
+        </p>
         <div class="mb-5 flex gap-3">
           <div class="flex flex-col">
             <!-- 左邊：已上傳影片 (這邊你之後可以放影片預覽 或 file name 等) -->
@@ -69,7 +75,10 @@
       </div>
       <!-- 課程封面圖片 -->
       <div class="mb-5">
-        <p class="fw-bold text-primaryDefault mb-3">課程圖片</p>
+        <p class="fw-bold text-primaryDefault mb-3 flex">
+          <span class="i-ion:create-outline w-4.5 h-4.5 text-primaryDefault mr-2 inline-block"></span>
+          課程圖片
+        </p>
         <div class="mb-5 flex gap-3">
           <div class="flex flex-col">
             <!-- 左邊：已上傳影片 (這邊你之後可以放影片預覽 或 file name 等) -->
@@ -99,7 +108,10 @@
       </div>
       <!-- 課程簡介 -->
       <div class="mb-5">
-        <p class="fw-bold text-primaryDefault mb-3">課程簡介</p>
+        <p class="fw-bold text-primaryDefault mb-3 flex">
+          <span class="i-ion:create-outline w-4.5 h-4.5 text-primaryDefault mr-2 inline-block"></span>
+          課程簡介
+        </p>
         <n-input
           v-model:value="course_description"
           type="textarea"
@@ -109,7 +121,10 @@
       </div>
       <!-- 課程簡介圖片 -->
       <div class="mb-5">
-        <p class="fw-bold text-primaryDefault mb-3">課程簡介說明圖片</p>
+        <p class="fw-bold text-primaryDefault mb-3 flex">
+          <span class="i-ion:create-outline w-4.5 h-4.5 text-primaryDefault mr-2 inline-block"></span>
+          課程簡介說明圖片
+        </p>
         <div class="mb-5 flex gap-3">
           <div class="flex flex-col">
             <!-- 左邊：已上傳影片 (這邊你之後可以放影片預覽 或 file name 等) -->
@@ -143,10 +158,13 @@
       </div>
       <!-- 預告片 -->
       <div class="mb-5">
-        <p class="fw-bold text-primaryDefault mb-3">課前準備</p>
-        <div class="mb-5 flex gap-3">
+        <p class="fw-bold text-primaryDefault mb-3 flex">
+          <span class="i-ion:create-outline w-4.5 h-4.5 text-primaryDefault mr-2 inline-block"></span>
+          課前準備
+        </p>
+        <div class="mb-5 flex gap-3 ml-6">
           <div class="flex flex-col">
-            <p>預告片</p>
+            <p class="fw-bold text-primaryLight">預告片</p>
             <div class="flex items-center justify-between">
               <!-- 左邊：已上傳影片 (這邊你之後可以放影片預覽 或 file name 等) -->
               <div v-show="isVideo" class="mr-4 flex-1">
@@ -172,9 +190,9 @@
       </div>
       <!-- 課程講義 -->
       <div class="mb-5">
-        <div class="mb-5 flex gap-3">
+        <div class="mb-5 flex gap-3 ml-6">
           <div class="flex flex-col">
-            <p>課程講義</p>
+            <p class="fw-bold text-primaryLight">課程講義</p>
             <div class="flex items-center justify-between">
               <!-- 左邊：已上傳影片 (這邊你之後可以放影片預覽 或 file name 等) -->
               <div v-show="isFile" class="mr-4 flex-1">
@@ -201,7 +219,10 @@
       </div>
 
       <div class="mb-5">
-        <p class="fw-bold text-primaryDefault mb-3">適合對象</p>
+        <p class="fw-bold text-primaryDefault mb-3 flex">
+          <span class="i-ion:people w-4.5 h-4.5 text-primaryDefault mr-2 inline-block"></span>
+          適合對象
+        </p>
         <n-input
           v-model:value="suitable_for"
           type="textarea"
@@ -210,7 +231,10 @@
         />
       </div>
       <div class="mb-5">
-        <p class="fw-bold text-primaryDefault mb-3">課程目標</p>
+        <p class="fw-bold text-primaryDefault mb-3 flex">
+          <span class="i-ion:golf-outline w-4.5 h-4.5 text-primaryDefault mr-2 inline-block"></span>
+          課程目標
+        </p>
         <n-input
           v-model:value="course_goal"
           type="textarea"
