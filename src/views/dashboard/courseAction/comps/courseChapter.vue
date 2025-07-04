@@ -41,7 +41,7 @@
                       編輯
                     </n-button>
                     <n-button
-                      @click.stop="deleteChapter(chapter.order_index)"
+                      @click.stop="deleteChapter(chapter.section_id, chapter.order_index)"
                       class="mr-4 rounded-md border-none px-4 py-2"
                       type="error"
                     >
@@ -102,7 +102,11 @@ import { useDashboardStore } from '@/stores/models/index';
 import draggable from 'vuedraggable';
 import videoModal from './videoModal.vue';
 import { baseInput } from '@/components/index';
-import { apiPost_AddChapter, apiGet_GetChapter } from '@/views/dashboard/api/index';
+import {
+  apiPost_AddChapter,
+  apiDelete_RemoveChapter,
+  apiGet_GetChapter,
+} from '@/views/dashboard/api/index';
 
 // ----------Type----------
 interface Section {
@@ -172,9 +176,10 @@ const editChapter = (num: number, title: string, id: string) => {
 };
 
 // 刪除章節按鈕
-const deleteChapter = (chapterId: number) => {
+const deleteChapter = async (chapterId: string, order_index: number) => {
   console.log('觸發刪除按扭', chapterId);
-  chapters.value = chapters.value.filter((chapter) => chapter.order_index !== chapterId);
+  await apiDelete_RemoveChapter(chapterId);
+  chapters.value = chapters.value.filter((chapter) => chapter.order_index !== order_index);
 
   // 清除「內容為空的章節」或「無效物件」
   chapters.value = chapters.value.filter(

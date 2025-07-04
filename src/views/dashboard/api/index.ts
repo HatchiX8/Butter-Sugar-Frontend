@@ -218,6 +218,13 @@ export const apiPost_AddChapter = async (
 
   return res.data;
 };
+
+// 刪除章節
+export const apiDelete_RemoveChapter = async (courseId: string) => {
+  const res = await axiosInstance.delete(`/api/v1/section/${courseId}`);
+  return res.data;
+};
+
 // 取得所有章節
 export const apiGet_GetChapter = async (courseId: string) => {
   const res = await axiosInstance.get<categoryGetChapterResponse>(
