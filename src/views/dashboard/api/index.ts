@@ -10,11 +10,19 @@ import type {
   handoutsResponse,
   courseDetailResponse,
   coursePricePostData,
-  coursePriceResponse
+  coursePriceResponse,
+  categoryAddChapterPostData,
+  categoryAddChapterResponse,
+  categoryAddSubsectionsPostData,
+  categoryAddSubsectionsResponse,
+  categoryGetChapterResponse,
 } from '../type';
 
 // ----------更改課程狀態(上架/下架)----------
-export const apiPatch_changeCourseStatus = async (courseId: string, postData: courseStatusPostData) => {
+export const apiPatch_changeCourseStatus = async (
+  courseId: string,
+  postData: courseStatusPostData
+) => {
   const res = await axiosInstance.patch<courseStatusResponse>(
     `/api/v1/course/${courseId}/status`,
     postData
@@ -25,9 +33,7 @@ export const apiPatch_changeCourseStatus = async (courseId: string, postData: co
 
 // ----------取得單一課程資料----------
 export const apiGet_courseDetail = async (courseId: string) => {
-  const res = await axiosInstance.get<courseDetailResponse>(
-    `/api/v1/course/${courseId}`
-  );
+  const res = await axiosInstance.get<courseDetailResponse>(`/api/v1/course/${courseId}`);
   return res.data;
 };
 // ----------------------------
@@ -185,10 +191,7 @@ export const apiPost_SaveForm = async (courseId: string, postData: courseSaveFor
 // ---------------------------
 
 // ----------課程價格----------
-export const apiPatch_coursePrice = async (
-  courseId: string,
-  postData: coursePricePostData
-) => {
+export const apiPatch_coursePrice = async (courseId: string, postData: coursePricePostData) => {
   const res = await axiosInstance.patch<coursePriceResponse>(
     `/api/v1/course/${courseId}/price`,
     postData
@@ -201,3 +204,62 @@ export const apiPatch_coursePrice = async (
 //   const res = await axios.post<ResponseType>('/your/api/path', postData);
 //   return res.data;
 // };
+
+// ----------以下為章節API----------
+// 新增章節
+export const apiPost_AddChapter = async (
+  courseId: string,
+  postData: categoryAddChapterPostData
+) => {
+  const res = await axiosInstance.post<categoryAddChapterResponse>(
+    `/api/v1/course/${courseId}/course-section`,
+    postData
+  );
+
+  return res.data;
+};
+// 取得所有章節
+export const apiGet_GetChapter = async (courseId: string) => {
+  const res = await axiosInstance.get<categoryGetChapterResponse>(
+    `/api/v1/section/course/${courseId}`
+  );
+  return res.data;
+};
+// --------------------------------
+
+// ----------以下為小節API----------
+// 新增小節API
+export const apiPost_AddSubsections = async (postData: categoryAddSubsectionsPostData) => {
+  const res = await axiosInstance.post<categoryAddSubsectionsResponse>(
+    `/api/v1/subsection`,
+    postData
+  );
+
+  return res.data;
+};
+// 刪除小節API
+export const apiDelete_RemoveSubsections = async (section_id: string) => {
+  const res = await axiosInstance.delete(`/api/v1/subsection/${section_id}`);
+  return res.data;
+};
+
+// 新增影片
+export const apiPost_AddSubsectionsVideo = async (section_id: string, file: File) => {
+  const formData = new FormData();
+  formData.append('video', file);
+
+  const res = await axiosInstance.post<{ data: { videoUrl: string } }>(
+    `/api/v1/subsection/upload/${section_id}/upload-video`,
+    formData,
+    {
+      headers: { 'Content-Type': 'multipart/form-data' },
+    }
+  );
+  return res.data;
+};
+// 刪除影片
+export const apiDelete_DeleteSubsectionsVideo = async (section_id: string) => {
+  const res = await axiosInstance.delete(`/api/v1/subsection/upload/${section_id}/upload-video`);
+  return res.data;
+};
+// --------------------------------

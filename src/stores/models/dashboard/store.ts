@@ -1,7 +1,18 @@
 import { ref } from 'vue';
 import { defineStore } from 'pinia';
-import { apiPatch_changeCourseStatus, apiGet_courseDetail, apiPost_AddCategory, apiPost_AddTitle, apiPatch_coursePrice } from '@/views/dashboard/api/index';
-import type { courseStatusPostData, courseAddCategoryPostData, courseAddTitlePostData, coursePricePostData } from '@/views/dashboard/type';
+import {
+  apiPatch_changeCourseStatus,
+  apiGet_courseDetail,
+  apiPost_AddCategory,
+  apiPost_AddTitle,
+  apiPatch_coursePrice,
+} from '@/views/dashboard/api/index';
+import type {
+  courseStatusPostData,
+  courseAddCategoryPostData,
+  courseAddTitlePostData,
+  coursePricePostData,
+} from '@/views/dashboard/type';
 import { apiErrorMessage } from '@/utils/api/apiErrorMsg';
 import axios from 'axios';
 
@@ -28,7 +39,10 @@ export const useDashboardStore = defineStore('dashboardStore', () => {
   }
 
   // ----------更改課程狀態API----------
-  const changeCourseStatus = async (courseId: string, postData: courseStatusPostData): Promise<ActionResult> => {
+  const changeCourseStatus = async (
+    courseId: string,
+    postData: courseStatusPostData
+  ): Promise<ActionResult> => {
     loading.value = true;
     error.value = null;
 
@@ -103,7 +117,10 @@ export const useDashboardStore = defineStore('dashboardStore', () => {
   // ----------------------------------
 
   // ----------課程價格API----------
-  const saveCoursePrice = async (courseId: string, postData: coursePricePostData): Promise<ActionResult> => {
+  const saveCoursePrice = async (
+    courseId: string,
+    postData: coursePricePostData
+  ): Promise<ActionResult> => {
     loading.value = true;
     error.value = null;
 
@@ -121,10 +138,11 @@ export const useDashboardStore = defineStore('dashboardStore', () => {
   // ----------------------------------
 
   return {
+    courseId,
     changeCourseStatus,
     fetchCourseDetail,
     addTitle,
     addCategory,
-    saveCoursePrice
+    saveCoursePrice,
   };
 });

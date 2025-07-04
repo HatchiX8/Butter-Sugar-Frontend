@@ -19,23 +19,29 @@
       <n-collapse class="mb-3">
         <draggable v-model="chapters" item-key="id" :animation="200" @end="onChapterDragEnd">
           <template #item="{ element: chapter, index }">
-            <n-collapse-item :key="chapter.id">
+            <n-collapse-item :key="chapter.section_id">
               <template #header>
                 <div class="flex w-full items-center justify-around">
                   <p class="mr-3 font-bold text-white">第 {{ index + 1 }} 章</p>
                   <div class="w-40%">
-                    <baseInput type="text" v-model="chapter.title" @click.stop />
+                    <baseInput type="text" v-model="chapter.main_section_title" @click.stop />
                   </div>
                   <div class="ml-auto">
                     <n-button
-                      @click.stop="editChapter(chapter.order, chapter.title)"
+                      @click.stop="
+                        editChapter(
+                          chapter.order_index,
+                          chapter.main_section_title,
+                          chapter.section_id
+                        )
+                      "
                       class="mr-4 rounded-md border-none px-4 py-2"
                       type="primary"
                     >
                       編輯
                     </n-button>
                     <n-button
-                      @click.stop="deleteChapter(chapter.order)"
+                      @click.stop="deleteChapter(chapter.order_index)"
                       class="mr-4 rounded-md border-none px-4 py-2"
                       type="error"
                     >
@@ -54,7 +60,7 @@
               >
                 <template #item="{ element }">
                   <li class="mb-2 rounded border bg-gray-700 p-2 text-white">
-                    {{ element.title }}
+                    {{ element.subsection_title }}
                   </li>
                 </template>
               </draggable>
@@ -82,35 +88,40 @@
       v-model:modelValue="modelValue"
       title="測試"
       :showFooter="true"
-      :chapter-num="chapterNum"
-      :chapter-title="chapterTitle"
+      :chapterNum="chapterNum"
+      :chapterTitle="chapterTitle"
+      :chapterSectionId="chapterSectionId || ''"
+      @editOver="updateChapter"
     />
   </div>
 </template>
 
 <script setup lang="ts">
 import { ref, watch } from 'vue';
-// import { useDashboardStore } from '@/stores/models/index';
+import { useDashboardStore } from '@/stores/models/index';
 import draggable from 'vuedraggable';
 import videoModal from './videoModal.vue';
 import { baseInput } from '@/components/index';
+import { apiPost_AddChapter, apiGet_GetChapter } from '@/views/dashboard/api/index';
 
 // ----------Type----------
 interface Section {
   id: string;
-  title: string;
+  subsection_title: string;
+  order_index: number;
+  is_preview_available: boolean;
 }
 
 interface chapter {
-  id: string;
-  order: number; // 可調整
-  title: string;
+  section_id: string;
+  main_section_title: string;
+  order_index: number; // 可調整
   sections: Section[];
 }
 // ------------------------
 
 // ----------Store----------
-// const dashboardStore = useDashboardStore();
+const dashboardStore = useDashboardStore();
 // -------------------------
 
 // 模擬章節資料
@@ -119,52 +130,51 @@ interface chapter {
 const chapters = ref<chapter[]>([]); // 章節內容
 const chapterCount = ref(chapters.value.length + 1); // 章節計數器
 const isChange = ref<boolean>(false); // 資料是否變化
-const chapterNum = ref<number>(0);
+const chapterNum = ref<number>(0); // 傳入小節給予的章節
+const chapterSectionId = ref<string>();
 const chapterTitle = ref<string>('準備工作'); // 章節標題
+
 // 監聽章節變化
 watch(
   chapters,
-  (newVal) => {
-    console.log('小節順序發生變化', newVal);
+  () => {
+    console.log('偵測到章節內容更新');
     isChange.value = true;
-    updateChapterOrder();
   },
   { deep: true }
 );
 
-// 章節API請求
-const apiFn = () => {
-  console.log('觸發更新api');
-  isChange.value = false;
-};
-
 // 更新章節順序
 const updateChapterOrder = () => {
   chapters.value.forEach((chapter, index) => {
-    chapter.order = index + 1; // 從 1 開始編
+    chapter.order_index = index + 1; // 從 1 開始編
   });
+  console.log('章節重新排序完畢', chapters.value);
 };
 
+// 拖曳完畢觸發事件
 const onChapterDragEnd = () => {
   updateChapterOrder();
   isChange.value = true;
-  console.log('章節重新排序完畢', chapters.value);
 };
+
 // -----------------------
 
 // ----------章節按鈕事件----------
 // 編輯章節按鈕
-const editChapter = (num: number, title: string) => {
+const editChapter = (num: number, title: string, id: string) => {
+  saveChapter(); // 先進行儲存，避免編輯完畢後更新API資料遺失
   console.log('觸發編輯按扭', num);
   chapterNum.value = num;
   chapterTitle.value = title;
+  chapterSectionId.value = id;
   modelValue.value = true;
 };
 
 // 刪除章節按鈕
 const deleteChapter = (chapterId: number) => {
   console.log('觸發刪除按扭', chapterId);
-  chapters.value = chapters.value.filter((chapter) => chapter.order !== chapterId);
+  chapters.value = chapters.value.filter((chapter) => chapter.order_index !== chapterId);
 
   // 清除「內容為空的章節」或「無效物件」
   chapters.value = chapters.value.filter(
@@ -175,37 +185,62 @@ const deleteChapter = (chapterId: number) => {
 };
 
 // 新增章節按鈕
-const addChapter = () => {
-  const newChapter = {
-    id: '後端回傳ID',
-    order: chapters.value.length + 1,
-    title: `準備工作`,
-    sections: [],
-  };
-  chapters.value.push(newChapter);
-  updateChapterOrder(); // 更新章節順序
-  chapterCount.value++;
+const addChapter = async () => {
+  try {
+    const postData = {
+      main_section_title: '準備工作',
+    };
+    const res = await apiPost_AddChapter(dashboardStore.courseId, postData); // 觸發新增章節API
+
+    const newChapter = {
+      section_id: res.data.id,
+      order_index: chapters.value.length + 1,
+      main_section_title: res.data.main_section_title,
+      sections: [],
+    };
+    chapters.value.push(newChapter);
+    updateChapterOrder(); // 更新章節順序
+    chapterCount.value++;
+  } catch (err) {
+    console.log('新增課程失敗', err);
+  }
 };
 
 // 儲存章節編輯
 const saveChapter = () => {
   console.log('儲存章節編輯', chapters.value);
-  apiFn();
+  isChange.value = false;
 };
 // ------------------------------
 
 // -----------彈跳視窗-----------
 const modelValue = ref(false);
 
-// const handleAddTitle = async (title: string) => {
-//   courseTitle.value = title;
-//   console.log('成功寫入', courseTitle.value);
-//   const courseId = await props.request({
-//     type: 'addTitle',
-//     payload: title,
-//   });
-//   titleId.value = courseId;
-// };
+// 使用者在彈窗點擊確認後觸發更新函式
+const updateChapter = async () => {
+  try {
+    if (dashboardStore.courseId) {
+      const res = await apiGet_GetChapter(dashboardStore.courseId);
+      console.log('更新成功', res);
+      const rawSections = res.data.sections;
+      chapters.value = []; // 清空元陣列
+
+      chapters.value = rawSections.map((section) => ({
+        section_id: section.id,
+        main_section_title: section.main_section_title,
+        order_index: section.order_index,
+        sections: section.subsections.map((sub) => ({
+          id: sub.id,
+          subsection_title: sub.subsection_title,
+          order_index: sub.order_index,
+          is_preview_available: sub.is_preview_available,
+        })),
+      }));
+    }
+  } catch (err) {
+    console.log('更新章節內容失敗', err);
+  }
+};
 // -----------------------------
 </script>
 

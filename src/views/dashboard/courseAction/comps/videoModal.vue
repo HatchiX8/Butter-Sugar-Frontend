@@ -14,44 +14,51 @@
         <n-scrollbar class="max-h-50vh" trigger="hover">
           <div class="mb-5 pr-5">
             <p class="fw-bold text-primaryDefault mb-3">第{{ chapterNum }}節</p>
-            <n-collapse class="mb-5 p-2" v-for="(chapter, index) in chapters" :key="chapter.id">
-              <div class="mb-2 flex items-center">
-                <p class="mr-5 text-nowrap">{{ chapterNum }}-{{ index + 1 }}</p>
-                <div class="w-full">
-                  <baseInput type="text" v-model="chapter.title" @click.stop />
-                </div>
-              </div>
-              <div>
-                <p>影片</p>
-                <div class="flex items-center justify-between">
-                  <!-- 左邊：已上傳影片 (這邊你之後可以放影片預覽 或 file name 等) -->
-                  <div v-show="isVideoMap[chapter.id]" class="mr-4 flex-1">
-                    <n-upload
-                      :ref="(el) => setVideoUploadRef(chapter.id, el)"
-                      accept="video/mp4"
-                      :max="1"
-                      :custom-request="(options) => courseVideoUpload(options, chapter.id)"
-                      :show-file-list="!!isVideoMap[chapter.id]"
-                      :show-trigger="false"
-                      @remove="() => handleVideoRemove(chapter.id)"
-                    />
-                  </div>
-                  <div v-show="!isVideoMap[chapter.id]">尚未選擇影片</div>
-                  <!-- 右邊：上傳按鈕 -->
-                  <div>
-                    <n-button @click="() => triggerVideoUpload(chapter.id)">上傳影片</n-button>
-                    <n-button
-                      type="error"
-                      secondary
-                      @click="() => removeSmallChapter(chapter.id)"
-                      class="ml-2"
-                    >
-                      移除小節
-                    </n-button>
+            <div v-if="chapters.length">
+              <n-collapse class="mb-5 p-2" v-for="(chapter, index) in chapters" :key="chapter.id">
+                <div class="mb-2 flex items-center">
+                  <p class="mr-5 text-nowrap">{{ chapterNum }}-{{ index + 1 }}</p>
+                  <div class="w-full">
+                    <baseInput type="text" v-model="chapter.subsection_title" @click.stop />
                   </div>
                 </div>
-              </div>
-            </n-collapse>
+                <div>
+                  <p>影片</p>
+                  <div class="flex items-center justify-between">
+                    <!-- 左邊：已上傳影片 (這邊你之後可以放影片預覽 或 file name 等) -->
+                    <div v-show="isVideoMap[chapter.order_index]" class="mr-4 flex-1">
+                      <n-upload
+                        :ref="(el) => setVideoUploadRef(chapter.order_index, el)"
+                        accept="video/mp4"
+                        :max="1"
+                        :custom-request="
+                          (options) =>
+                            subsectionsVideoUpload(options, chapter.id, chapter.order_index)
+                        "
+                        :show-file-list="!!isVideoMap[chapter.order_index]"
+                        :show-trigger="false"
+                        @remove="() => handleVideoRemove(chapter.id, chapter.order_index)"
+                      />
+                    </div>
+                    <div v-show="!isVideoMap[chapter.order_index]">尚未選擇影片</div>
+                    <!-- 右邊：上傳按鈕 -->
+                    <div>
+                      <n-button @click="() => triggerVideoUpload(chapter.order_index)"
+                        >上傳影片</n-button
+                      >
+                      <n-button
+                        type="error"
+                        secondary
+                        @click="() => removeSmallChapter(chapter.id, chapter.order_index)"
+                        class="ml-2"
+                      >
+                        移除小節
+                      </n-button>
+                    </div>
+                  </div>
+                </div>
+              </n-collapse>
+            </div>
           </div>
         </n-scrollbar>
         <n-button
@@ -79,6 +86,13 @@
 // 套件
 import { ref, watch } from 'vue';
 import { NUpload } from 'naive-ui';
+// API
+import {
+  apiPost_AddSubsectionsVideo,
+  apiDelete_DeleteSubsectionsVideo,
+  apiPost_AddSubsections,
+  apiDelete_RemoveSubsections,
+} from '@/views/dashboard/api/index';
 // store
 
 // 共用型別
@@ -98,6 +112,7 @@ interface Props {
   showFooter?: boolean;
   chapterTitle?: string;
   chapterNum?: number;
+  chapterSectionId: string;
 }
 
 const props = withDefaults(defineProps<Props>(), {
@@ -109,16 +124,18 @@ const props = withDefaults(defineProps<Props>(), {
 
 const emit = defineEmits<{
   (e: 'update:modelValue', value: boolean): void;
+  (e: 'editOver'): void;
 }>();
 
 // --------------------------------
 
 // ----------Type----------
-
 interface chapter {
-  id: number;
-  title: string;
+  id: string;
+  subsection_title: string;
+  order_index: number;
   video: string;
+  is_preview_available: boolean;
 }
 // ------------------------
 
@@ -135,8 +152,8 @@ watch(show, (val) => emit('update:modelValue', val)); // 內部操作時 → 通
 // ------------------------------
 
 // ----------章節----------
-const chapters = ref<chapter[]>([{ id: 1, title: '準備工作', video: '123' }]); // 章節內容
-const smallChapterCount = ref(chapters.value.length + 1); // 章節計數器
+const chapters = ref<chapter[]>([]); // 章節內容
+const smallChapterCount = ref(0); // 章節計數器
 const isChange = ref(false); // 資料是否變化
 
 // 監聽章節變化
@@ -149,36 +166,51 @@ watch(
   { deep: true }
 );
 
-// 章節API請求
-const apiFn = () => {
-  console.log('課程小節更新api');
-  isChange.value = false;
-};
 // -----------------------
 
 // ----------小節按鈕事件----------
 // 新增章節按鈕
-const addSmallChapter = () => {
-  const newChapter = {
-    id: smallChapterCount.value,
-    title: `新增小節`,
-    video: '測測',
+const addSmallChapter = async () => {
+  const postData = {
+    section_id: props.chapterSectionId,
+    subsection_title: '準備工作',
   };
-  chapters.value.push(newChapter);
-  smallChapterCount.value++;
+
+  try {
+    const res = await apiPost_AddSubsections(postData);
+    console.log('新增小節成功');
+
+    const newChapter = {
+      id: res.data.subsection.id,
+      order_index: smallChapterCount.value,
+      subsection_title: res.data.subsection.subsection_title,
+      video: res.data.subsection.video_file_url || '尚未新增影片',
+      is_preview_available: false,
+    };
+    chapters.value.push(newChapter);
+    smallChapterCount.value++;
+  } catch (error) {
+    console.log('新增小節失敗', error);
+  }
 };
 
-const removeSmallChapter = (chapterId: number) => {
-  chapters.value = chapters.value.filter((chapter) => chapter.id !== chapterId);
+// 移除章節
+const removeSmallChapter = async (chapterId: string, order_index: number) => {
+  try {
+    await apiDelete_RemoveSubsections(chapterId);
+    chapters.value = chapters.value.filter((chapter) => chapter.order_index !== order_index);
 
-  // 移除對應的上傳元件與影片狀態
-  delete videoUploadRefs.value[chapterId];
-  delete isVideoMap.value[chapterId];
+    // 移除對應的上傳元件與影片狀態
+    delete videoUploadRefs.value[order_index];
+    delete isVideoMap.value[order_index];
+  } catch (err) {
+    console.log('刪除章節失敗', err);
+  }
 };
 
 const submitSmallChapter = () => {
   console.log('儲存送出小節');
-  apiFn();
+  emit('editOver');
   emit('update:modelValue', false);
 };
 // -------------------------------
@@ -203,13 +235,20 @@ const triggerVideoUpload = (chapterId: number) => {
   }
 };
 
-const courseVideoUpload = async (options: UploadCustomRequestOptions, chapterId: number) => {
+const subsectionsVideoUpload = async (
+  options: UploadCustomRequestOptions,
+  chapterId: string,
+  order_index: number
+) => {
   const { file, onFinish, onError } = options;
 
   try {
-    console.log('上傳檔案：', file);
-    isVideoMap.value[chapterId] = true;
-    addCourseVideo();
+    console.log('上傳檔案：', file.file);
+    isVideoMap.value[order_index] = true;
+    if (file.file) {
+      const res = await apiPost_AddSubsectionsVideo(chapterId, file.file);
+      console.log('上傳成功', res);
+    }
     onFinish?.();
   } catch (err) {
     console.log('上傳失敗', err);
@@ -217,25 +256,20 @@ const courseVideoUpload = async (options: UploadCustomRequestOptions, chapterId:
   }
 };
 
-const handleVideoRemove = (chapterId: number) => {
-  deleteTrailer();
-  isVideoMap.value[chapterId] = false;
+const handleVideoRemove = (chapterId: string, order_index: number) => {
+  deleteTrailer(chapterId);
+  isVideoMap.value[order_index] = false;
 };
 
-const deleteTrailer = async () => {
-  // const res = await apiDelete_DeleteTrailer(titleId.value);
-  deleteCourseVideo();
+const deleteTrailer = async (chapterId: string) => {
+  try {
+    const res = await apiDelete_DeleteSubsectionsVideo(chapterId);
+    console.log('刪除成功', res);
+  } catch (err) {
+    console.log(err);
+  }
 };
 
-const addCourseVideo = () => {
-  console.log('新增課程影片API');
-  // 這邊可以呼叫新增課程影片的API
-};
-
-const deleteCourseVideo = () => {
-  console.log('刪除課程影片API');
-  // 這邊可以呼叫刪除課程影片的API
-};
 // -----------------------------
 
 // ----------樣式-----------
