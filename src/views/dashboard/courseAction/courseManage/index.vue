@@ -16,13 +16,25 @@
       <courseSubmit
         :course-data="courseSubmitData"
         @save="onSavePrice"
-        @update:originPrice="val => courseSubmitData.origin_price = val"
-        @update:sellPrice="val => courseSubmitData.sell_price = val"
+        @update:originPrice="(val) => (courseSubmitData.origin_price = val)"
+        @update:sellPrice="(val) => (courseSubmitData.sell_price = val)"
       />
     </div>
   </div>
-  <n-button type="primary" @click="preToggle" class="bg-primaryDefault text-white border-none rounded-md px-4 py-3 mr-4">上一步</n-button>
-  <n-button type="primary" @click="nextToggle" class="bg-primaryDefault text-white border-none rounded-md px-4 py-3">下一步</n-button>
+  <div v-show="dashboardStore.courseId">
+    <n-button
+      type="primary"
+      @click="preToggle"
+      class="bg-primaryDefault mr-4 rounded-md border-none px-4 py-3 text-white"
+      >上一步</n-button
+    >
+    <n-button
+      type="primary"
+      @click="nextToggle"
+      class="bg-primaryDefault rounded-md border-none px-4 py-3 text-white"
+      >下一步</n-button
+    >
+  </div>
 </template>
 <script setup lang="ts">
 import { ref, computed, watch } from 'vue';
@@ -85,7 +97,7 @@ const preToggle = () => {
 const courseSubmitData = ref({
   id: '',
   origin_price: '',
-  sell_price: ''
+  sell_price: '',
 });
 
 const courseChapterData = ref({
@@ -133,7 +145,7 @@ const onSavePrice = async () => {
 
   const res = await dashboardStore.saveCoursePrice(data.id, {
     origin_price: Number(data.origin_price),
-    sell_price: Number(data.sell_price)
+    sell_price: Number(data.sell_price),
   });
   message[res.success ? 'success' : 'error'](res.message);
 };
@@ -166,7 +178,7 @@ const resetFormData = () => {
   courseSubmitData.value = { ...emptyCourseSubmitData };
 };
 
-const fetchCourseDetailAndInit = async (id: string)=> {
+const fetchCourseDetailAndInit = async (id: string) => {
   try {
     // 取得課程資料
     const courseDetail = await dashboardStore.fetchCourseDetail(id);
@@ -185,7 +197,7 @@ const fetchCourseDetailAndInit = async (id: string)=> {
       course_small_imageUrl: courseDetail.course_small_imageUrl,
       course_description_imageUrl: courseDetail.course_description_imageUrl,
       trailer_url: courseDetail.trailer_url,
-      trailer_name: courseDetail.trailer_name
+      trailer_name: courseDetail.trailer_name,
     };
 
     // 同時定價資料
@@ -199,14 +211,18 @@ const fetchCourseDetailAndInit = async (id: string)=> {
   }
 };
 
-watch(isEditMode, async (isEdit) => {
-  if (isEdit) {
-    // 編輯模式
-    await fetchCourseDetailAndInit(courseId.value);
-  } else {
-    // 新增模式
-    resetFormData();
-  }
-}, { immediate: true });
+watch(
+  isEditMode,
+  async (isEdit) => {
+    if (isEdit) {
+      // 編輯模式
+      await fetchCourseDetailAndInit(courseId.value);
+    } else {
+      // 新增模式
+      resetFormData();
+    }
+  },
+  { immediate: true }
+);
 // -----------------------------
 </script>
