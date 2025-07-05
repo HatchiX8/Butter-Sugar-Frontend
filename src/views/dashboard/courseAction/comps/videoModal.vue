@@ -39,6 +39,12 @@
                         :show-trigger="false"
                         @remove="() => handleVideoRemove(chapter.id, chapter.order_index)"
                       />
+                      <video
+                        v-if="videoShowMap[chapter.order_index]"
+                        :src="videoShowMap[chapter.order_index]"
+                        controls
+                        class="mt-2 w-full max-w-md rounded-lg"
+                      ></video>
                     </div>
                     <div v-show="!isVideoMap[chapter.order_index]">尚未選擇影片</div>
                     <!-- 右邊：上傳按鈕 -->
@@ -96,7 +102,7 @@ import {
 // store
 
 // 共用型別
-import type { UploadCustomRequestOptions } from 'naive-ui';
+import type { UploadCustomRequestOptions, UploadFileInfo } from 'naive-ui';
 import type { ComponentPublicInstance } from 'vue';
 // 元件
 import { baseInput } from '@/components/index';
@@ -139,7 +145,7 @@ interface Section {
   is_preview_available: boolean;
   video_file_url?: string;
   video_duration?: number;
-}
+};
 
 interface chapter {
   id: string;
@@ -147,7 +153,7 @@ interface chapter {
   order_index: number;
   video: string;
   is_preview_available: boolean;
-}
+};
 // ------------------------
 
 // -----------彈跳視窗-----------
@@ -253,6 +259,8 @@ const submitSmallChapter = () => {
 const videoUploadRefs = ref<Record<number, InstanceType<typeof NUpload> | null>>({});
 
 const isVideoMap = ref<Record<number, boolean>>({});
+const videoShowMap = ref<Record<number, string>>({});
+const videoFileListMap = ref<Record<number, UploadFileInfo[]>>({});
 
 const setVideoUploadRef = (chapterId: number, el: Element | ComponentPublicInstance | null) => {
   if (!videoUploadRefs.value) videoUploadRefs.value = {};
@@ -292,6 +300,13 @@ const subsectionsVideoUpload = async (
 const handleVideoRemove = (chapterId: string, order_index: number) => {
   deleteTrailer(chapterId);
   isVideoMap.value[order_index] = false;
+
+  // 清除預覽影片
+  const oldUrl = videoShowMap.value[order_index];
+  if (oldUrl?.startsWith('blob:')) {
+    URL.revokeObjectURL(oldUrl); // 如果是 blob 預覽就釋放資源
+  }
+  delete videoShowMap.value[order_index];
 };
 
 const deleteTrailer = async (chapterId: string) => {
@@ -303,6 +318,33 @@ const deleteTrailer = async (chapterId: string) => {
   }
 };
 
+watch(
+  () => props.subsectionsData,
+  (newVal) => {
+    if (!Array.isArray(newVal)) return;
+
+    newVal.forEach((subsection) => {
+      const orderIndex = subsection.order_index;
+      const url = subsection.video_file_url;
+
+      if (url) {
+        videoShowMap.value[orderIndex] = url;
+        isVideoMap.value[orderIndex] = true;
+        videoFileListMap.value[orderIndex] = [{
+          id: subsection.id,
+          name: '影片預覽',
+          status: 'finished',
+          url: url || '',
+        }];
+      } else {
+        // 沒有影片則清空狀態
+        delete videoShowMap.value[orderIndex];
+        isVideoMap.value[orderIndex] = false;
+      }
+    });
+  },
+  { immediate: true, deep: true }
+);
 // -----------------------------
 
 // ----------樣式-----------

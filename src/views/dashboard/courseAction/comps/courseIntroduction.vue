@@ -51,7 +51,7 @@
           <div class="flex flex-col">
             <!-- 左邊：已上傳影片 (這邊你之後可以放影片預覽 或 file name 等) -->
             <div v-if="imgBannerUrl !== ''">
-              <img :src="imgBannerUrl" alt="Banner圖片預覽" class="w-50 h-auto rounded-lg shadow" />
+              <img :src="imgBannerUrl" alt="Banner圖片預覽" class="rounded-lg w-full max-w-md shadow" />
             </div>
             <div class="flex items-center justify-between">
               <div v-show="isImgBanner" class="mr-4 flex-1">
@@ -85,7 +85,7 @@
           <div class="flex flex-col">
             <!-- 左邊：已上傳影片 (這邊你之後可以放影片預覽 或 file name 等) -->
             <div v-if="imgUrl !== ''">
-              <img :src="imgUrl" alt="課程圖片預覽" class="w-50 h-auto rounded-lg shadow" />
+              <img :src="imgUrl" alt="課程圖片預覽" class="rounded-lg w-full max-w-md shadow" />
             </div>
             <div class="flex items-center justify-between">
               <div v-show="isImg" class="mr-4 flex-1">
@@ -136,7 +136,7 @@
               <img
                 :src="imgDescriptionUrl"
                 alt="課程簡介圖片預覽"
-                class="w-50 h-auto rounded-lg shadow"
+                class="rounded-lg w-full max-w-md shadow"
               />
             </div>
             <div class="flex items-center justify-between">
@@ -182,6 +182,13 @@
                   :show-trigger="false"
                   @remove="handleVideoRemove"
                 />
+                <!-- 預告片預覽 -->
+                <video
+                  v-if="trailerUrl"
+                  :src="trailerUrl"
+                  controls
+                  class="rounded-lg w-full max-w-md"
+                ></video>
               </div>
               <div v-show="!isVideo" class="mr-2">尚未選擇影片</div>
               <!-- 右邊：上傳按鈕 -->
@@ -283,7 +290,7 @@ import {
   apiPost_SaveForm,
 } from '@/views/dashboard/api/index';
 import { useMessage } from 'naive-ui';
-import type { UploadFileInfo } from 'naive-ui'
+import type { UploadFileInfo } from 'naive-ui';
 
 const message = useMessage();
 
