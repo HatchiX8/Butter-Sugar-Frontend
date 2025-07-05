@@ -9,17 +9,12 @@
         aria-modal="true"
         closable
         @close="show = false"
-        class="w-[80%] my-0 mx-auto md:w-[450px] md:m-auto"
+        class="mx-auto my-0 w-[80%] md:m-auto md:w-[450px]"
       >
         <div class="text-4 max-h-[60vh] overflow-y-auto leading-normal">
           <slot />
           <div class="mt-2">{{ detail }}</div>
-          <baseInput
-            v-show="!showSelect"
-            placeholder="請輸入標題"
-            v-model="inputValue"
-            @update:modelValue="emitInput"
-          />
+          <baseInput v-show="!showSelect" placeholder="請輸入標題" v-model="inputValue" />
 
           <n-select
             v-show="showSelect"
@@ -118,9 +113,9 @@ const submitType = () => {
 // -----------input-----------
 const inputValue = ref('');
 
-const emitInput = (value: string) => {
-  emit('update:title', value); // 傳給父層
-};
+// const emitInput = (value: string) => {
+//   emit('update:title', value); // 傳給父層
+// };
 
 // ----------------------------
 
