@@ -29,13 +29,14 @@
       </div>
     </div>
     <footerComps />
+    <!-- 回到最上方按鈕 -->
+    <scrollToTop/>
   </div>
 </template>
 <script setup lang="ts">
 import { onMounted, computed } from 'vue';
 import { useRouter } from 'vue-router';
-import headerComps from '@/components/layout/headerComps.vue';
-import footerComps from '@/components/layout/footerComps.vue';
+import { headerComps, footerComps, scrollToTop } from '@/components/index';
 import typography from '@/components/layout/typography.vue';
 import { useUserStore } from '@/stores/models/index';
 import { useMenuStore } from '@/stores/models/dashboard/uiStore';
