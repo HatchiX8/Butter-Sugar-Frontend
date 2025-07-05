@@ -7,6 +7,8 @@
         :course-data="courseInfoData"
         :is-edit="isEditMode"
         :request="addChildRequest"
+        @update:courseName="courseName = $event"
+        @update:categoryId="categoryId = $event"
       />
     </div>
     <div v-show="currentStep === 2">
@@ -22,13 +24,13 @@
     </div>
   </div>
   <div v-show="dashboardStore.courseId">
-    <n-button
+    <n-button v-show="currentStep !== 1"
       type="primary"
       @click="preToggle"
       class="bg-primaryDefault mr-4 rounded-md border-none px-4 py-3 text-white"
       >上一步</n-button
     >
-    <n-button
+    <n-button :disabled="!showNextButton"
       type="primary"
       @click="nextToggle"
       class="bg-primaryDefault rounded-md border-none px-4 py-3 text-white"
@@ -48,6 +50,9 @@ import {
 import type { AddChildRequestPayload } from '@/views/dashboard/type';
 import { useDashboardStore } from '@/stores/models/index';
 import { useMessage } from 'naive-ui';
+import { useMenuStore } from '@/stores/models/dashboard/uiStore';
+
+const menuStore = useMenuStore();
 
 const message = useMessage();
 
@@ -57,7 +62,7 @@ const courseId = computed(() => {
   const id = route.query.id;
   return typeof id === 'string' ? id : '';
 });
-const isEditMode = computed(() => courseId.value !== ''); // 有 id 就代表是編輯
+const isEditMode = computed(() => menuStore.isEditingCourse); // 有 id 就代表是編輯
 const currentStep = ref(Number(route.query.step) || 1);
 
 const courseInfoData = ref({
@@ -101,9 +106,20 @@ const courseSubmitData = ref({
 });
 
 const courseChapterData = ref({
-  description: '',
   id: '',
-  title: '',
+  course_name: '',
+  course_description: '',
+});
+
+const courseName = ref('');
+const categoryId = ref<number | ''>('');
+
+const showNextButton = computed(() => {
+  // 編輯模式一定可以顯示
+  if (isEditMode.value) return true;
+
+  // 新增模式：有輸入課程名稱和類別才顯示
+  return courseName.value.trim() !== '' && categoryId.value !== '';
 });
 // ----------------------------------
 
@@ -200,7 +216,14 @@ const fetchCourseDetailAndInit = async (id: string) => {
       trailer_name: courseDetail.trailer_name,
     };
 
-    // 同時定價資料
+    // 同時初始化章節資料
+    courseChapterData.value = {
+      id: courseDetail.id,
+      course_name: courseDetail.course_name,
+      course_description: courseDetail.course_description,
+    };
+
+    // 同時初始化定價資料
     courseSubmitData.value = {
       id: courseDetail.id,
       origin_price: courseDetail.origin_price?.toString() || '',

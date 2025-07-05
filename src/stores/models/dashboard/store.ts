@@ -60,13 +60,16 @@ export const useDashboardStore = defineStore('dashboardStore', () => {
   // -----------------------------------
 
   // ----------取得單一課程資料API----------
-  const fetchCourseDetail = async (courseId: string) => {
+  const fetchCourseDetail = async (id: string) => {
     loading.value = true;
     error.value = null;
 
     try {
-      const res = await apiGet_courseDetail(courseId);
-      if (res.data.course) return res.data.course;
+      const res = await apiGet_courseDetail(id);
+      if (res.data.course) {
+        courseId.value = res.data.course.id;
+        return res.data.course;
+      }
       else error.value = '取得單一課程資料失敗';
     } catch (err) {
       error.value = getErrorMessage(err);

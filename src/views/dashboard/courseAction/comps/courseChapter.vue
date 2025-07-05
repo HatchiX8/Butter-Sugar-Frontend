@@ -24,7 +24,7 @@
                 <div class="flex w-full items-center justify-around">
                   <p class="mr-3 font-bold text-white">第 {{ index + 1 }} 章</p>
                   <div class="w-40%">
-                    <baseInput type="text" v-model="chapter.main_section_title" @click.stop />
+                    <baseInput type="text" placeholder="請輸入章節標題" v-model="chapter.main_section_title" @click.stop />
                   </div>
                   <div class="ml-auto">
                     <n-button
@@ -249,6 +249,40 @@ const updateChapter = async () => {
   }
 };
 // -----------------------------
+
+const props = defineProps<{
+  courseData: {
+    id: string;
+    course_name: string;
+    course_description: string;
+  };
+}>();
+
+watch(
+  () => props.courseData.id,
+  async (courseId) => {
+    if (courseId) {
+      console.log('章節props.courseData: ', props.courseData)
+      const res = await apiGet_GetChapter(courseId);
+      const rawSections = res.data.sections;
+      console.log('章節資料res.data.sections: ', res.data.sections)
+      console.log('章節資料rawSections: ', rawSections)
+      chapters.value = rawSections.map((section) => ({
+        section_id: section.id,
+        main_section_title: section.main_section_title,
+        order_index: section.order_index,
+        sections: section.subsections.map((sub) => ({
+          id: sub.id,
+          subsection_title: sub.subsection_title,
+          order_index: sub.order_index,
+          is_preview_available: sub.is_preview_available,
+        })),
+      }));
+      console.log('章節資料: ', chapters.value)
+    }
+  },
+  { immediate: true } // 確保初次也會觸發
+);
 </script>
 
 <style scoped>

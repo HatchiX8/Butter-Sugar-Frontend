@@ -19,7 +19,7 @@
                 <div class="mb-2 flex items-center">
                   <p class="mr-5 text-nowrap">{{ chapterNum }}-{{ index + 1 }}</p>
                   <div class="w-full">
-                    <baseInput type="text" v-model="chapter.subsection_title" @click.stop />
+                    <baseInput type="text" placeholder="請輸入小節標題" v-model="chapter.subsection_title" @click.stop />
                   </div>
                 </div>
                 <div>
