@@ -98,9 +98,10 @@
         </div>
 
         <div class="mb-5">
-          <typography variant="h5" font-type="title" class="mb-2 mt-5 text-white" no-underline>
-            關於我
-          </typography>
+          <p>
+          <span class="i-ion:bookmarks w-4.5 h-4.5 text-primaryDefault mr-2 inline-block"></span>
+          為了確認您的講師身份，請提供以下身份證明文件。我們將確保您的個人資料安全，不會對外公開。
+        </p>
           <div class="mb-2 flex items-center">
             <p class="mr-2">slogan</p>
             <n-form-item label="" path="slogan" class="w-full">
@@ -127,6 +128,32 @@
         </div>
       </div>
     </div>
+
+    <span v-if="userStore.role === 'student'">
+      <div class="">
+        <n-config-provider><n-divider /></n-config-provider>
+      </div>
+
+      <div class="mb-5">
+        <p>
+          <span class="i-ion:bookmarks w-4.5 h-4.5 text-primaryDefault mr-2 inline-block"></span>
+          為了讓開課旅程更加順暢，請回溯開課初衷與驅動力，並梳理「教學力」、「專業性」與「影響力」。
+        </p>
+          <div class="mb-2 flex items-center">
+            <n-form-item label="" path="slogan" class="w-full">
+              <n-input v-model:value="courseName" placeholder="欲開課之課程名稱" />
+            </n-form-item>
+          </div>
+          <n-form-item label="" path="description">
+            <n-input
+              type="textarea"
+              v-model:value="description"
+              placeholder="請輸入為什麼想申請成為講師的說明"
+            />
+          </n-form-item>
+        </div>
+    </span>
+
 
     <div class="mb-15">
       <n-button v-if="userStore.role === 'teacher'" class="mr-2" type="primary" @click="handleSaveProfile">儲存</n-button>
@@ -170,6 +197,9 @@ const editableProfile = ref<TeacherProfile>({
   description: '',
   specialization: '',
 });
+
+const courseName = ref<string>('');
+const description = ref<string>('');
 
 // 驗證規則
 const rules: FormRules = {

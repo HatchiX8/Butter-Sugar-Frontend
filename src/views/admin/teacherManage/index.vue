@@ -21,14 +21,15 @@ import { ref, onMounted } from 'vue';
 import typography from '@/components/layout/typography.vue';
 
 interface TeacherApplication {
-  id: string;
-  userId: string;
-  userName: string;
-  email: string;
-  applyTime: string;
-  status: 'pending' | 'approved' | 'rejected';
-  description: string;
   no: number;
+  uuid: string;
+  userUUId: string;
+  userName: string;
+  course_name: string;
+  description: string;
+  status: 'pending' | 'approved' | 'rejected';
+  createdAt: string;
+  updatedAt: string;
 }
 
 const message = useMessage();
@@ -39,7 +40,7 @@ const loading = ref(false);
 const reviewApplication = async (id: string, approve: boolean) => {
   try {
     // 更新本地狀態
-    const index = data.value.findIndex(item => item.id === id);
+    const index = data.value.findIndex(item => item.uuid === id);
     if (index !== -1) {
       // 模擬 API 調用
       await new Promise(resolve => setTimeout(resolve, 500));
@@ -66,13 +67,8 @@ const createColumns = (): DataTableColumns<TeacherApplication> => [
     key: 'userName',
   },
   {
-    title: '電子郵件',
-    key: 'email',
-  },
-  {
-    title: '申請時間',
-    key: 'applyTime',
-    render: (row) => row.applyTime ? new Date(row.applyTime).toLocaleString() : '-',
+    title: '課程名稱',
+    key: 'course_name',
   },
   {
     title: '申請說明',
@@ -80,6 +76,11 @@ const createColumns = (): DataTableColumns<TeacherApplication> => [
     ellipsis: {
       tooltip: true,
     },
+  },
+  {
+    title: '申請時間',
+    key: 'createdAt',
+    render: (row) => row.createdAt ? new Date(row.createdAt).toLocaleString() : '-',
   },
   {
     title: '狀態',
@@ -114,7 +115,7 @@ const createColumns = (): DataTableColumns<TeacherApplication> => [
             {
               size: 'small',
               type: 'success',
-              onClick: () => reviewApplication(row.id, true),
+              onClick: () => reviewApplication(row.uuid, true),
               class: 'min-w-16',
             },
             { default: () => '通過' }
@@ -124,7 +125,7 @@ const createColumns = (): DataTableColumns<TeacherApplication> => [
             {
               size: 'small',
               type: 'error',
-              onClick: () => reviewApplication(row.id, false),
+              onClick: () => reviewApplication(row.uuid, false),
               class: 'min-w-16',
             },
             { default: () => '拒絕' }
@@ -172,47 +173,52 @@ onMounted(() => {
 const fetchApplications = async () => {
   loading.value = true;
   try {
-    // TODO: 替換為實際的 API 調用
-    // const response = await getTeacherApplications({
-    //   page: pagination.value.page,
-    //   pageSize: pagination.value.pageSize,
-    // });
+    // 模擬 API 調用延遲
+    await new Promise(resolve => setTimeout(resolve, 500));
 
-    // 模擬數據 - 實際使用時請刪除
+    // 模擬數據
     const mockData: TeacherApplication[] = [
       {
-        id: '1',
-        userId: 'user1',
-        userName: '張三',
-        email: 'teacher1@example.com',
-        applyTime: new Date().toISOString(),
-        status: 'pending',
-        description: '我有豐富的教學經驗，希望能加入貴平台',
         no: 1,
+        uuid: '1',
+        userUUId: 'user1',
+        userName: '張三',
+        course_name: '可麗露製作必殺心法',
+        description: '我想以烘烤上萬顆可麗露的經驗，教你可麗露的製作必殺心法，讓你一次上手烤一爐可麗露。',
+        status: 'pending',
+        createdAt: new Date().toISOString(),
+        updatedAt: new Date().toISOString(),
       },
       {
-        id: '2',
-        userId: 'user2',
-        userName: '李四',
-        email: 'teacher2@example.com',
-        applyTime: new Date(Date.now() - 86400000).toISOString(),
-        status: 'pending',
-        description: '專長是程式設計與數學',
         no: 2,
+        uuid: '2',
+        userUUId: 'user2',
+        userName: '李四',
+        course_name: '檸檬塔製作必殺心法',
+        description: '立志做出「全台灣第一的檸檬塔」，並推廣烘焙文化，希望能加入貴平台',
+        status: 'pending',
+        createdAt: new Date(Date.now() - 86400000).toISOString(),
+        updatedAt: new Date(Date.now() - 86400000).toISOString(),
+      },
+      {
+        no: 3,
+        uuid: '3',
+        userUUId: 'user3',
+        userName: '王五',
+        course_name: '馬卡龍製作必殺心法',
+        description: '專精法式甜點，特別是馬卡龍製作，有豐富的教學經驗',
+        status: 'pending',
+        createdAt: new Date(Date.now() - 172800000).toISOString(),
+        updatedAt: new Date(Date.now() - 172800000).toISOString(),
       },
     ];
 
+    // 賦值給 data
     data.value = mockData;
-    // 實際使用時使用以下代碼
-    // data.value = response.data.map((item, index) => ({
-    //   ...item,
-    //   no: (pagination.value.page - 1) * pagination.value.pageSize + index + 1,
-    // }));
-    // pagination.value.itemCount = response.total;
-
-    // 更新分頁總數
     pagination.value.itemCount = mockData.length;
   } catch (error) {
+    message.error('獲取教師申請列表失敗');
+    console.error(error);
     const errorMessage = error instanceof Error ? error.message : '未知錯誤';
     message.error(`獲取申請列表失敗: ${errorMessage}`);
   } finally {

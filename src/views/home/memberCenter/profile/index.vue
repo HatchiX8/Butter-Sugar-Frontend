@@ -120,7 +120,7 @@ const fetchData = async () => {
     formData.phone = user.phone || '';
     formData.address = user.address || '';
     formData.profile_image_url = user.profile_image_url || '';
-    formData.role = user.role || '';
+    formData.role = user.role || 'student';
 
     // 更新備份
     Object.assign(originalData, formData);
@@ -185,6 +185,7 @@ const handleCancel = () => {
 // onMounted 時先拿一次後端資料
 onMounted(() => {
   fetchData();
+  console.log('role', formData.role);
 });
 
 const formRef = ref();
