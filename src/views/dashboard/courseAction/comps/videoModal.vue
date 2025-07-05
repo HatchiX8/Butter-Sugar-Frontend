@@ -113,6 +113,7 @@ interface Props {
   chapterTitle?: string;
   chapterNum?: number;
   chapterSectionId: string;
+  subsectionsData?: Section[];
 }
 
 const props = withDefaults(defineProps<Props>(), {
@@ -120,16 +121,26 @@ const props = withDefaults(defineProps<Props>(), {
   showFooter: true,
   chapterNum: 1,
   chapterTitle: '準備工作',
+  subsectionsData: () => [],
 });
 
 const emit = defineEmits<{
   (e: 'update:modelValue', value: boolean): void;
-  (e: 'editOver'): void;
+  (e: 'editOver', vlaue: chapter[]): void;
 }>();
 
 // --------------------------------
 
 // ----------Type----------
+interface Section {
+  id: string;
+  subsection_title: string;
+  order_index: number;
+  is_preview_available: boolean;
+  video_file_url?: string;
+  video_duration?: number;
+}
+
 interface chapter {
   id: string;
   subsection_title: string;
@@ -156,6 +167,26 @@ const chapters = ref<chapter[]>([]); // 章節內容
 const smallChapterCount = ref(0); // 章節計數器
 const isChange = ref(false); // 資料是否變化
 
+// 把小節資料傳給 chapters
+watch(
+  () => props.subsectionsData,
+  (newVal) => {
+    console.log('收到外層傳入的小節資料:', newVal);
+
+    if (newVal && newVal.length) {
+      chapters.value = newVal.map((item) => ({
+        id: item.id,
+        subsection_title: item.subsection_title,
+        order_index: item.order_index,
+        video: item.video_file_url ?? '尚未新增影片',
+        is_preview_available: item.is_preview_available,
+      }));
+      smallChapterCount.value = newVal.length;
+    }
+  },
+  { immediate: true }
+);
+
 // 監聽章節變化
 watch(
   chapters,
@@ -172,23 +203,24 @@ watch(
 // 新增章節按鈕
 const addSmallChapter = async () => {
   const postData = {
-    section_id: props.chapterSectionId,
     subsection_title: '準備工作',
+    is_preview_available: true,
   };
 
   try {
-    const res = await apiPost_AddSubsections(postData);
+    const res = await apiPost_AddSubsections(props.chapterSectionId, postData);
     console.log('新增小節成功');
 
     const newChapter = {
-      id: res.data.subsection.id,
+      id: res.data.id,
       order_index: smallChapterCount.value,
-      subsection_title: res.data.subsection.subsection_title,
-      video: res.data.subsection.video_file_url || '尚未新增影片',
+      subsection_title: res.data.subsection_title,
+      video: res.data.video_file_url || '尚未新增影片',
       is_preview_available: false,
     };
     chapters.value.push(newChapter);
     smallChapterCount.value++;
+    emit('editOver', chapters.value); // 回傳目前章節的最新內容
   } catch (error) {
     console.log('新增小節失敗', error);
   }
@@ -210,7 +242,8 @@ const removeSmallChapter = async (chapterId: string, order_index: number) => {
 
 const submitSmallChapter = () => {
   console.log('儲存送出小節');
-  emit('editOver');
+  console.log('目前章節的最新內容', chapters.value);
+  emit('editOver', chapters.value); // 回傳目前章節的最新內容
   emit('update:modelValue', false);
 };
 // -------------------------------

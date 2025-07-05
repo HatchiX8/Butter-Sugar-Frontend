@@ -93,6 +93,7 @@
       :chapterNum="chapterNum"
       :chapterTitle="chapterTitle"
       :chapterSectionId="chapterSectionId || ''"
+      :subsectionsData="subsections"
       @editOver="updateChapter"
     />
   </div>
@@ -108,6 +109,8 @@ import {
   apiPost_AddChapter,
   apiDelete_RemoveChapter,
   apiGet_GetChapter,
+  apiGet_GetSubsections,
+  apiPatch_ChangeChaptersSubsections,
 } from '@/views/dashboard/api/index';
 
 // ----------Type----------
@@ -116,6 +119,8 @@ interface Section {
   subsection_title: string;
   order_index: number;
   is_preview_available: boolean;
+  video_file_url?: string;
+  video_duration?: number;
 }
 
 interface chapter {
@@ -139,6 +144,7 @@ const isChange = ref<boolean>(false); // 資料是否變化
 const chapterNum = ref<number>(0); // 傳入小節給予的章節
 const chapterSectionId = ref<string>();
 const chapterTitle = ref<string>('準備工作'); // 章節標題
+const subsections = ref<Section[]>([]); // 指定章節的小節
 
 // 監聽章節變化
 watch(
@@ -168,8 +174,20 @@ const onChapterDragEnd = () => {
 
 // ----------章節按鈕事件----------
 // 編輯章節按鈕
-const editChapter = (num: number, title: string, id: string) => {
-  saveChapter(); // 先進行儲存，避免編輯完畢後更新API資料遺失
+const editChapter = async (num: number, title: string, id: string) => {
+  await saveChapter(); // 先進行儲存，避免編輯完畢後更新API資料遺失
+
+  // 取得此章節底下的小節
+  const res = await apiGet_GetSubsections(id);
+  subsections.value = res.data.map((item): Section => ({
+    id: item.id,
+    subsection_title: item.subsection_title,
+    order_index: item.order_index,
+    is_preview_available: item.is_preview_available,
+    video_file_url: item.video_file_url ?? '',
+    video_duration: item.video_duration ?? 0,
+  }));
+
   console.log('觸發編輯按扭', num);
   chapterNum.value = num;
   chapterTitle.value = title;
@@ -214,8 +232,23 @@ const addChapter = async () => {
 };
 
 // 儲存章節編輯
-const saveChapter = () => {
-  console.log('儲存章節編輯', chapters.value);
+const saveChapter = async () => {
+  const postData = chapters.value.map((chapter, index) => ({
+    id: chapter.section_id,
+    main_section_title: chapter.main_section_title,
+    order_index: index + 1,
+    subsections: chapter.sections.map((sub, subIndex) => ({
+      id: sub.id,
+      section_id: chapter.section_id,
+      subsection_title: sub.subsection_title,
+      order_index: subIndex + 1,
+      is_preview_available: sub.is_preview_available,
+    })),
+  }));
+
+  await apiPatch_ChangeChaptersSubsections(dashboardStore.courseId, postData); // 觸發新增章節API
+  console.log('儲存章節編輯成功');
+
   isChange.value = false;
 };
 // ------------------------------
@@ -224,26 +257,26 @@ const saveChapter = () => {
 const modelValue = ref(false);
 
 // 使用者在彈窗點擊確認後觸發更新函式
-const updateChapter = async () => {
+const updateChapter = async (editOverSubsections: Section[]) => {
   try {
-    if (dashboardStore.courseId) {
-      const res = await apiGet_GetChapter(dashboardStore.courseId);
-      console.log('更新成功', res);
-      const rawSections = res.data.sections;
-      chapters.value = []; // 清空元陣列
-
-      chapters.value = rawSections.map((section) => ({
-        section_id: section.id,
-        main_section_title: section.main_section_title,
-        order_index: section.order_index,
-        sections: section.subsections.map((sub) => ({
-          id: sub.id,
-          subsection_title: sub.subsection_title,
-          order_index: sub.order_index,
-          is_preview_available: sub.is_preview_available,
-        })),
+    // 找出這次編輯的章節
+    const chapterIndex = chapters.value.findIndex(
+      (chapter) => chapter.section_id === chapterSectionId.value
+    );
+    if (chapterIndex !== -1) {
+      // 將內層回傳的小節內容，更新到外層對應章節
+      chapters.value[chapterIndex].sections = editOverSubsections.map((item) => ({
+        id: item.id,
+        subsection_title: item.subsection_title,
+        order_index: item.order_index,
+        is_preview_available: item.is_preview_available,
       }));
+      isChange.value = true;
     }
+
+    // 同步更新 subsections，確保下次打開彈窗是最新內容
+    subsections.value = [...chapters.value[chapterIndex].sections];
+    console.log('重設 subsections: ', subsections.value);
   } catch (err) {
     console.log('更新章節內容失敗', err);
   }
@@ -262,11 +295,8 @@ watch(
   () => props.courseData.id,
   async (courseId) => {
     if (courseId) {
-      console.log('章節props.courseData: ', props.courseData)
       const res = await apiGet_GetChapter(courseId);
-      const rawSections = res.data.sections;
-      console.log('章節資料res.data.sections: ', res.data.sections)
-      console.log('章節資料rawSections: ', rawSections)
+      const rawSections = res.data;
       chapters.value = rawSections.map((section) => ({
         section_id: section.id,
         main_section_title: section.main_section_title,

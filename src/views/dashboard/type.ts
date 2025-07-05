@@ -153,13 +153,10 @@ export interface categoryAddChapterResponse {
 export interface categoryGetChapterResponse {
   status: boolean;
   message: string;
-  data: {
-    sections: ChapterResponseSection[];
-  };
+  data: ChapterResponseSection[];
 }
 
 interface ChapterResponseSection {
-  course_id: string;
   id: string;
   main_section_title: string;
   order_index: number;
@@ -168,30 +165,58 @@ interface ChapterResponseSection {
 
 interface ChapterResponseSubsections {
   id: string;
+  section_id: string;
   order_index: number;
   subsection_title: string;
   is_preview_available: boolean;
+  video_file_url?: string;
+  video_duration?: number;
+}
+
+// 取得指定章節的小節
+export interface categoryGetSubsectionResponse {
+  status: boolean;
+  message: string;
+  data: ChapterResponseSubsections[];
+}
+
+// 修改章節小節
+export interface changeChaptersSubsectionsPostData {
+  id: string;
+  main_section_title: string;
+  order_index: number;
+  subsections: Subsection[];
+}
+interface Subsection {
+  id: string;
+  section_id: string;
+  order_index: number;
+  subsection_title: string;
+  is_preview_available: boolean;
+}
+export interface changeChaptersSubsectionsResponse {
+  status: boolean;
+  message: string;
+  data: ChaptersSubsectionsResponse[];
+}
+interface ChaptersSubsectionsResponse {
+  id: string;
+  main_section_title: string;
+  order_index: number;
+  subsections: Subsection[];
 }
 // ------------------------------
 
 // ----------小節API型別----------
 // 新增小節
 export interface categoryAddSubsectionsPostData {
-  section_id: string;
   subsection_title: string;
+  is_preview_available: boolean;
 }
 
 export interface categoryAddSubsectionsResponse {
   status: boolean;
   message: string;
-  data: {
-    subsection: {
-      id: string;
-      subsection_title: string;
-      video_file_url?: string;
-      order_index: number;
-      is_preview_available: boolean;
-    };
-  };
+  data: ChapterResponseSubsections;
 }
 // ------------------------------
