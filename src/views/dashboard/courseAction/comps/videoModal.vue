@@ -19,7 +19,7 @@
                 <div class="mb-2 flex items-center">
                   <p class="mr-5 text-nowrap">{{ chapterNum }}-{{ index + 1 }}</p>
                   <div class="w-full">
-                    <baseInput type="text" v-model="chapter.subsection_title" @click.stop />
+                    <baseInput type="text" placeholder="請輸入小節標題" v-model="chapter.subsection_title" @click.stop />
                   </div>
                 </div>
                 <div>
@@ -39,6 +39,12 @@
                         :show-trigger="false"
                         @remove="() => handleVideoRemove(chapter.id, chapter.order_index)"
                       />
+                      <video
+                        v-if="videoShowMap[chapter.order_index]"
+                        :src="videoShowMap[chapter.order_index]"
+                        controls
+                        class="mt-2 w-full max-w-md rounded-lg"
+                      ></video>
                     </div>
                     <div v-show="!isVideoMap[chapter.order_index]">尚未選擇影片</div>
                     <!-- 右邊：上傳按鈕 -->
@@ -96,7 +102,7 @@ import {
 // store
 
 // 共用型別
-import type { UploadCustomRequestOptions } from 'naive-ui';
+import type { UploadCustomRequestOptions, UploadFileInfo } from 'naive-ui';
 import type { ComponentPublicInstance } from 'vue';
 // 元件
 import { baseInput } from '@/components/index';
@@ -113,6 +119,7 @@ interface Props {
   chapterTitle?: string;
   chapterNum?: number;
   chapterSectionId: string;
+  subsectionsData?: Section[];
 }
 
 const props = withDefaults(defineProps<Props>(), {
@@ -120,23 +127,33 @@ const props = withDefaults(defineProps<Props>(), {
   showFooter: true,
   chapterNum: 1,
   chapterTitle: '準備工作',
+  subsectionsData: () => [],
 });
 
 const emit = defineEmits<{
   (e: 'update:modelValue', value: boolean): void;
-  (e: 'editOver'): void;
+  (e: 'editOver', vlaue: chapter[]): void;
 }>();
 
 // --------------------------------
 
 // ----------Type----------
+interface Section {
+  id: string;
+  subsection_title: string;
+  order_index: number;
+  is_preview_available: boolean;
+  video_file_url?: string;
+  video_duration?: number;
+};
+
 interface chapter {
   id: string;
   subsection_title: string;
   order_index: number;
   video: string;
   is_preview_available: boolean;
-}
+};
 // ------------------------
 
 // -----------彈跳視窗-----------
@@ -156,6 +173,26 @@ const chapters = ref<chapter[]>([]); // 章節內容
 const smallChapterCount = ref(0); // 章節計數器
 const isChange = ref(false); // 資料是否變化
 
+// 把小節資料傳給 chapters
+watch(
+  () => props.subsectionsData,
+  (newVal) => {
+    console.log('收到外層傳入的小節資料:', newVal);
+
+    if (newVal && newVal.length) {
+      chapters.value = newVal.map((item) => ({
+        id: item.id,
+        subsection_title: item.subsection_title,
+        order_index: item.order_index,
+        video: item.video_file_url ?? '尚未新增影片',
+        is_preview_available: item.is_preview_available,
+      }));
+      smallChapterCount.value = newVal.length;
+    }
+  },
+  { immediate: true }
+);
+
 // 監聽章節變化
 watch(
   chapters,
@@ -172,23 +209,24 @@ watch(
 // 新增章節按鈕
 const addSmallChapter = async () => {
   const postData = {
-    section_id: props.chapterSectionId,
     subsection_title: '準備工作',
+    is_preview_available: true,
   };
 
   try {
-    const res = await apiPost_AddSubsections(postData);
+    const res = await apiPost_AddSubsections(props.chapterSectionId, postData);
     console.log('新增小節成功');
 
     const newChapter = {
-      id: res.data.subsection.id,
+      id: res.data.id,
       order_index: smallChapterCount.value,
-      subsection_title: res.data.subsection.subsection_title,
-      video: res.data.subsection.video_file_url || '尚未新增影片',
+      subsection_title: res.data.subsection_title,
+      video: res.data.video_file_url || '尚未新增影片',
       is_preview_available: false,
     };
     chapters.value.push(newChapter);
     smallChapterCount.value++;
+    emit('editOver', chapters.value); // 回傳目前章節的最新內容
   } catch (error) {
     console.log('新增小節失敗', error);
   }
@@ -210,7 +248,8 @@ const removeSmallChapter = async (chapterId: string, order_index: number) => {
 
 const submitSmallChapter = () => {
   console.log('儲存送出小節');
-  emit('editOver');
+  console.log('目前章節的最新內容', chapters.value);
+  emit('editOver', chapters.value); // 回傳目前章節的最新內容
   emit('update:modelValue', false);
 };
 // -------------------------------
@@ -220,6 +259,8 @@ const submitSmallChapter = () => {
 const videoUploadRefs = ref<Record<number, InstanceType<typeof NUpload> | null>>({});
 
 const isVideoMap = ref<Record<number, boolean>>({});
+const videoShowMap = ref<Record<number, string>>({});
+const videoFileListMap = ref<Record<number, UploadFileInfo[]>>({});
 
 const setVideoUploadRef = (chapterId: number, el: Element | ComponentPublicInstance | null) => {
   if (!videoUploadRefs.value) videoUploadRefs.value = {};
@@ -259,6 +300,13 @@ const subsectionsVideoUpload = async (
 const handleVideoRemove = (chapterId: string, order_index: number) => {
   deleteTrailer(chapterId);
   isVideoMap.value[order_index] = false;
+
+  // 清除預覽影片
+  const oldUrl = videoShowMap.value[order_index];
+  if (oldUrl?.startsWith('blob:')) {
+    URL.revokeObjectURL(oldUrl); // 如果是 blob 預覽就釋放資源
+  }
+  delete videoShowMap.value[order_index];
 };
 
 const deleteTrailer = async (chapterId: string) => {
@@ -270,6 +318,33 @@ const deleteTrailer = async (chapterId: string) => {
   }
 };
 
+watch(
+  () => props.subsectionsData,
+  (newVal) => {
+    if (!Array.isArray(newVal)) return;
+
+    newVal.forEach((subsection) => {
+      const orderIndex = subsection.order_index;
+      const url = subsection.video_file_url;
+
+      if (url) {
+        videoShowMap.value[orderIndex] = url;
+        isVideoMap.value[orderIndex] = true;
+        videoFileListMap.value[orderIndex] = [{
+          id: subsection.id,
+          name: '影片預覽',
+          status: 'finished',
+          url: url || '',
+        }];
+      } else {
+        // 沒有影片則清空狀態
+        delete videoShowMap.value[orderIndex];
+        isVideoMap.value[orderIndex] = false;
+      }
+    });
+  },
+  { immediate: true, deep: true }
+);
 // -----------------------------
 
 // ----------樣式-----------

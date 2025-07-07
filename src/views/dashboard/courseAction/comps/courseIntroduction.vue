@@ -32,6 +32,7 @@
         <p class="fw-bold text-primaryDefault mb-3 flex">
           <span class="i-ion:create-outline w-4.5 h-4.5 text-primaryDefault mr-2 inline-block"></span>
           課程描述
+          <span class="text-red-500 ml-1">*</span>
         </p>
         <n-input
           v-model:value="course_banner_description"
@@ -50,7 +51,7 @@
           <div class="flex flex-col">
             <!-- 左邊：已上傳影片 (這邊你之後可以放影片預覽 或 file name 等) -->
             <div v-if="imgBannerUrl !== ''">
-              <img :src="imgBannerUrl" alt="Banner圖片預覽" class="w-50 h-auto rounded-lg shadow" />
+              <img :src="imgBannerUrl" alt="Banner圖片預覽" class="rounded-lg w-full max-w-md shadow" />
             </div>
             <div class="flex items-center justify-between">
               <div v-show="isImgBanner" class="mr-4 flex-1">
@@ -78,12 +79,13 @@
         <p class="fw-bold text-primaryDefault mb-3 flex">
           <span class="i-ion:create-outline w-4.5 h-4.5 text-primaryDefault mr-2 inline-block"></span>
           課程圖片
+          <span class="text-red-500 ml-1">*</span>
         </p>
         <div class="mb-5 flex gap-3">
           <div class="flex flex-col">
             <!-- 左邊：已上傳影片 (這邊你之後可以放影片預覽 或 file name 等) -->
             <div v-if="imgUrl !== ''">
-              <img :src="imgUrl" alt="課程圖片預覽" class="w-50 h-auto rounded-lg shadow" />
+              <img :src="imgUrl" alt="課程圖片預覽" class="rounded-lg w-full max-w-md shadow" />
             </div>
             <div class="flex items-center justify-between">
               <div v-show="isImg" class="mr-4 flex-1">
@@ -111,6 +113,7 @@
         <p class="fw-bold text-primaryDefault mb-3 flex">
           <span class="i-ion:create-outline w-4.5 h-4.5 text-primaryDefault mr-2 inline-block"></span>
           課程簡介
+          <span class="text-red-500 ml-1">*</span>
         </p>
         <n-input
           v-model:value="course_description"
@@ -124,6 +127,7 @@
         <p class="fw-bold text-primaryDefault mb-3 flex">
           <span class="i-ion:create-outline w-4.5 h-4.5 text-primaryDefault mr-2 inline-block"></span>
           課程簡介說明圖片
+          <span class="text-red-500 ml-1">*</span>
         </p>
         <div class="mb-5 flex gap-3">
           <div class="flex flex-col">
@@ -132,7 +136,7 @@
               <img
                 :src="imgDescriptionUrl"
                 alt="課程簡介圖片預覽"
-                class="w-50 h-auto rounded-lg shadow"
+                class="rounded-lg w-full max-w-md shadow"
               />
             </div>
             <div class="flex items-center justify-between">
@@ -178,6 +182,13 @@
                   :show-trigger="false"
                   @remove="handleVideoRemove"
                 />
+                <!-- 預告片預覽 -->
+                <video
+                  v-if="trailerUrl"
+                  :src="trailerUrl"
+                  controls
+                  class="rounded-lg w-full max-w-md"
+                ></video>
               </div>
               <div v-show="!isVideo" class="mr-2">尚未選擇影片</div>
               <!-- 右邊：上傳按鈕 -->
@@ -222,6 +233,7 @@
         <p class="fw-bold text-primaryDefault mb-3 flex">
           <span class="i-ion:people w-4.5 h-4.5 text-primaryDefault mr-2 inline-block"></span>
           適合對象
+          <span class="text-red-500 ml-1">*</span>
         </p>
         <n-input
           v-model:value="suitable_for"
@@ -234,6 +246,7 @@
         <p class="fw-bold text-primaryDefault mb-3 flex">
           <span class="i-ion:golf-outline w-4.5 h-4.5 text-primaryDefault mr-2 inline-block"></span>
           課程目標
+          <span class="text-red-500 ml-1">*</span>
         </p>
         <n-input
           v-model:value="course_goal"
@@ -277,7 +290,7 @@ import {
   apiPost_SaveForm,
 } from '@/views/dashboard/api/index';
 import { useMessage } from 'naive-ui';
-import type { UploadFileInfo } from 'naive-ui'
+import type { UploadFileInfo } from 'naive-ui';
 
 const message = useMessage();
 
@@ -306,12 +319,18 @@ interface Props {
 // -----------------------------
 
 // -----------彈跳視窗-----------
+const emit = defineEmits<{
+  'update:courseName': [val: string];
+  'update:categoryId': [val: number];
+}>();
+
 const modelValue = ref(false);
 const courseTitle = ref<string>('');
 const isSubmitCategory = ref(false);
 
 const handleAddTitle = async (title: string) => {
   courseTitle.value = title;
+  emit('update:courseName', title); // 通知外層
   console.log('成功寫入', courseTitle.value);
   const courseId = await props.request({
     type: 'addTitle',
@@ -353,6 +372,7 @@ watch(
 
     if (newVal && newVal !== oldVal) {
       console.log('觸發存檔請求API', newVal);
+      emit('update:categoryId', newVal); // 通知外層
       handleAddCategory(optionsValue.value);
     } else {
       return;
@@ -667,7 +687,23 @@ const isAllFilled = computed(
     course_banner_description.value.trim() !== ''
 );
 
+const checkRequiredFields = () => {
+  const missingFields: string[] = []
+
+  if (!imgUrl.value) missingFields.push('課程圖片')
+  if (!imgDescriptionUrl.value) missingFields.push('課程簡介說明圖片')
+
+  if (missingFields.length > 0) {
+    message.error(`必填欄位:\n${missingFields.join(', ')}`);
+    return false;
+  }
+
+  return true;
+};
+
 const submitForm = () => {
+  if (!checkRequiredFields()) return;
+
   const postData = {
     suitable_for: suitable_for.value,
     course_goal: course_goal.value,

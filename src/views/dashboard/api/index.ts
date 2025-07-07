@@ -16,6 +16,9 @@ import type {
   categoryAddSubsectionsPostData,
   categoryAddSubsectionsResponse,
   categoryGetChapterResponse,
+  categoryGetSubsectionResponse,
+  changeChaptersSubsectionsPostData,
+  changeChaptersSubsectionsResponse,
 } from '../type';
 
 // ----------更改課程狀態(上架/下架)----------
@@ -212,7 +215,7 @@ export const apiPost_AddChapter = async (
   postData: categoryAddChapterPostData
 ) => {
   const res = await axiosInstance.post<categoryAddChapterResponse>(
-    `/api/v1/course/${courseId}/course-section`,
+    `/api/v1/course/${courseId}/section`,
     postData
   );
 
@@ -221,24 +224,34 @@ export const apiPost_AddChapter = async (
 
 // 刪除章節
 export const apiDelete_RemoveChapter = async (courseId: string) => {
-  const res = await axiosInstance.delete(`/api/v1/section/${courseId}`);
+  const res = await axiosInstance.delete(`/api/v1/course/section/${courseId}`);
   return res.data;
 };
 
 // 取得所有章節
 export const apiGet_GetChapter = async (courseId: string) => {
   const res = await axiosInstance.get<categoryGetChapterResponse>(
-    `/api/v1/section/course/${courseId}`
+    `/api/v1/course/${courseId}/section`
   );
+  return res.data;
+};
+
+// 修改章節小節API
+export const apiPatch_ChangeChaptersSubsections = async (courseId: string, postData: changeChaptersSubsectionsPostData[]) => {
+  const res = await axiosInstance.patch<changeChaptersSubsectionsResponse>(
+    `/api/v1/course/${courseId}/subsection`,
+    postData
+  );
+
   return res.data;
 };
 // --------------------------------
 
 // ----------以下為小節API----------
 // 新增小節API
-export const apiPost_AddSubsections = async (postData: categoryAddSubsectionsPostData) => {
+export const apiPost_AddSubsections = async (sectionId: string, postData: categoryAddSubsectionsPostData) => {
   const res = await axiosInstance.post<categoryAddSubsectionsResponse>(
-    `/api/v1/subsection`,
+    `/api/v1/course/section/${sectionId}/subsection`,
     postData
   );
 
@@ -246,7 +259,15 @@ export const apiPost_AddSubsections = async (postData: categoryAddSubsectionsPos
 };
 // 刪除小節API
 export const apiDelete_RemoveSubsections = async (section_id: string) => {
-  const res = await axiosInstance.delete(`/api/v1/subsection/${section_id}`);
+  const res = await axiosInstance.delete(`/api/v1/course/subsection/${section_id}`);
+  return res.data;
+};
+
+// 取得指定章節的小節
+export const apiGet_GetSubsections = async (sectionId: string) => {
+  const res = await axiosInstance.get<categoryGetSubsectionResponse>(
+    `/api/v1/course/section/${sectionId}/subsection`
+  );
   return res.data;
 };
 
