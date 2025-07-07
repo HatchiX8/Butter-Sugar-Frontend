@@ -140,27 +140,24 @@
           為了讓開課旅程更加順暢，請回溯開課初衷與驅動力，並梳理「教學力」、「專業性」與「影響力」。
         </p>
           <div class="mb-2 flex items-center">
-            <n-form-item label="" path="slogan" class="w-full">
-              <n-input v-model:value="courseName" placeholder="欲開課之課程名稱" />
+            <n-form-item label="" path="course_name" class="w-full">
+              <n-input v-model:value="editableApplication.course_name" placeholder="欲開課之課程名稱" />
             </n-form-item>
           </div>
-          <n-form-item label="" path="description">
+          <n-form-item label="" path="course_description">
             <n-input
               type="textarea"
-              v-model:value="description"
+              v-model:value="editableApplication.course_description"
               placeholder="請輸入為什麼想申請成為講師的說明"
             />
           </n-form-item>
         </div>
     </span>
 
-
     <div class="mb-15">
       <n-button v-if="userStore.role === 'teacher'" class="mr-2" type="primary" @click="handleSaveProfile">儲存</n-button>
-      <n-button v-else-if="userStore.role === 'student'" class="mr-2" type="primary"
-        >送出審核</n-button
-      >
-      <n-button v-else-if="userStore.role === 'student2'" type="warning">審核中</n-button>
+      <n-button v-else-if="userStore.role === 'student'" class="mr-2" type="primary" @click="handleSaveProfile">送出審核</n-button>
+      <n-button v-else-if="userStore.role === 'student2'" type="warning" :disabled="true">審核中</n-button>
     </div>
   </n-form>
 </template>
@@ -171,6 +168,7 @@ import typography from '@/components/layout/typography.vue';
 import { useUserStore } from '@/stores/models/index';
 import { useInstructorStore } from '@/stores/models/instructor/store';
 import type { TeacherProfile } from '@/api/instructor/types';
+import type { Application } from '@/api/application/type';
 import { useMessage } from 'naive-ui';
 import type { FormRules } from 'naive-ui';
 import baseButton from '@/components/layout/baseButton.vue';
@@ -196,10 +194,13 @@ const editableProfile = ref<TeacherProfile>({
   slogan: '',
   description: '',
   specialization: '',
+
 });
 
-const courseName = ref<string>('');
-const description = ref<string>('');
+const editableApplication = ref<Application>({
+  course_name: '',
+  course_description: '',
+});
 
 // 驗證規則
 const rules: FormRules = {
@@ -211,6 +212,8 @@ const rules: FormRules = {
   slogan: [{ required: true, message: 'slogan 為必填', trigger: 'blur' }],
   description: [{ required: true, message: '自我介紹為必填', trigger: 'blur' }],
   specialization: [{ required: true, message: '領域專長為必填', trigger: 'blur' }],
+  course_name: [{ required: true, message: '課程名稱為必填', trigger: 'blur' }],
+  course_description: [{ required: true, message: '課程描述為必填', trigger: 'blur' }],
 };
 
 const options = [
@@ -287,17 +290,34 @@ const requiredFields = {
   slogan: 'slogan',
   description: '自我介紹',
   specialization: '領域專長',
+  course_name: '課程名稱',
+  course_description: '課程描述',
 };
 
 // 送出教師資料
 const handleSaveProfile = async () => {
   const missingFields: string[] = []
 
-  // 檢查必填欄位是否為空
+  // 檢查一般必填欄位是否為空
   for (const [key, label] of Object.entries(requiredFields)) {
     const value = editableProfile.value[key as keyof typeof editableProfile.value];
     if (!value || value.toString().trim() === '') {
       missingFields.push(label);
+    }
+  }
+
+  // 只有當角色是 student 時，才檢查課程相關欄位
+  if (userStore.role === 'student') {
+    const studentRequiredFields = {
+      course_name: '課程名稱',
+      course_description: '課程描述',
+    };
+
+    for (const [key, label] of Object.entries(studentRequiredFields)) {
+      const value = editableApplication.value[key as keyof typeof editableApplication.value];
+      if (!value || value.toString().trim() === '') {
+        missingFields.push(label);
+      }
     }
   }
 
