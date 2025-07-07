@@ -130,9 +130,7 @@
 
     <div class="mb-15">
       <n-button v-if="userStore.role === 'teacher'" class="mr-2" type="primary" @click="handleSaveProfile">儲存</n-button>
-      <n-button v-else-if="userStore.role === 'student'" class="mr-2" type="primary"
-        >送出審核</n-button
-      >
+      <n-button v-else-if="userStore.role === 'student'" class="mr-2" type="primary" @click="handleSaveProfile">送出審核</n-button>
       <n-button v-else-if="userStore.role === 'student2'" type="warning">審核中</n-button>
     </div>
   </n-form>
