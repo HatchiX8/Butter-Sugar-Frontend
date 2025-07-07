@@ -41,20 +41,26 @@ const loading = ref(false);
 // 審核教師申請
 const reviewApplication = async (id: string, approve: boolean) => {
   try {
-    // 更新本地狀態
-    const index = data.value.findIndex(item => item.uuid === id);
-    if (index !== -1) {
-      // 模擬 API 調用
-      await new Promise(resolve => setTimeout(resolve, 500));
-
-      // 更新狀態
-      data.value[index].status = approve ? 'approved' : 'rejected';
-
+    loading.value = true;
+    // 調用 API 審核申請
+    const status = approve ? 'approved' : 'rejected';
+    const res = await applicationStore.reviewTeacherApplication(id, status);
+    
+    if (res.status) {
+      // API 調用成功，更新本地狀態
+      const index = data.value.findIndex(item => item.uuid === id);
+      if (index !== -1) {
+        data.value[index].status = status;
+      }
       message.success(`已${approve ? '通過' : '拒絕'}申請`);
+    } else {
+      message.error(res.message || `審核申請失敗`);
     }
   } catch (error) {
     const errorMessage = error instanceof Error ? error.message : '操作失敗';
     message.error(`操作失敗: ${errorMessage}`);
+  } finally {
+    loading.value = false;
   }
 };
 

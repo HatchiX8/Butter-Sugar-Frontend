@@ -75,5 +75,28 @@ export const useApplicationStore = defineStore('application', {
 
       return res.data;
     },
+
+    /**
+     * 管理員審核教師申請
+     * @param id 申請ID
+     * @param status 審核狀態 (approved 或 rejected)
+     * @returns API 回應
+     */
+    async reviewTeacherApplication(id: string, status: 'approved' | 'rejected'): Promise<ApiResponse<Application>> {
+      const res = await instance.patch<ApiResponse<Application>>(`/api/v1/admin/teacher-applications/${id}/status`, {
+        status
+      });
+
+      // 如果審核成功，更新本地狀態
+      if (res.data.status) {
+        // 更新管理員列表中的申請狀態
+        const index = this.adminTeacherApplications.findIndex(app => app.id === id);
+        if (index !== -1) {
+          this.adminTeacherApplications[index].status = status;
+        }
+      }
+
+      return res.data;
+    },
   },
 });
