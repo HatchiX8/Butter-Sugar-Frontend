@@ -19,6 +19,7 @@ import { NButton, useMessage } from 'naive-ui';
 import { h } from 'vue';
 import { ref, onMounted } from 'vue';
 import typography from '@/components/layout/typography.vue';
+import { useApplicationStore } from '@/stores/models/application/store';
 
 interface TeacherApplication {
   no: number;
@@ -33,6 +34,7 @@ interface TeacherApplication {
 }
 
 const message = useMessage();
+const applicationStore = useApplicationStore();
 const data = ref<TeacherApplication[]>([]);
 const loading = ref(false);
 
@@ -169,56 +171,37 @@ onMounted(() => {
   fetchApplications();
 });
 
-// 模擬獲取教師申請數據
+// 獲取教師申請數據
 const fetchApplications = async () => {
   loading.value = true;
   try {
-    // 模擬 API 調用延遲
-    await new Promise(resolve => setTimeout(resolve, 500));
+    // 使用 applicationStore 獲取教師申請數據
+    const res = await applicationStore.getAdminTeacherApplications(
+      pagination.value.page,
+      pagination.value.pageSize
+    );
 
-    // 模擬數據
-    const mockData: TeacherApplication[] = [
-      {
-        no: 1,
-        uuid: '1',
-        userUUId: 'user1',
-        userName: '張三',
-        course_name: '可麗露製作必殺心法',
-        description: '我想以烘烤上萬顆可麗露的經驗，教你可麗露的製作必殺心法，讓你一次上手烤一爐可麗露。',
-        status: 'pending',
-        createdAt: new Date().toISOString(),
-        updatedAt: new Date().toISOString(),
-      },
-      {
-        no: 2,
-        uuid: '2',
-        userUUId: 'user2',
-        userName: '李四',
-        course_name: '檸檬塔製作必殺心法',
-        description: '立志做出「全台灣第一的檸檬塔」，並推廣烘焙文化，希望能加入貴平台',
-        status: 'pending',
-        createdAt: new Date(Date.now() - 86400000).toISOString(),
-        updatedAt: new Date(Date.now() - 86400000).toISOString(),
-      },
-      {
-        no: 3,
-        uuid: '3',
-        userUUId: 'user3',
-        userName: '王五',
-        course_name: '馬卡龍製作必殺心法',
-        description: '專精法式甜點，特別是馬卡龍製作，有豐富的教學經驗',
-        status: 'pending',
-        createdAt: new Date(Date.now() - 172800000).toISOString(),
-        updatedAt: new Date(Date.now() - 172800000).toISOString(),
-      },
-    ];
+    if (res.status && res.data) {
+      // 將 API 返回的數據轉換為組件需要的格式
+      const applications = applicationStore.adminTeacherApplications.map((item, index) => ({
+        no: (pagination.value.page - 1) * pagination.value.pageSize + index + 1,
+        uuid: item.id || '',
+        userUUId: item.user_id || '',
+        userName: item.user_name || '',
+        course_name: item.course_name,
+        description: item.description || '',
+        status: item.status as 'pending' | 'approved' | 'rejected',
+        createdAt: item.created_at || '',
+        updatedAt: ''
+      }));
 
-    // 賦值給 data
-    data.value = mockData;
-    pagination.value.itemCount = mockData.length;
+      // 賦值給 data
+      data.value = applications;
+      pagination.value.itemCount = applicationStore.totalApplications;
+    } else {
+      message.error(res.message || '獲取教師申請列表失敗');
+    }
   } catch (error) {
-    message.error('獲取教師申請列表失敗');
-    console.error(error);
     const errorMessage = error instanceof Error ? error.message : '未知錯誤';
     message.error(`獲取申請列表失敗: ${errorMessage}`);
   } finally {

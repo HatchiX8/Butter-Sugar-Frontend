@@ -2,10 +2,21 @@ import { defineStore } from 'pinia';
 import instance from '@/api/axios';
 import type { ApiResponse, Application } from '@/api/application/type';
 
+interface ApplicationsResponse {
+  data: Application[];
+  total: number;
+  perNum: number;
+  pageNum: number;
+}
+
 export const useApplicationStore = defineStore('application', {
   state: () => ({
     application: null as Application | null,
     teacherApplications: [] as Application[],
+    adminTeacherApplications: [] as Application[],
+    totalApplications: 0,
+    perPage: 12,
+    currentPage: 1,
   }),
 
   actions: {
@@ -42,18 +53,27 @@ export const useApplicationStore = defineStore('application', {
     },
 
     /**
-     * 查詢教師申請詳情
-     * @param id 申請 ID
+     * 管理員獲取所有教師申請資料
+     * @param page 頁碼
+     * @param perPage 每頁顯示數量
      * @returns API 回應
      */
-    // async getTeacherApplicationById(id: string): Promise<ApiResponse<Application>> {
-    //   const res = await instance.get<ApiResponse<Application>>(`/api/v1/teacher-applications/${id}`);
+    async getAdminTeacherApplications(page: number = 1, perPage: number = 12): Promise<ApiResponse<ApplicationsResponse>> {
+      const res = await instance.get<ApiResponse<ApplicationsResponse>>(`/api/v1/admin/teacher-applications`, {
+        params: {
+          page,
+          perPage
+        }
+      });
 
-    //   if (res.data.status && res.data.data) {
-    //     this.application = res.data.data;
-    //   }
+      if (res.data.status && res.data.data) {
+        this.adminTeacherApplications = res.data.data.data;
+        this.totalApplications = res.data.data.total;
+        this.perPage = res.data.data.perNum;
+        this.currentPage = res.data.data.pageNum;
+      }
 
-    //   return res.data;
-    // },
+      return res.data;
+    },
   },
 });

@@ -385,6 +385,13 @@ const handleSaveProfile = async () => {
 
     if (applicationRes.status) {
       message.success('審核申請已成功提交');
+
+      // 延遲 1.5 秒後重新整理頁面，讓使用者看到成功訊息
+      setTimeout(() => {
+        window.location.reload();
+      }, 1500);
+
+      return; // 提早返回，避免執行後續的教師資料更新
     } else {
       message.error(applicationRes.message || '審核申請提交失敗');
       return;
