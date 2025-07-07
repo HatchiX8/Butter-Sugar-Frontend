@@ -46,7 +46,7 @@ export const useUserStore = defineStore('userStore', () => {
       // if(response.data.name === '柴郡貓'){
       //   role.value = 'admin';
       // }
-      console.log('store權限', response.data);
+      // console.log('store權限', response.data);
     } catch (error) {
       console.error('Error fetching user data:', error);
     }

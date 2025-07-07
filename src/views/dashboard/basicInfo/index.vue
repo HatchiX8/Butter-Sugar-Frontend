@@ -160,6 +160,7 @@
             <n-input
               v-model:value="editableApplication.course_name"
               placeholder="欲開課之課程名稱"
+              :disabled="status === 'pending'"
             />
           </n-form-item>
         </div>
@@ -168,6 +169,7 @@
             type="textarea"
             v-model:value="editableApplication.course_description"
             placeholder="請輸入為什麼想申請成為講師的說明"
+            :disabled="status === 'pending'"
           />
         </n-form-item>
       </div>
@@ -182,13 +184,13 @@
         >儲存</n-button
       >
       <n-button
-        v-else-if="userStore.role === 'student'"
+        v-else-if="userStore.role === 'student' && status !== 'pending'"
         class="mr-2"
         type="primary"
         @click="handleSaveProfile"
         >送出審核</n-button
       >
-      <n-button v-else-if="userStore.role === 'student2'" type="warning" :disabled="true"
+      <n-button v-else-if="userStore.role === 'student' || status === 'pending'" type="warning" :disabled="true"
         >審核中</n-button
       >
     </div>
@@ -202,17 +204,19 @@ import { useUserStore } from '@/stores/models/index';
 import { useInstructorStore } from '@/stores/models/instructor/store';
 import type { TeacherProfile } from '@/api/instructor/types';
 import type { Application } from '@/api/application/type';
-import { postApplication } from '@/api/application/index';
+import { useApplicationStore } from '@/stores/models/application/store';
 import { useMessage } from 'naive-ui';
 import type { FormRules } from 'naive-ui';
 import baseButton from '@/components/layout/baseButton.vue';
 
-const message = useMessage();
-const instructorStore = useInstructorStore();
 const userStore = useUserStore();
+const instructorStore = useInstructorStore();
+const applicationStore = useApplicationStore();
+const message = useMessage();
 
 const email = ref<string>('');
 const selectedFile = ref<File | string | null>(null);
+const status = ref<string>('');
 
 // 保持原有的資料結構分離
 const editableProfile = ref<TeacherProfile>({
@@ -374,9 +378,9 @@ const handleSaveProfile = async () => {
   // 根據角色執行不同操作
   if (userStore.role === 'student') {
     // 學生角色：提交審核申請
-    const applicationRes = await postApplication(
+    const applicationRes = await applicationStore.postApplication(
       editableApplication.value.course_name,
-      editableApplication.value.course_description // API 需要 description 參數，但我們的資料結構用 course_description
+      editableApplication.value.course_description || '' // API 需要 description 參數，但我們的資料結構用 course_description
     );
 
     if (applicationRes.status) {
@@ -419,5 +423,30 @@ onMounted(async () => {
   }
 
   avatarUrl.value = editableProfile.value.profile_image_url || '';
+
+  // 如果是學生角色，獲取教師申請資料
+  if (userStore.role === 'student') {
+    const res = await applicationStore.getTeacherApplications();
+    // console.log('獲取教師申請資料回應:', res.data);
+
+    // 檢查返回的數據結構
+    if (res.status && res.data) {
+      // 如果是數組，取第一個元素
+      if (Array.isArray(res.data) && res.data.length > 0) {
+        const application = res.data[0];
+        editableApplication.value.course_name = application.course_name;
+        editableApplication.value.course_description = application.description;
+        status.value = application.status || '';
+      }
+      // 如果不是數組，直接使用
+      else {
+        // 將res.data轉換為单個申請對象類型
+        const applicationData = res.data as unknown as Application;
+        editableApplication.value.course_name = applicationData.course_name;
+        editableApplication.value.course_description = applicationData.description;
+        status.value = applicationData.status || '';
+      }
+    }
+  }
 });
 </script>
