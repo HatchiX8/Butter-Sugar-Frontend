@@ -1,7 +1,7 @@
 // ----------更改課程狀態----------
 export interface courseStatusPostData {
   course_status: string;
-};
+}
 export interface courseStatusResponse {
   status: boolean;
   message: string;
@@ -49,6 +49,53 @@ export interface courseDetail {
 }
 // ------------------------------
 
+// ----------取得課程講義----------
+export interface handoutsResponse {
+  id: string;
+  course_id: string;
+  name: string;
+  url: string;
+  size: string;
+  type: string;
+  created_at: string;
+  updated_at: string;
+}
+// ------------------------------
+
+// ----------課程價格----------
+export interface coursePricePostData {
+  origin_price: number;
+  sell_price: number;
+}
+export interface coursePriceResponse {
+  status: boolean;
+  message: string;
+  data: {
+    course: {
+      id: string;
+      course_name: string;
+      origin_price: number;
+      sell_price: number;
+    };
+  };
+}
+// ------------------------------
+
+// ----------新增標題API參數型別----------
+interface AddTitlePayload {
+  type: 'addTitle';
+  payload: string;
+}
+
+interface AddCategoryPayload {
+  type: 'addCategory';
+  payload: {
+    categoryId: number;
+  };
+}
+
+export type AddChildRequestPayload = AddTitlePayload | AddCategoryPayload;
+
 export interface courseAddTitlePostData {
   course_name: string;
 }
@@ -86,51 +133,90 @@ export interface courseSaveFormPostData {
   course_description: string;
   course_banner_description: string;
 }
-// ----------API參數型別----------
-interface AddTitlePayload {
-  type: 'addTitle';
-  payload: string;
-}
-
-interface AddCategoryPayload {
-  type: 'addCategory';
-  payload: {
-    categoryId: number;
-  };
-}
-
-export type AddChildRequestPayload = AddTitlePayload | AddCategoryPayload;
-
 // ------------------------------
 
-// ----------取得課程講義----------
-export interface handoutsResponse {
-  id: string;
-  course_id: string;
-  name: string;
-  url: string;
-  size: string;
-  type: string;
-  created_at: string;
-  updated_at: string;
+// ----------章節API型別----------
+// 新增章節
+export interface categoryAddChapterPostData {
+  main_section_title: string;
 }
-// ------------------------------
 
-// ----------課程價格----------
-export interface coursePricePostData {
-  origin_price: number;
-  sell_price: number;
-}
-export interface coursePriceResponse {
+export interface categoryAddChapterResponse {
   status: boolean;
   message: string;
   data: {
-    course: {
-      id: string;
-      course_name: string;
-      origin_price: number;
-      sell_price: number;
-    };
+    id: string;
+    main_section_title: string;
   };
+}
+
+export interface categoryGetChapterResponse {
+  status: boolean;
+  message: string;
+  data: ChapterResponseSection[];
+}
+
+interface ChapterResponseSection {
+  id: string;
+  main_section_title: string;
+  order_index: number;
+  subsections: ChapterResponseSubsections[];
+}
+
+interface ChapterResponseSubsections {
+  id: string;
+  section_id: string;
+  order_index: number;
+  subsection_title: string;
+  is_preview_available: boolean;
+  video_file_url?: string;
+  video_duration?: number;
+}
+
+// 取得指定章節的小節
+export interface categoryGetSubsectionResponse {
+  status: boolean;
+  message: string;
+  data: ChapterResponseSubsections[];
+}
+
+// 修改章節小節
+export interface changeChaptersSubsectionsPostData {
+  id: string;
+  main_section_title: string;
+  order_index: number;
+  subsections: Subsection[];
+}
+interface Subsection {
+  id: string;
+  section_id: string;
+  order_index: number;
+  subsection_title: string;
+  is_preview_available: boolean;
+}
+export interface changeChaptersSubsectionsResponse {
+  status: boolean;
+  message: string;
+  data: ChaptersSubsectionsResponse[];
+}
+interface ChaptersSubsectionsResponse {
+  id: string;
+  main_section_title: string;
+  order_index: number;
+  subsections: Subsection[];
+}
+// ------------------------------
+
+// ----------小節API型別----------
+// 新增小節
+export interface categoryAddSubsectionsPostData {
+  subsection_title: string;
+  is_preview_available: boolean;
+}
+
+export interface categoryAddSubsectionsResponse {
+  status: boolean;
+  message: string;
+  data: ChapterResponseSubsections;
 }
 // ------------------------------

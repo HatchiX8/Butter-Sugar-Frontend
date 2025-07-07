@@ -30,7 +30,9 @@ import offTheShelfModal from '@/views/dashboard/courseAction/comps/offTheShelfMo
 import type { TeacherCourse } from '@/api/instructor/types';
 import { useRouter } from 'vue-router';
 import { baseButton } from '@/components';
+import { useMenuStore } from '@/stores/models/dashboard/uiStore';
 
+const menuStore = useMenuStore();
 const router = useRouter();
 const instructorStore = useInstructorStore();
 
@@ -49,6 +51,9 @@ interface Song {
 }
 
 const goToCourseManage = (courseId?: string, currentStep: number = 1) => {
+  menuStore.setActiveKey('courseAction/courseManage'); // 同步外層選單
+  menuStore.setEditingCourse(!!courseId);
+
   if (courseId) router.push({ name: 'CourseManage', query: { id: courseId, step: currentStep } });
   else router.push({ name: 'CourseManage' });
 };

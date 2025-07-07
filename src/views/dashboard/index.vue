@@ -17,7 +17,7 @@
               :root-indent="36"
               :indent="12"
               :options="menuOptions"
-              :value="activeKey"
+              :value="menuStore.activeKey"
               @update:value="handleMenuSelect"
             />
           </n-config-provider>
@@ -29,20 +29,22 @@
       </div>
     </div>
     <footerComps />
+    <!-- 回到最上方按鈕 -->
+    <scrollToTop/>
   </div>
 </template>
 <script setup lang="ts">
-import { ref, onMounted, computed } from 'vue';
+import { onMounted, computed } from 'vue';
 import { useRouter } from 'vue-router';
-import headerComps from '@/components/layout/headerComps.vue';
-import footerComps from '@/components/layout/footerComps.vue';
+import { headerComps, footerComps, scrollToTop } from '@/components/index';
 import typography from '@/components/layout/typography.vue';
 import { useUserStore } from '@/stores/models/index';
+import { useMenuStore } from '@/stores/models/dashboard/uiStore';
 
 const bgImgUrl = new URL('@/assets/images/home/bg-grey-wrinkle.png', import.meta.url).href;
 
+const menuStore = useMenuStore();
 const router = useRouter();
-const activeKey = ref<string>('BasicInfo');
 
 interface MenuOption {
   label: string;
@@ -70,10 +72,24 @@ const fullMenuOptions: MenuOption[] = [
 
 const menuOptions = computed(() =>
   fullMenuOptions.filter((option) => option.roles?.includes(userStore.role))
+  .map((option) => {
+      if (option.key === 'courseAction/courseManage' && menuStore.isEditingCourse) {
+        return {
+          ...option,
+          label: '編輯課程',
+        };
+      }
+      return option;
+  })
 );
 
 const handleMenuSelect = (key: string) => {
-  activeKey.value = key;
+  menuStore.setActiveKey(key);
+
+  if (key !== 'courseAction/courseManage') {
+    menuStore.setEditingCourse(false);
+  }
+
   router.push(`/Teacher/${key}`);
 };
 

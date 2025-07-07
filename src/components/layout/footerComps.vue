@@ -13,10 +13,10 @@
         <!-- 導覽連結：手機直排，桌機橫排 -->
         <nav class="flex flex-col gap-y-8 py-15
                     md:flex-row md:space-y-0 md:gap-x-12 md:ml-5">
-          <router-link to="/" class="aboutStyle">關於我們</router-link>
-          <router-link to="/" class="aboutStyle">常見問題</router-link>
-          <router-link to="/" class="aboutStyle">服務條款</router-link>
-          <router-link v-if="userStore.role === 'student'" to="/Teacher/BasicInfo" class="aboutStyle">申請成為講師</router-link>
+          <router-link to="/home/others/aboutUs" class="aboutStyle">關於我們</router-link>
+          <router-link to="/home/others/faq" class="aboutStyle">常見問題</router-link>
+          <router-link to="/home/others/terms-of-service" class="aboutStyle">服務條款</router-link>
+          <router-link v-if="userStore.role === 'student'" to="/teacher/basicInfo" class="aboutStyle">申請成為講師</router-link>
         </nav>
 
         <!-- 社群 icon -->

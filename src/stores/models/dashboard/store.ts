@@ -1,7 +1,18 @@
 import { ref } from 'vue';
 import { defineStore } from 'pinia';
-import { apiPatch_changeCourseStatus, apiGet_courseDetail, apiPost_AddCategory, apiPost_AddTitle, apiPatch_coursePrice } from '@/views/dashboard/api/index';
-import type { courseStatusPostData, courseAddCategoryPostData, courseAddTitlePostData, coursePricePostData } from '@/views/dashboard/type';
+import {
+  apiPatch_changeCourseStatus,
+  apiGet_courseDetail,
+  apiPost_AddCategory,
+  apiPost_AddTitle,
+  apiPatch_coursePrice,
+} from '@/views/dashboard/api/index';
+import type {
+  courseStatusPostData,
+  courseAddCategoryPostData,
+  courseAddTitlePostData,
+  coursePricePostData,
+} from '@/views/dashboard/type';
 import { apiErrorMessage } from '@/utils/api/apiErrorMsg';
 import axios from 'axios';
 
@@ -28,7 +39,10 @@ export const useDashboardStore = defineStore('dashboardStore', () => {
   }
 
   // ----------更改課程狀態API----------
-  const changeCourseStatus = async (courseId: string, postData: courseStatusPostData): Promise<ActionResult> => {
+  const changeCourseStatus = async (
+    courseId: string,
+    postData: courseStatusPostData
+  ): Promise<ActionResult> => {
     loading.value = true;
     error.value = null;
 
@@ -46,13 +60,16 @@ export const useDashboardStore = defineStore('dashboardStore', () => {
   // -----------------------------------
 
   // ----------取得單一課程資料API----------
-  const fetchCourseDetail = async (courseId: string) => {
+  const fetchCourseDetail = async (id: string) => {
     loading.value = true;
     error.value = null;
 
     try {
-      const res = await apiGet_courseDetail(courseId);
-      if (res.data.course) return res.data.course;
+      const res = await apiGet_courseDetail(id);
+      if (res.data.course) {
+        courseId.value = res.data.course.id;
+        return res.data.course;
+      }
       else error.value = '取得單一課程資料失敗';
     } catch (err) {
       error.value = getErrorMessage(err);
@@ -103,7 +120,10 @@ export const useDashboardStore = defineStore('dashboardStore', () => {
   // ----------------------------------
 
   // ----------課程價格API----------
-  const saveCoursePrice = async (courseId: string, postData: coursePricePostData): Promise<ActionResult> => {
+  const saveCoursePrice = async (
+    courseId: string,
+    postData: coursePricePostData
+  ): Promise<ActionResult> => {
     loading.value = true;
     error.value = null;
 
@@ -121,10 +141,11 @@ export const useDashboardStore = defineStore('dashboardStore', () => {
   // ----------------------------------
 
   return {
+    courseId,
     changeCourseStatus,
     fetchCourseDetail,
     addTitle,
     addCategory,
-    saveCoursePrice
+    saveCoursePrice,
   };
 });
