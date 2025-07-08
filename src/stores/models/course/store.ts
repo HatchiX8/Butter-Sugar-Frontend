@@ -17,12 +17,21 @@ export const useCourseStore = defineStore('courseStore', () => {
 
     try {
       const response = await getCourseList();
-      // 確保 response 和 response.data 存在再訪問 courses
-      if (response && response.data && Array.isArray(response.data.courses)) {
-        courseList.value = response.data.courses;
+      // 確保 response 存在且狀態為 true
+      if (response && response.status === true) {
+        // 新的 API 結構直接在 data 中返回陣列
+        if (Array.isArray(response.data)) {
+          courseList.value = response.data;
+        } else {
+          // 兼容舊版 API 結構
+          if (response.data && Array.isArray(response.data.courses)) {
+            courseList.value = response.data.courses;
+          } else {
+            error.value = 'API 回傳的資料結構不符合預期';
+          }
+        }
       } else {
-        // 如果回傳的資料結構不符合預期，設置錯誤訊息
-        error.value = 'API 回傳的資料結構不符合預期';
+        error.value = response?.message || 'API 回傳狀態錯誤';
       }
     } catch (err) {
       error.value = err instanceof Error ? err.message : '查詢課程列表時發生錯誤';
