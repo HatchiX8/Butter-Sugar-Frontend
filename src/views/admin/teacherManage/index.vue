@@ -37,6 +37,9 @@ const message = useMessage();
 const applicationStore = useApplicationStore();
 const data = ref<TeacherApplication[]>([]);
 const loading = ref(false);
+// FIXME: 開發模式Flag，控制退回審核狀態按鈕的顯示
+// const devMode = ref(true);
+const devMode = ref(false);
 
 // 審核教師申請
 const reviewApplication = async (id: string, approve: boolean) => {
@@ -45,7 +48,7 @@ const reviewApplication = async (id: string, approve: boolean) => {
     // 調用 API 審核申請
     const status = approve ? 'approved' : 'rejected';
     const res = await applicationStore.reviewTeacherApplication(id, status);
-    
+
     if (res.status) {
       // API 調用成功，更新本地狀態
       const index = data.value.findIndex(item => item.uuid === id);
@@ -55,6 +58,31 @@ const reviewApplication = async (id: string, approve: boolean) => {
       message.success(`已${approve ? '通過' : '拒絕'}申請`);
     } else {
       message.error(res.message || `審核申請失敗`);
+    }
+  } catch (error) {
+    const errorMessage = error instanceof Error ? error.message : '操作失敗';
+    message.error(`操作失敗: ${errorMessage}`);
+  } finally {
+    loading.value = false;
+  }
+};
+
+// 退回審核狀態
+const returnToPending = async (id: string) => {
+  try {
+    loading.value = true;
+    // 調用新增的 returnToPendingStatus API 將狀態改為 pending
+    const res = await applicationStore.returnToPendingStatus(id);
+
+    if (res.status) {
+      // API 調用成功，更新本地狀態
+      const index = data.value.findIndex(item => item.uuid === id);
+      if (index !== -1) {
+        data.value[index].status = 'pending';
+      }
+      message.success('已退回審核狀態');
+    } else {
+      message.error(res.message || '退回審核狀態失敗');
     }
   } catch (error) {
     const errorMessage = error instanceof Error ? error.message : '操作失敗';
@@ -112,7 +140,23 @@ const createColumns = (): DataTableColumns<TeacherApplication> => [
     key: 'actions',
     width: 200,
     render(row) {
-      if (row.status !== 'pending') return '無可用操作';
+      if (row.status !== 'pending') {
+        // 如果不是開發模式，顯示「已審核完畢」文字
+        if (!devMode.value) {
+          return '已審核完畢';
+        }
+        // 如果是開發模式，顯示退回審核狀態按鈕
+        return h(
+          NButton,
+          {
+            size: 'small',
+            type: 'warning',
+            onClick: () => returnToPending(row.uuid),
+            class: 'min-w-24',
+          },
+          { default: () => '退回審核狀態' }
+        );
+      }
 
       return h(
         'div',

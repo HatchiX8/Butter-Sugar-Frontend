@@ -98,5 +98,28 @@ export const useApplicationStore = defineStore('application', {
 
       return res.data;
     },
+
+    /**
+     * 退回教師申請到審核狀態
+     * @param id 申請ID
+     * @returns API 回應
+     */
+    async returnToPendingStatus(id: string): Promise<ApiResponse<Application>> {
+      // 使用相同的 API 端點，但將狀態設為 pending
+      const res = await instance.patch<ApiResponse<Application>>(`/api/v1/admin/teacher-applications/${id}/status`, {
+        status: 'pending'
+      });
+
+      // 如果操作成功，更新本地狀態
+      if (res.data.status) {
+        // 更新管理員列表中的申請狀態
+        const index = this.adminTeacherApplications.findIndex(app => app.id === id);
+        if (index !== -1) {
+          this.adminTeacherApplications[index].status = 'pending';
+        }
+      }
+
+      return res.data;
+    },
   },
 });

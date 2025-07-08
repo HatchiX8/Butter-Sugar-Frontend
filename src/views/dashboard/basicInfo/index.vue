@@ -73,6 +73,17 @@
             <n-input v-model:value="editableProfile.phone" placeholder="請輸入電話號碼" />
           </n-form-item>
         </div>
+        <div>
+          <n-form-item label="生日" path="birthday">
+            <n-date-picker
+              v-model:value="editableProfile.birthday"
+              type="date"
+              placeholder="請選擇生日"
+              clearable
+              @update:value="validateBirthday"
+            />
+          </n-form-item>
+        </div>
       </div>
     </div>
 
@@ -190,8 +201,9 @@
         @click="handleSaveProfile"
         >送出審核</n-button
       >
-      <n-button v-else-if="userStore.role === 'student' || status === 'pending'" type="warning" :disabled="true"
-        >審核中</n-button
+      <n-button v-else-if="userStore.role === 'student' || status === 'pending'" type="warning"
+        @click="handleSaveProfile"
+        >審核中，僅修改基本資料</n-button
       >
     </div>
   </n-form>
@@ -199,6 +211,7 @@
 
 <script setup lang="ts">
 import { ref, onMounted, computed } from 'vue';
+import type { FormInst } from 'naive-ui';
 import typography from '@/components/layout/typography.vue';
 import { useUserStore } from '@/stores/models/index';
 import { useInstructorStore } from '@/stores/models/instructor/store';
@@ -214,6 +227,17 @@ const instructorStore = useInstructorStore();
 const applicationStore = useApplicationStore();
 const message = useMessage();
 
+// 表單引用
+const formRef = ref<FormInst | null>(null);
+
+// 手動驗證生日欄位
+const validateBirthday = () => {
+  if (formRef.value) {
+    // 使用正確的 validate 方法
+    formRef.value.validate();
+  }
+};
+
 const email = ref<string>('');
 const selectedFile = ref<File | string | null>(null);
 const status = ref<string>('');
@@ -223,7 +247,7 @@ const editableProfile = ref<TeacherProfile>({
   name: '',
   nickname: '',
   phone: '',
-  birthday: '',
+  birthday: null, // 使用 null 以相容 n-date-picker
   address: '',
   profile_image_url: '',
   bank_name: '',
@@ -249,6 +273,12 @@ const rules: FormRules = {
   name: [{ required: true, message: '姓名為必填', trigger: 'blur' }],
   nickname: [{ required: true, message: '暱稱為必填', trigger: 'blur' }],
   phone: [{ required: true, message: '電話號碼為必填', trigger: 'blur' }],
+  birthday: [{
+    required: true,
+    message: '生日為必填',
+    trigger: ['change', 'blur', 'input'],
+    validator: (rule, value) => value !== null && value !== undefined && value !== ''
+  }],
   bank_name: [{ required: true, message: '請選擇銀行名稱', trigger: 'change' }],
   bank_account: [{ required: true, message: '銀行帳號為必填', trigger: 'blur' }],
   slogan: [{ required: true, message: 'slogan 為必填', trigger: 'blur' }],
@@ -296,15 +326,15 @@ const customAvatarUpload = async ({
     }
     isAvatarUploaded.value = true;
     onFinish();
-  } catch (err) {
+  } catch (error) {
     message.error('上傳頭像失敗');
-    onError(err as Error);
+    onError(error as Error);
   }
 };
 
 const triggerAvatarUpload = () => {
   if (!avatarUploadRef.value) {
-    console.warn('找不到 n-upload 元件實例');
+    message.warning('找不到上傳元件');
     return;
   }
 
@@ -315,7 +345,7 @@ const triggerAvatarUpload = () => {
   if (input) {
     input.click();
   } else {
-    console.warn('找不到 input[type=file]');
+    message.warning('找不到上傳元件');
   }
 };
 
@@ -328,6 +358,7 @@ const handleSaveProfile = async () => {
     name: '真實姓名',
     nickname: '暱稱',
     phone: '電話號碼',
+    birthday: '生日',
     bank_name: '銀行名稱',
     bank_account: '銀行帳號',
     slogan: 'slogan',
@@ -366,8 +397,30 @@ const handleSaveProfile = async () => {
   // 執行送出
   const formData = new FormData();
 
+  // 先處理生日欄位，將時間戳轉換為 DATE 格式
+  let formattedBirthday: string | null = null;
+  if (editableProfile.value.birthday !== null && editableProfile.value.birthday !== undefined) {
+    const date = new Date(editableProfile.value.birthday);
+    // 確保格式為 yyyy-MM-dd，並補零
+    const year = date.getFullYear();
+    const month = String(date.getMonth() + 1).padStart(2, '0');
+    const day = String(date.getDate()).padStart(2, '0');
+    formattedBirthday = `${year}-${month}-${day}`;
+  }
+
+  // 將其他欄位添加到 FormData
   for (const [key, value] of Object.entries(editableProfile.value)) {
-    formData.append(key, value);
+    // 跳過生日欄位，因為我們會在下面特別處理
+    if (key === 'birthday') continue;
+    // 確保只有非空值才添加到 FormData
+    if (value !== null && value !== undefined) {
+      formData.append(key, String(value));
+    }
+  }
+
+  // 特別處理生日欄位，確保傳送 DATE 格式的字串
+  if (formattedBirthday) {
+    formData.append('birthday', formattedBirthday);
   }
 
   // 處理頭像檔案
@@ -376,7 +429,7 @@ const handleSaveProfile = async () => {
   }
 
   // 根據角色執行不同操作
-  if (userStore.role === 'student') {
+  if (userStore.role === 'student' && status.value !== 'pending') {
     // 學生角色：提交審核申請
     const applicationRes = await applicationStore.postApplication(
       editableApplication.value.course_name,
@@ -387,9 +440,9 @@ const handleSaveProfile = async () => {
       message.success('審核申請已成功提交');
 
       // 延遲 1.5 秒後重新整理頁面，讓使用者看到成功訊息
-      setTimeout(() => {
-        window.location.reload();
-      }, 1500);
+      // setTimeout(() => {
+      //   window.location.reload();
+      // }, 1500);
 
       return; // 提早返回，避免執行後續的教師資料更新
     } else {
@@ -397,6 +450,8 @@ const handleSaveProfile = async () => {
       return;
     }
   }
+
+  // 生日欄位已在上面處理完成
 
   // 無論是哪種角色，都更新基本資料
   const res = await instructorStore.saveTeacherProfile(formData);
@@ -410,7 +465,7 @@ const handleSaveProfile = async () => {
     isAvatarUploaded.value = false;
 
     userStore.setProfileImageUrl(editableProfile.value.profile_image_url || '');
-    console.log('教師資料已成功儲存');
+    // 教師資料已成功儲存
   } else {
     message.error(res.message);
   }
