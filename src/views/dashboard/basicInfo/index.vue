@@ -195,16 +195,13 @@
         >儲存</n-button
       >
       <n-button
-        v-else-if="userStore.role === 'student' && status !== 'pending'"
+        v-else-if="userStore.role === 'student'"
         class="mr-2"
         type="primary"
         @click="handleSaveProfile"
         >送出審核</n-button
       >
-      <n-button v-else-if="userStore.role === 'student' || status === 'pending'" type="warning"
-        @click="handleSaveProfile"
-        >審核中，僅修改基本資料</n-button
-      >
+      <n-button v-else-if="userStore.role === 'student2'" type="warning">審核中</n-button>
     </div>
   </n-form>
 </template>
@@ -273,12 +270,14 @@ const rules: FormRules = {
   name: [{ required: true, message: '姓名為必填', trigger: 'blur' }],
   nickname: [{ required: true, message: '暱稱為必填', trigger: 'blur' }],
   phone: [{ required: true, message: '電話號碼為必填', trigger: 'blur' }],
-  birthday: [{
-    required: true,
-    message: '生日為必填',
-    trigger: ['change', 'blur', 'input'],
-    validator: (rule, value) => value !== null && value !== undefined && value !== ''
-  }],
+  birthday: [
+    {
+      required: true,
+      message: '生日為必填',
+      trigger: ['change', 'blur', 'input'],
+      validator: (rule, value) => value !== null && value !== undefined && value !== '',
+    },
+  ],
   bank_name: [{ required: true, message: '請選擇銀行名稱', trigger: 'change' }],
   bank_account: [{ required: true, message: '銀行帳號為必填', trigger: 'blur' }],
   slogan: [{ required: true, message: 'slogan 為必填', trigger: 'blur' }],
