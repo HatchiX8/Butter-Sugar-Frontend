@@ -172,7 +172,28 @@ const ReadOnlyField  = defineComponent({
     // 先把可能的值轉成可以渲染的字串
     const toDisplayString = (val: unknown) => {
       if (val === null || val === '') return '未填';
-      if (val instanceof Date) return val.toLocaleDateString();
+
+      if (props.fieldType === 'date') {
+        let date: Date | null = null;
+
+        if (typeof val === 'number') {
+          date = new Date(val);
+        } else if (typeof val === 'string') {
+          const parsed = new Date(val);
+          if (!isNaN(parsed.getTime())) date = parsed;
+        } else if (val instanceof Date) {
+          date = val;
+        }
+
+        if (date && !isNaN(date.getTime())) {
+          // 手動格式化成 yyyy-MM-dd
+          const yyyy = date.getFullYear();
+          const mm = String(date.getMonth() + 1).padStart(2, '0'); // 月份從 0 開始
+          const dd = String(date.getDate()).padStart(2, '0');
+          return `${yyyy}-${mm}-${dd}`;
+        }
+      }
+
       return String(val);
     };
 

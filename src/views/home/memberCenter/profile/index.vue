@@ -13,14 +13,14 @@
       >
       <div v-if="!isEdit">
         <baseButton
-          v-if="formData.role === 'student'"
+          v-if="formData.teacher_status === 'none'"
           type="primary"
           class="mr-2"
           @click="applyTeacher"
           >申請教師資格</baseButton
         >
         <baseButton
-          v-else-if="formData.role === 'student2'"
+          v-else-if="formData.teacher_status === 'pending'"
           type="primary"
           class="mr-2"
           @click="applyTeacher"
@@ -86,6 +86,7 @@ interface StudentData {
   address: string;
   profile_image_url: string | File;
   role: string;
+  teacher_status: string;
 }
 
 const userStore = useUserStore();
@@ -99,6 +100,7 @@ const formData = reactive<StudentData>({
   address: '',
   profile_image_url: '',
   role: '',
+  teacher_status: '',
 });
 
 const originalData = reactive({ ...formData });
@@ -121,6 +123,8 @@ const fetchData = async () => {
     formData.address = user.address || '';
     formData.profile_image_url = user.profile_image_url || '';
     formData.role = user.role || 'student';
+    formData.teacher_status = user.teacher_status || '';
+    console.log('更新info', formData);
 
     // 更新備份
     Object.assign(originalData, formData);
