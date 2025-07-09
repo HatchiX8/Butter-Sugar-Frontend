@@ -6,12 +6,12 @@
     {{ error }}
   </div>
   <div v-else class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 xl:grid-cols-4 gap-4 sm:gap-6 md:gap-8 justify-items-center w-full">
-  <!-- <div v-else class="w-full flex flex-wrap content-around justify-between px-2"> -->
     <!-- 因為 API 沒有提供講師名稱，所以使用預設值 -->
+    <!-- :link="`/home/course/${course.id}`" -->
     <my-course-card
       v-for="course in paginatedCourses"
       :key="course.id"
-      :link="`/home/course/${course.id}`"
+      :link="`/home/course-chapter/${course.id}`"
       :img="course.course_small_imageUrl || ''"
       :title="course.course_name"
       :teacher="course.teacher || '講師'"
@@ -152,17 +152,17 @@ const totalPages = computed(() => Math.ceil(filteredCourses.value.length / pageS
 const paginatedCourses = computed(() => {
   const startIndex = (currentPage.value - 1) * pageSize.value;
   const endIndex = startIndex + pageSize.value;
-  
+
   // 在返回分頁課程前，將課程資料轉換為包含講師暱稱的格式
   return filteredCourses.value.slice(startIndex, endIndex).map(course => {
     // 複製課程對象，以避免修改原始資料
     const formattedCourse = { ...course };
-    
+
     // 獲取講師資料，優先使用 nickname
     const teacherId = course.teacher_id;
     if (teacherId) {
       const teacherData = teacherStore.getTeacherById(teacherId);
-      
+
       if (teacherData) {
         // 如果有講師資料，優先使用 nickname
         formattedCourse.teacher = teacherData.nickname || teacherData.name || course.teacher || '講師';
@@ -172,7 +172,7 @@ const paginatedCourses = computed(() => {
         teacherStore.fetchTeacher(teacherId);
       }
     }
-    
+
     return formattedCourse;
   });
 });

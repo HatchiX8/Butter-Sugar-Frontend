@@ -41,7 +41,7 @@ export interface TeacherProfile {
   name: string;
   nickname: string;
   phone: string;
-  birthday: string;
+  birthday: string | null | number; // 兼容 n-date-picker 的值（timestamp）和 null
   address: string;
   profile_image_url: string;
   bank_name: string;

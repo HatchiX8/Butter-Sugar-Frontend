@@ -1,12 +1,14 @@
 import { defineStore } from 'pinia';
 import { ref, computed } from 'vue';
 import instance from '@/api/axios';
+import { useUserStore } from '@/stores/models/user/store';
 
 // 評價資料介面
 export interface CourseRatingResponse {
   id: string;
   user_id: string;
-  user_name?: string; // 添加用戶名稱欄位
+  user_name?: string; // 用戶名稱
+  profile_image_url?: string; // 用戶頭像
   course_id: string;
   rating_score: string;
   review_text: string;
@@ -29,6 +31,7 @@ export const useCourseRatingStore = defineStore('courseRatingStore', () => {
   const currentCourseId = ref<string>('');
   const loading = ref<boolean>(false);
   const error = ref<string | null>(null);
+  const userStore = useUserStore();
 
   // 格式化日期
   const formatDate = (dateString: string): string => {
@@ -80,22 +83,20 @@ export const useCourseRatingStore = defineStore('courseRatingStore', () => {
     currentCourseId.value = courseId;
 
     try {
-      // 先檢查是否已有該課程的評價資料
-      if (ratings.value.some(rating => rating.course_id === courseId)) {
-        // 已有資料，不需重新請求
-        loading.value = false;
-        return;
-      }
-
       // 請求 API 獲取評價資料
       // API 返回格式為 { status, message, data: CourseRatingResponse[] }
-      const res = await instance.get('/api/v1/course/ratings');
+      const res = await instance.get('/api/v1/course/ratings', {
+        params: { course_id: courseId }
+      });
 
       // 將新獲取的評價資料合併到現有資料中
       if (res && res.data && res.data.data) {
+        // 替換當前課程的評價
         const apiRatings = res.data.data as CourseRatingResponse[];
-        const newRatings = apiRatings.filter(rating => !ratings.value.some(r => r.id === rating.id));
-        ratings.value = [...ratings.value, ...newRatings];
+        // 移除該課程的評價
+        const otherCourseRatings = ratings.value.filter(rating => rating.course_id !== courseId);
+        // 合併新的評價
+        ratings.value = [...otherCourseRatings, ...apiRatings];
       }
     } catch (err) {
       error.value = err instanceof Error ? err.message : '無法取得課程評價資料';
@@ -110,6 +111,80 @@ export const useCourseRatingStore = defineStore('courseRatingStore', () => {
     currentCourseId.value = '';
   };
 
+  // 檢查用戶是否已評價此課程
+  const hasUserRatedCourse = (courseId: string) => {
+    const userId = userStore.id;
+    if (!userId) return false;
+    
+    return ratings.value.some(
+      rating => rating.user_id === userId && rating.course_id === courseId
+    );
+  };
+
+  // 獲取用戶對此課程的評價
+  const getUserRatingForCourse = (courseId: string) => {
+    const userId = userStore.id;
+    if (!userId) return null;
+    
+    return ratings.value.find(
+      rating => rating.user_id === userId && rating.course_id === courseId
+    );
+  };
+
+  // 新增課程評價
+  const addRating = async (courseId: string, ratingScore: number, reviewText: string) => {
+    loading.value = true;
+    error.value = null;
+    
+    try {
+      const response = await instance.post(`/api/v1/course/${courseId}/ratings`, {
+        rating_score: ratingScore,
+        review_text: reviewText
+      });
+      
+      if (response.data.status) {
+        // 如果成功，重新獲取評價列表
+        await fetchRatingsByCourseId(courseId);
+        return { success: true, message: response.data.message };
+      } else {
+        error.value = response.data.message || '新增評價失敗';
+        return { success: false, message: error.value };
+      }
+    } catch (err) {
+      error.value = err instanceof Error ? err.message : '新增評價時發生錯誤';
+      return { success: false, message: error.value };
+    } finally {
+      loading.value = false;
+    }
+  };
+
+  // 更新課程評價
+  const updateRating = async (courseId: string, ratingScore: number, reviewText: string) => {
+    loading.value = true;
+    error.value = null;
+    
+    try {
+      const response = await instance.patch(`/api/v1/course/${courseId}/ratings`, {
+        rating_score: ratingScore,
+        review_text: reviewText
+      });
+      
+      if (response.data.status) {
+        // 如果成功，重新獲取評價列表
+        await fetchRatingsByCourseId(courseId);
+        return { success: true, message: response.data.message };
+      } else {
+        error.value = response.data.message || '更新評價失敗';
+        return { success: false, message: error.value };
+      }
+    } catch (err) {
+      error.value = err instanceof Error ? err.message : '更新評價時發生錯誤';
+      return { success: false, message: error.value };
+    } finally {
+      loading.value = false;
+    }
+  };
+
   return {
     ratings,
     currentCourseId,
@@ -120,6 +195,10 @@ export const useCourseRatingStore = defineStore('courseRatingStore', () => {
     averageRating,
     totalRatings,
     fetchRatingsByCourseId,
-    clearRatings
+    clearRatings,
+    hasUserRatedCourse,
+    getUserRatingForCourse,
+    addRating,
+    updateRating
   };
 });

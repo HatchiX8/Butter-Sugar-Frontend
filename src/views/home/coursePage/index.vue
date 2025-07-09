@@ -8,7 +8,11 @@
         { label: courseName },
       ]"
     />
-    <courseVideo :courseName="courseName"/>
+    <courseVideo 
+      :courseName="courseName" 
+      :sectionId="sectionId" 
+      :subsectionId="subsectionId"
+    />
     <qaModule :courseId="courseId" />
     <router-view />
   </div>
@@ -24,9 +28,13 @@ import { useCourseStore } from '@/stores/models/course/store';
 const courseStore = useCourseStore();
 const loaded = ref(false);
 
-// 獲取課程 ID
+// 獲取課程 ID 和章節參數
 const route = useRoute();
 const courseId = computed(() => route.params.id?.toString() || '1');
+
+// 獲取章節和子章節 ID
+const sectionId = computed(() => route.query.section?.toString() || '');
+const subsectionId = computed(() => route.query.subsection?.toString() || '');
 
 // 載入課程資料
 const loadCourse = async () => {

@@ -41,9 +41,10 @@ const router = createRouter({
           component: () => import('@/views/home/myCourse/index.vue'), // 我的課程列表
         },
         {
-          path: 'course-chapter',
+          path: 'course-chapter/:id',
           name: 'courseChapter',
           component: () => import('@/views/home/courseChapter/index.vue'), // 課程章節列表
+          props: true
         },
         {
           path: 'memberCenter',
@@ -159,6 +160,19 @@ const router = createRouter({
           ],
         },
       ], // 講師後台
+    },
+    {
+      path: '/Admin',
+      name: 'AdminBackend',
+      component: () => import('@/views/admin/index.vue'), // 管理者後台
+      redirect: '/admin/teacherManage',
+      children: [
+        {
+          path: 'teacherManage',
+          name: 'TeacherManage',
+          component: () => import('@/views/admin/teacherManage/index.vue'),
+        },
+      ],
     },
     {
       path: '/login-success',

@@ -1,24 +1,24 @@
 <template>
   <!-- 只有當 teacherId 存在時才渲染組件 -->
-  <div v-if="props.teacherId && isLoading" class="flex flex-col gap-4 w-full p-6 rounded-[0.125rem] border border-white/20 bg-black w-full box-border">
+  <div v-if="props.teacherId && isLoading" class="flex flex-col gap-4 w-full p-6 rounded-[0.125rem] border border-white/20 bg-blackbox-border">
     <div class="mb-2">
       <typography variant="h6" font-type="title" class="text-neutral-200">載入講師資料中...</typography>
     </div>
   </div>
 
-  <div v-else-if="!props.teacherId" class="flex flex-col gap-4 w-full p-6 rounded-[0.125rem] border border-white/20 bg-black w-full box-border">
+  <div v-else-if="!props.teacherId" class="flex flex-col gap-4 w-full p-6 rounded-[0.125rem] border border-white/20 bg-black box-border">
     <div class="mb-2">
       <typography variant="h6" font-type="title" class="text-neutral-200">無講師資料</typography>
     </div>
   </div>
 
-  <div v-else-if="props.teacherId && !isLoading && !teacherData" class="flex flex-col gap-4 w-full p-6 rounded-[0.125rem] border border-white/20 bg-black w-full box-border">
+  <div v-else-if="props.teacherId && !isLoading && !teacherData" class="flex flex-col gap-4 w-full p-6 rounded-[0.125rem] border border-white/20 bg-blackbox-border">
     <div class="mb-2">
       <typography variant="h6" font-type="title" class="text-neutral-200">無講師資料</typography>
     </div>
   </div>
 
-  <div v-else-if="props.teacherId && teacherData" class="flex flex-col gap-4 w-full p-6 rounded-[0.125rem] border border-white/20 bg-black w-full box-border">
+  <div v-else-if="props.teacherId && teacherData" class="flex flex-col gap-4 w-full p-6 rounded-[0.125rem] border border-white/20 bg-black box-border">
     <div class="mb-2">
       <typography variant="h6" font-type="title" class="text-neutral-200">關於講師</typography>
     </div>

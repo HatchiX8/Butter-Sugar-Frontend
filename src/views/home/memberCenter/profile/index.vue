@@ -122,7 +122,7 @@ const fetchData = async () => {
     formData.phone = user.phone || '';
     formData.address = user.address || '';
     formData.profile_image_url = user.profile_image_url || '';
-    formData.role = user.role || '';
+    formData.role = user.role || 'student';
     formData.teacher_status = user.teacher_status || '';
     console.log('更新info', formData);
 
@@ -189,6 +189,7 @@ const handleCancel = () => {
 // onMounted 時先拿一次後端資料
 onMounted(() => {
   fetchData();
+  console.log('role', formData.role);
 });
 
 const formRef = ref();
