@@ -189,6 +189,7 @@ const handleCancel = () => {
 // onMounted 時先拿一次後端資料
 onMounted(() => {
   fetchData();
+  console.log('role', formData.role);
 });
 
 const formRef = ref();

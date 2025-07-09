@@ -38,11 +38,15 @@ export const useUserStore = defineStore('userStore', () => {
   const fetchUser = async () => {
     try {
       const response = await getUser();
-      role.value = response.data.role;
+      role.value = response.data.role || 'student';
       profileImageUrl.value = response.data.avatar || '';
       id.value = response.data.id || '';
       email.value = response.data.email || '';
-      console.log('store權限', response.data);
+      // FIXME
+      // if(response.data.name === '柴郡貓'){
+      //   role.value = 'admin';
+      // }
+      // console.log('store權限', response.data);
     } catch (error) {
       console.error('Error fetching user data:', error);
     }

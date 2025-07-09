@@ -41,9 +41,19 @@ const teacherOptions: MenuOption[] = [
   { label: '登出', key: 'logout' },
 ];
 
+const adminOptions: MenuOption[] = [
+  // { label: '教師儀表板', key: 'revenue' },
+  { label: '教師申請審核', key: 'teacherApplication' },
+  { label: '我的課程', key: 'myCourse' },
+  { label: '課程管理', key: 'dashboard' },
+  { label: '教師資料管理', key: 'teacherProfile' },
+  { label: '訂單紀錄', key: 'orders' },
+  { label: '登出', key: 'logout' },
+];
+
 // 根據角色決定選單
 const userOptions = computed(() =>
-  userStore.role === 'teacher' ? teacherOptions : studentOptions
+  userStore.role === 'teacher' ? teacherOptions : userStore.role === 'admin' ? adminOptions : studentOptions
 );
 
 // 點選選項時導頁或登出
@@ -70,6 +80,9 @@ const handleSelect = (key: string) => {
     case 'logout':
       userStore.logout();
       router.push('/home');
+      break;
+    case 'teacherApplication':
+      router.push('/admin/teacherManage');
       break;
     default:
       router.push('/home');
