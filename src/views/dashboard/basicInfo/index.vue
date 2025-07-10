@@ -201,14 +201,13 @@
         @click="handleSaveProfile"
         >送出審核</n-button
       >
-<<<<<<< HEAD
-      <n-button v-else-if="userStore.role === 'student2'" type="warning">審核中</n-button>
-=======
-      <n-button v-else-if="userStore.role === 'student' || status === 'pending'" type="warning"
+
+      <n-button
+        v-else-if="userStore.role === 'student' || status === 'pending'"
+        type="warning"
         @click="handleSaveProfile"
         >審核中，僅修改基本資料</n-button
       >
->>>>>>> origin/dev
     </div>
   </n-form>
 </template>
