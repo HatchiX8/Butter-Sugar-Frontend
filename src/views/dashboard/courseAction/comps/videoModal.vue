@@ -19,7 +19,12 @@
                 <div class="mb-2 flex items-center">
                   <p class="mr-5 text-nowrap">{{ chapterNum }}-{{ index + 1 }}</p>
                   <div class="w-full">
-                    <baseInput type="text" placeholder="請輸入小節標題" v-model="chapter.subsection_title" @click.stop />
+                    <baseInput
+                      type="text"
+                      placeholder="請輸入小節標題"
+                      v-model="chapter.subsection_title"
+                      @click.stop
+                    />
                   </div>
                 </div>
                 <div>
@@ -79,7 +84,7 @@
         <template #footer v-if="showFooter">
           <div class="mt-4 flex justify-end gap-2">
             <n-button type="primary" @click="submitSmallChapter">確定</n-button>
-            <n-button @click="() => emit('update:modelValue', false)">取消</n-button>
+            <n-button @click="closeModal">取消</n-button>
           </div>
         </template>
       </n-card>
@@ -145,7 +150,7 @@ interface Section {
   is_preview_available: boolean;
   video_file_url?: string;
   video_duration?: number;
-};
+}
 
 interface chapter {
   id: string;
@@ -153,7 +158,7 @@ interface chapter {
   order_index: number;
   video: string;
   is_preview_available: boolean;
-};
+}
 // ------------------------
 
 // -----------彈跳視窗-----------
@@ -178,7 +183,7 @@ watch(
   () => props.subsectionsData,
   (newVal) => {
     console.log('收到外層傳入的小節資料:', newVal);
-
+    chapters.value = [];
     if (newVal && newVal.length) {
       chapters.value = newVal.map((item) => ({
         id: item.id,
@@ -250,7 +255,15 @@ const submitSmallChapter = () => {
   console.log('儲存送出小節');
   console.log('目前章節的最新內容', chapters.value);
   emit('editOver', chapters.value); // 回傳目前章節的最新內容
+  chapters.value = [];
   emit('update:modelValue', false);
+};
+
+// 關閉彈窗
+const closeModal = () => {
+  chapters.value = [];
+  emit('update:modelValue', false);
+  console.log('關閉');
 };
 // -------------------------------
 
@@ -330,12 +343,14 @@ watch(
       if (url) {
         videoShowMap.value[orderIndex] = url;
         isVideoMap.value[orderIndex] = true;
-        videoFileListMap.value[orderIndex] = [{
-          id: subsection.id,
-          name: '影片預覽',
-          status: 'finished',
-          url: url || '',
-        }];
+        videoFileListMap.value[orderIndex] = [
+          {
+            id: subsection.id,
+            name: '影片預覽',
+            status: 'finished',
+            url: url || '',
+          },
+        ];
       } else {
         // 沒有影片則清空狀態
         delete videoShowMap.value[orderIndex];
