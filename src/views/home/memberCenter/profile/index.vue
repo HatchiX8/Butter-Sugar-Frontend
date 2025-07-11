@@ -122,11 +122,7 @@ const fetchData = async () => {
     formData.phone = user.phone || '';
     formData.address = user.address || '';
     formData.profile_image_url = user.profile_image_url || '';
-<<<<<<< HEAD
     formData.role = user.role || '';
-=======
-    formData.role = user.role || 'student';
->>>>>>> origin/dev
     formData.teacher_status = user.teacher_status || '';
     console.log('更新info', formData);
 
