@@ -5,4 +5,4 @@ import type { AxiosResponse } from 'axios';
 // 獲取課程章節
 export const getCourseSections = async (
   courseId: string
-): Promise<AxiosResponse<SectionResponse>> => axios.get(`/api/v1/course/${courseId}`);
+): Promise<AxiosResponse<SectionResponse>> => axios.get(`/api/v1/section/course/${courseId}`);
