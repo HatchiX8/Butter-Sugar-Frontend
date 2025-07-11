@@ -62,7 +62,7 @@ const generateMenuOptions = () => {
       key: subsection.id,
       label: () =>
         h('div', { class: 'flex items-center gap-2 text-white' }, [
-          h('span', { class: 'font-mono' }, `${section.order_index}-${subsection.order_index}`),
+          h('span', { class: 'font-mono' }, `${section.order_index + 0}-${subsection.order_index}`),
           h('span', {}, subsection.subsection_title),
         ]),
     })),
