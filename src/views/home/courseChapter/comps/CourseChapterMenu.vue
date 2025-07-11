@@ -56,23 +56,16 @@ const generateMenuOptions = () => {
   menuOptions.value = props.sections.map((section) => ({
     type: 'submenu',
     key: section.id,
-    label: () => h(
-      'div',
-      { class: 'flex items-center text-white' },
-      section.main_section_title
-    ),
+    label: () => h('div', { class: 'flex items-center text-white' }, section.main_section_title),
     children: section.subsections.map((subsection) => ({
       type: 'item',
       key: subsection.id,
-      label: () => h(
-        'div',
-        { class: 'flex items-center gap-2 text-white' },
-        [
-          h('span', { class: 'font-mono' }, `${section.order_index + 1}-${subsection.order_index}`),
-          h('span', {}, subsection.subsection_title)
-        ]
-      )
-    }))
+      label: () =>
+        h('div', { class: 'flex items-center gap-2 text-white' }, [
+          h('span', { class: 'font-mono' }, `${section.order_index}-${subsection.order_index}`),
+          h('span', {}, subsection.subsection_title),
+        ]),
+    })),
   })) as MenuOption[];
 
   // 如果有章節，預設展開第一個章節
@@ -85,7 +78,7 @@ const generateMenuOptions = () => {
 const handleMenuClick = (key: string) => {
   // 尋找點擊的是哪個子章節
   for (const section of props.sections) {
-    const subsection = section.subsections.find(sub => sub.id === key);
+    const subsection = section.subsections.find((sub) => sub.id === key);
     if (subsection) {
       emit('select-subsection', section.id, subsection.id);
       return;
