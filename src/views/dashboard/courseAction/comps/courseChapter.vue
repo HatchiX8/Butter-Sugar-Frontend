@@ -24,7 +24,12 @@
                 <div class="flex w-full items-center justify-around">
                   <p class="mr-3 font-bold text-white">第 {{ index + 1 }} 章</p>
                   <div class="w-40%">
-                    <baseInput type="text" placeholder="請輸入章節標題" v-model="chapter.main_section_title" @click.stop />
+                    <baseInput
+                      type="text"
+                      placeholder="請輸入章節標題"
+                      v-model="chapter.main_section_title"
+                      @click.stop
+                    />
                   </div>
                   <div class="ml-auto">
                     <n-button
@@ -81,7 +86,11 @@
       </n-button>
     </div>
     <div class="my-5 flex w-full">
-      <n-button type="primary" class="bg-secondaryDefault mr-4 rounded-md border-none px-4 py-3" @click="addChapter">
+      <n-button
+        type="primary"
+        class="bg-secondaryDefault mr-4 rounded-md border-none px-4 py-3"
+        @click="addChapter"
+      >
         新增章節
       </n-button>
     </div>
@@ -178,17 +187,24 @@ const editChapter = async (num: number, title: string, id: string) => {
   await saveChapter(); // 先進行儲存，避免編輯完畢後更新API資料遺失
 
   // 取得此章節底下的小節
+  subsections.value = [];
   const res = await apiGet_GetSubsections(id);
-  subsections.value = res.data.map((item): Section => ({
-    id: item.id,
-    subsection_title: item.subsection_title,
-    order_index: item.order_index,
-    is_preview_available: item.is_preview_available,
-    video_file_url: item.video_file_url ?? '',
-    video_duration: item.video_duration ?? 0,
-  }));
+  console.log('檢視章節API', res);
 
-  console.log('觸發編輯按扭', num);
+  if (res.data.length > 0) {
+    subsections.value = res.data.map(
+      (item): Section => ({
+        id: item.id,
+        subsection_title: item.subsection_title,
+        order_index: item.order_index,
+        is_preview_available: item.is_preview_available,
+        video_file_url: item.video_file_url ?? '',
+        video_duration: item.video_duration ?? 0,
+      })
+    );
+
+    console.log('觸發編輯按扭', num);
+  }
   chapterNum.value = num;
   chapterTitle.value = title;
   chapterSectionId.value = id;
@@ -308,7 +324,7 @@ watch(
           is_preview_available: sub.is_preview_available,
         })),
       }));
-      console.log('章節資料: ', chapters.value)
+      console.log('章節資料: ', chapters.value);
     }
   },
   { immediate: true } // 確保初次也會觸發
